@@ -1,28 +1,48 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector, useApplyTheme } from "./app/hooks";
-import { fetchProjects } from "./features/projects/projectsSlice";
+import { Suspense, lazy } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ErrorBoundary } from "./components/common/ErrorBoundary";
+import { FullPageLoader } from "./components/common/FullPageLoader";
+import { AppLayout } from "./components/layout/AppLayout";
+import { AboutPage } from "./pages/AboutPage";
+import { ContactPage } from "./pages/ContactPage";
+import { HomePage } from "./pages/HomePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
+import { ProjectsLayout } from "./features/projects/pages/ProjectsLayout";
 
-export const App = () => {
-  useApplyTheme();
+const ProjectsPage = lazy(() => import("./features/projects/pages/ProjectsPage"));
+const ProjectDetailPage = lazy(
+  () => import("./features/projects/pages/ProjectDetailPage")
+);
 
-  const dispatch = useAppDispatch();
-  const themeMode = useAppSelector((state) => state.ui.themeMode);
-  const status = useAppSelector((state) => state.projects.status);
-  const projectCount = useAppSelector((state) => state.projects.entities.length);
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProjects());
-    }
-  }, [dispatch, status]);
-
-  return (
-    <main className="app">
-      <span className="eyebrow">Portfolio Foundation</span>
-      <h1>Redux Toolkit Core Ready</h1>
-      <p>
-        Theme: {themeMode} · Projects: {projectCount} · Status: {status}
-      </p>
-    </main>
-  );
-};
+export const App = () => (
+  <BrowserRouter>
+    <ErrorBoundary>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/projects" element={<ProjectsLayout />}>
+            <Route
+              index
+              element={
+                <Suspense fallback={<FullPageLoader />}>
+                  <ProjectsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path=":projectId"
+              element={
+                <Suspense fallback={<FullPageLoader />}>
+                  <ProjectDetailPage />
+                </Suspense>
+              }
+            />
+          </Route>
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </ErrorBoundary>
+  </BrowserRouter>
+);
