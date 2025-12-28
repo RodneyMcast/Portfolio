@@ -1,0 +1,62 @@
+[
+  {
+    "id": "aurora-portfolio",
+    "title": "Aurora Portfolio",
+    "description": "Personal portfolio with modular sections and fast content loading.",
+    "year": 2024,
+    "category": "web",
+    "techStack": ["React", "TypeScript", "Vite", "Redux Toolkit"],
+    "liveUrl": "https://example.com/aurora",
+    "repoUrl": "https://github.com/rodne/aurora-portfolio"
+  },
+  {
+    "id": "pulse-commerce",
+    "title": "Pulse Commerce",
+    "description": "Headless commerce dashboard focused on conversion analytics.",
+    "year": 2023,
+    "category": "web",
+    "techStack": ["React", "Redux Toolkit", "MUI", "Node.js"],
+    "liveUrl": "https://example.com/pulse",
+    "repoUrl": "https://github.com/rodne/pulse-commerce"
+  },
+  {
+    "id": "nova-mobile",
+    "title": "Nova Mobile",
+    "description": "Cross-platform habit tracker with offline-first sync.",
+    "year": 2022,
+    "category": "mobile",
+    "techStack": ["React Native", "TypeScript", "SQLite"],
+    "liveUrl": "https://example.com/nova",
+    "repoUrl": "https://github.com/rodne/nova-mobile"
+  },
+  {
+    "id": "chainlight",
+    "title": "Chainlight Explorer",
+    "description": "Blockchain explorer with performance-focused indexing pipeline.",
+    "year": 2024,
+    "category": "blockchain",
+    "techStack": ["TypeScript", "Node.js", "PostgreSQL"],
+    "liveUrl": "https://example.com/chainlight",
+    "repoUrl": "https://github.com/rodne/chainlight"
+  },
+  {
+    "id": "signal-ai",
+    "title": "Signal AI",
+    "description": "AI assistant that summarizes customer support trends.",
+    "year": 2024,
+    "category": "ai",
+    "techStack": ["Python", "FastAPI", "OpenAI", "PostgreSQL"],
+    "liveUrl": "https://example.com/signal",
+    "repoUrl": "https://github.com/rodne/signal-ai"
+  },
+  {
+    "id": "orbit-studio",
+    "title": "Orbit Studio",
+    "description": "Design system workspace with live component previews.",
+    "year": 2023,
+    "category": "web",
+    "techStack": ["React", "TypeScript", "Storybook"],
+    "liveUrl": "https://example.com/orbit",
+    "repoUrl": "https://github.com/rodne/orbit-studio"
+  }
+]
