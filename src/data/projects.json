@@ -1,62 +1,68 @@
 [
   {
-    "id": "aurora-portfolio",
-    "title": "Aurora Portfolio",
-    "description": "Personal portfolio with modular sections and fast content loading.",
+    "id": "project-1",
+    "title": "Title 1",
+    "description": "Short description 1.",
     "year": 2024,
     "category": "web",
-    "techStack": ["React", "TypeScript", "Vite", "Redux Toolkit"],
-    "liveUrl": "https://example.com/aurora",
-    "repoUrl": "https://github.com/rodne/aurora-portfolio"
+    "techStack": ["Tech 1", "Tech 2"],
+    "imageUrl": "/images/project-placeholder.svg",
+    "liveUrl": "https://example.com/project-1",
+    "repoUrl": "https://github.com/user/project-1"
   },
   {
-    "id": "pulse-commerce",
-    "title": "Pulse Commerce",
-    "description": "Headless commerce dashboard focused on conversion analytics.",
+    "id": "project-2",
+    "title": "Title 2",
+    "description": "Short description 2.",
     "year": 2023,
-    "category": "web",
-    "techStack": ["React", "Redux Toolkit", "MUI", "Node.js"],
-    "liveUrl": "https://example.com/pulse",
-    "repoUrl": "https://github.com/rodne/pulse-commerce"
-  },
-  {
-    "id": "nova-mobile",
-    "title": "Nova Mobile",
-    "description": "Cross-platform habit tracker with offline-first sync.",
-    "year": 2022,
     "category": "mobile",
-    "techStack": ["React Native", "TypeScript", "SQLite"],
-    "liveUrl": "https://example.com/nova",
-    "repoUrl": "https://github.com/rodne/nova-mobile"
+    "techStack": ["Tech 1", "Tech 3"],
+    "imageUrl": "/images/project-placeholder.svg",
+    "liveUrl": "https://example.com/project-2",
+    "repoUrl": "https://github.com/user/project-2"
   },
   {
-    "id": "chainlight",
-    "title": "Chainlight Explorer",
-    "description": "Blockchain explorer with performance-focused indexing pipeline.",
+    "id": "project-3",
+    "title": "Title 3",
+    "description": "Short description 3.",
     "year": 2024,
-    "category": "blockchain",
-    "techStack": ["TypeScript", "Node.js", "PostgreSQL"],
-    "liveUrl": "https://example.com/chainlight",
-    "repoUrl": "https://github.com/rodne/chainlight"
+    "category": "games",
+    "techStack": ["Tech 2", "Tech 4"],
+    "imageUrl": "/images/project-placeholder.svg",
+    "liveUrl": "https://example.com/project-3",
+    "repoUrl": "https://github.com/user/project-3"
   },
   {
-    "id": "signal-ai",
-    "title": "Signal AI",
-    "description": "AI assistant that summarizes customer support trends.",
-    "year": 2024,
-    "category": "ai",
-    "techStack": ["Python", "FastAPI", "OpenAI", "PostgreSQL"],
-    "liveUrl": "https://example.com/signal",
-    "repoUrl": "https://github.com/rodne/signal-ai"
+    "id": "project-4",
+    "title": "Title 4",
+    "description": "Short description 4.",
+    "year": 2022,
+    "category": "api",
+    "techStack": ["Tech 1", "Tech 5"],
+    "imageUrl": "/images/project-placeholder.svg",
+    "liveUrl": "https://example.com/project-4",
+    "repoUrl": "https://github.com/user/project-4"
   },
   {
-    "id": "orbit-studio",
-    "title": "Orbit Studio",
-    "description": "Design system workspace with live component previews.",
+    "id": "project-5",
+    "title": "Title 5",
+    "description": "Short description 5.",
     "year": 2023,
     "category": "web",
-    "techStack": ["React", "TypeScript", "Storybook"],
-    "liveUrl": "https://example.com/orbit",
-    "repoUrl": "https://github.com/rodne/orbit-studio"
+    "techStack": ["Tech 2", "Tech 6"],
+    "imageUrl": "/images/project-placeholder.svg",
+    "liveUrl": "https://example.com/project-5",
+    "repoUrl": "https://github.com/user/project-5"
+  },
+  {
+    "id": "project-6",
+    "title": "Title 6",
+    "description": "Short description 6.",
+    "year": 2021,
+    "category": "games",
+    "techStack": ["Tech 3", "Tech 4"],
+    "imageUrl": "/images/project-placeholder.svg",
+    "liveUrl": "https://example.com/project-6",
+    "repoUrl": "https://github.com/user/project-6"
   }
 ]

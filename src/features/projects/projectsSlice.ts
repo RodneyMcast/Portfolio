@@ -27,7 +27,6 @@ export const fetchProjects = createAsyncThunk<
   try {
     const waitMs = 250 + Math.floor(Math.random() * 151);
     await delay(waitMs);
-    // JSON import keeps data bundled and avoids a runtime fetch dependency.
     return projectsData as Project[];
   } catch {
     return rejectWithValue("Failed to load projects.");
