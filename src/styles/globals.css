@@ -374,6 +374,132 @@ button {
   color: var(--color-muted);
 }
 
+.breadcrumb ol {
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.breadcrumb li + li::before {
+  content: "/";
+  margin-right: 0.5rem;
+  color: var(--color-muted);
+}
+
+.text-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.text-link:focus-visible,
+.button-link:focus-visible {
+  outline: 2px solid rgba(61, 220, 151, 0.7);
+  outline-offset: 3px;
+}
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 164, 178, 0.4);
+  color: inherit;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.button-link.primary {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 18px rgba(61, 220, 151, 0.35);
+}
+
+.button-link.ghost {
+  border-color: rgba(154, 164, 178, 0.4);
+}
+
+.project-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.detail-banner {
+  border-radius: calc(var(--radius-md) + 6px);
+  overflow: hidden;
+  border: 1px solid rgba(154, 164, 178, 0.2);
+}
+
+.detail-banner img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-chips {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 164, 178, 0.3);
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.detail-description {
+  color: var(--color-muted);
+  max-width: 720px;
+}
+
+.detail-section h2 {
+  margin: 0 0 0.6rem 0;
+}
+
+.detail-tags {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.detail-tags li {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 164, 178, 0.25);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
 @keyframes shimmer {
   0% {
     background-position: 0% 50%;

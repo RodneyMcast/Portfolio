@@ -18,7 +18,7 @@ export const Navbar = () => {
         <NavLink to="/about" className={getNavLinkClass}>
           About
         </NavLink>
-        <NavLink to="/projects" className={getNavLinkClass}>
+        <NavLink to="/projects" end={false} className={getNavLinkClass}>
           Projects
         </NavLink>
         <a className="nav-link" href="#resume">
