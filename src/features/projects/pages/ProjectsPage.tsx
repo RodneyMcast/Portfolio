@@ -33,6 +33,7 @@ const ProjectsPage = () => {
   const sortMode = useAppSelector((state) => state.projects.filters.sortMode);
   const projects = useAppSelector(selectFilteredProjects);
   const [searchValue, setSearchValue] = useState(searchQuery);
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     if (status === "idle") {
@@ -43,6 +44,10 @@ const ProjectsPage = () => {
   useEffect(() => {
     setSearchValue(searchQuery);
   }, [searchQuery]);
+
+  useEffect(() => {
+    setAnimationKey((prev) => prev + 1);
+  }, [activeCategory, searchQuery, sortMode]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -100,6 +105,7 @@ const ProjectsPage = () => {
         status={status}
         error={error}
         onRetry={handleRetry}
+        animationKey={animationKey}
       />
     </div>
   );

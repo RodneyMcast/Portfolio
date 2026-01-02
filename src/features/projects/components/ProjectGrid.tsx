@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { Project } from "../types";
 import { ProjectCard } from "./ProjectCard";
 
@@ -8,6 +9,7 @@ type ProjectGridProps = {
   status: ProjectStatus;
   error: string | null;
   onRetry: () => void;
+  animationKey: number;
 };
 
 const skeletonItems = Array.from({ length: 6 }, (_, index) => (
@@ -26,7 +28,16 @@ export const ProjectGrid = ({
   status,
   error,
   onRetry,
+  animationKey,
 }: ProjectGridProps) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    setIsAnimating(true);
+    const timer = setTimeout(() => setIsAnimating(false), 300);
+    return () => clearTimeout(timer);
+  }, [animationKey]);
+
   if (status === "loading" || status === "idle") {
     return <div className="project-grid">{skeletonItems}</div>;
   }
@@ -47,7 +58,7 @@ export const ProjectGrid = ({
   }
 
   return (
-    <div className="project-grid">
+    <div className={isAnimating ? "project-grid is-animating" : "project-grid"}>
       {projects.map((project) => (
         <ProjectCard key={project.id} project={project} />
       ))}

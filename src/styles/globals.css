@@ -72,16 +72,17 @@ button {
     radial-gradient(
       circle at 0% 30%,
       transparent 0 58%,
-      var(--color-ring) 59% 60%,
+      var(--arc-color) 59% 60%,
       transparent 61%
     ),
     radial-gradient(
       circle at 6% 75%,
       transparent 0 64%,
-      var(--color-ring-soft) 65% 66%,
+      color-mix(in srgb, var(--arc-color) 80%, transparent) 65% 66%,
       transparent 67%
     );
-  opacity: 0.5;
+  opacity: var(--arc-opacity);
+  filter: blur(var(--arc-blur));
 }
 
 .app-header {
@@ -119,7 +120,8 @@ button {
 }
 
 .nav-link:hover {
-  background: var(--color-card);
+  background: var(--nav-hover-bg);
+  box-shadow: 0 0 12px var(--color-glow-soft);
 }
 
 .nav-link.is-active {
@@ -404,6 +406,10 @@ button {
   border-color: var(--color-border-soft);
 }
 
+.project-grid.is-animating .project-card:not(.skeleton) {
+  animation: gridFadeUp 0.28s ease both;
+}
+
 .skeleton-media {
   height: 180px;
   background: var(--color-skeleton-base);
@@ -610,6 +616,17 @@ button {
   }
   100% {
     background-position: 200% 50%;
+  }
+}
+
+@keyframes gridFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
