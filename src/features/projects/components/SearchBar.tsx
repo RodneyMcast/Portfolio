@@ -10,7 +10,7 @@ export const SearchBar = ({
   placeholder = "Search projects...",
 }: SearchBarProps) => (
   <label className="search-bar">
-    <span className="search-label">Search</span>
+    <span className="sr-only">Search projects</span>
     <input
       type="search"
       value={value}

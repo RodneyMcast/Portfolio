@@ -39,6 +39,11 @@ const ProjectCardComponent = ({ project }: ProjectCardProps) => {
             <li key={tech}>{tech}</li>
           ))}
         </ul>
+        <div className="project-actions">
+          <span className="button-link ghost" aria-hidden="true">
+            Details
+          </span>
+        </div>
       </div>
     </button>
   );

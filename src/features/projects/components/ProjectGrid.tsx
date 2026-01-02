@@ -35,7 +35,7 @@ export const ProjectGrid = ({
     return (
       <div className="projects-error">
         <p>{error ?? "Something went wrong."}</p>
-        <button type="button" onClick={onRetry}>
+        <button type="button" className="button-link ghost" onClick={onRetry}>
           Retry
         </button>
       </div>
