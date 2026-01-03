@@ -1,5 +1,4 @@
-import type { PreloadedState } from "@reduxjs/toolkit";
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import type { RenderOptions } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import type { ReactElement, ReactNode } from "react";
@@ -10,20 +9,24 @@ import contactReducer from "../features/contact/contactSlice";
 import projectsReducer from "../features/projects/projectsSlice";
 import uiReducer from "../features/ui/uiSlice";
 
-export const setupStore = (preloadedState?: PreloadedState<RootState>) =>
+const rootReducer = combineReducers({
+  ui: uiReducer,
+  projects: projectsReducer,
+  contact: contactReducer,
+});
+
+type TestPreloadedState = Partial<RootState>;
+
+export const setupStore = (preloadedState?: TestPreloadedState) =>
   configureStore({
-    reducer: {
-      ui: uiReducer,
-      projects: projectsReducer,
-      contact: contactReducer,
-    },
+    reducer: rootReducer,
     preloadedState,
   });
 
 export type AppStore = ReturnType<typeof setupStore>;
 
 type ExtendedRenderOptions = Omit<RenderOptions, "queries"> & {
-  preloadedState?: PreloadedState<RootState>;
+  preloadedState?: TestPreloadedState;
   store?: AppStore;
   route?: string;
 };

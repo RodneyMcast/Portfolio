@@ -2,8 +2,10 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "../../../test/testUtils";
 import ProjectsPage from "./ProjectsPage";
+import type { RootState } from "../../../app/store";
+import type { Project } from "../types";
 
-const projects = [
+const projects: Project[] = [
   {
     id: "project-1",
     title: "Web Alpha",
@@ -42,7 +44,7 @@ const projects = [
   },
 ];
 
-const preloadedState = {
+const preloadedState: Partial<RootState> = {
   ui: { themeMode: "dark" },
   projects: {
     entities: projects,
