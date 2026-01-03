@@ -1,7 +1,18 @@
 export const HomePage = () => (
-  <section className="page">
-    <span className="eyebrow">Portfolio</span>
-    <h1>Home</h1>
-    <p>Just getting the basics in place.</p>
+  <section className="home-page" aria-label="Home">
+    <h1 className="sr-only">Home</h1>
+    <video
+      className="home-video"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+    >
+      <source
+        src="/videos/20260102_1547_New%20Video_storyboard_01kdzjv6qpff7b0a7wh52wmgv7.mp4"
+        type="video/mp4"
+      />
+    </video>
   </section>
 );
