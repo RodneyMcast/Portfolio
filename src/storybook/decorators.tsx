@@ -1,5 +1,5 @@
 import type { Decorator } from "@storybook/react";
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import type { ReactNode } from "react";
 import { useContext, useEffect } from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -10,13 +10,15 @@ import contactReducer from "../features/contact/contactSlice";
 import projectsReducer from "../features/projects/projectsSlice";
 import uiReducer from "../features/ui/uiSlice";
 
+const rootReducer = combineReducers({
+  ui: uiReducer,
+  projects: projectsReducer,
+  contact: contactReducer,
+});
+
 const createStoryStore = (preloadedState?: Partial<RootState>) =>
   configureStore({
-    reducer: {
-      ui: uiReducer,
-      projects: projectsReducer,
-      contact: contactReducer,
-    },
+    reducer: rootReducer,
     preloadedState,
   });
 
