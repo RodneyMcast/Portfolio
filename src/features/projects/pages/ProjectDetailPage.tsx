@@ -1,27 +1,28 @@
-import { useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { FullPageLoader } from "../../../components/common/FullPageLoader";
-import { fetchProjects } from "../projectsSlice";
-import { selectProjectById } from "../selectors";
+import { useEffect, useRef } from 'react';
+import { Link, useParams } from 'react-router-dom';
+
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { FullPageLoader } from '../../../components/common/FullPageLoader';
+import { fetchProjects } from '../projectsSlice';
+import { selectProjectById } from '../selectors';
 
 const ProjectDetailPage = () => {
   const { projectId } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.projects.status);
   const project = useAppSelector((state) =>
-    projectId ? selectProjectById(projectId)(state) : undefined
+    projectId ? selectProjectById(projectId)(state) : undefined,
   );
   const previousScroll = useRef(0);
 
   useEffect(() => {
-    if (status === "idle") {
+    if (status === 'idle') {
       dispatch(fetchProjects());
     }
   }, [dispatch, status]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return;
     }
     previousScroll.current = window.scrollY;
@@ -32,7 +33,7 @@ const ProjectDetailPage = () => {
     };
   }, []);
 
-  if (status === "loading" || status === "idle") {
+  if (status === 'loading' || status === 'idle') {
     return <FullPageLoader />;
   }
 
@@ -70,11 +71,7 @@ const ProjectDetailPage = () => {
         Back to projects
       </Link>
       <div className="detail-banner">
-        <img
-          src={project.imageUrl}
-          alt={`${project.title} banner`}
-          loading="lazy"
-        />
+        <img src={project.imageUrl} alt={`${project.title} banner`} loading="lazy" />
       </div>
       <div className="detail-header">
         <h1>{project.title}</h1>
@@ -104,12 +101,7 @@ const ProjectDetailPage = () => {
           </a>
         ) : null}
         {project.repoUrl ? (
-          <a
-            className="button-link ghost"
-            href={project.repoUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className="button-link ghost" href={project.repoUrl} target="_blank" rel="noreferrer">
             Code
           </a>
         ) : null}

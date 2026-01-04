@@ -1,17 +1,22 @@
-import { memo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import type { Project } from "../types";
+import { memo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import type { Project } from '../types';
 
 type ProjectCardProps = {
   project: Project;
+  disabled?: boolean;
 };
 
-const ProjectCardComponent = ({ project }: ProjectCardProps) => {
+const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) => {
   const navigate = useNavigate();
 
   const handleOpen = useCallback(() => {
+    if (disabled) {
+      return;
+    }
     navigate(`/projects/${project.id}`);
-  }, [navigate, project.id]);
+  }, [disabled, navigate, project.id]);
 
   return (
     <button
@@ -19,13 +24,10 @@ const ProjectCardComponent = ({ project }: ProjectCardProps) => {
       className="project-card"
       onClick={handleOpen}
       aria-label={`Open ${project.title}`}
+      disabled={disabled}
     >
       <div className="project-media">
-        <img
-          src={project.imageUrl}
-          alt={`${project.title} preview`}
-          loading="lazy"
-        />
+        <img src={project.imageUrl} alt={`${project.title} preview`} loading="lazy" />
       </div>
       <div className="project-body">
         <div className="project-top">
@@ -50,4 +52,4 @@ const ProjectCardComponent = ({ project }: ProjectCardProps) => {
 };
 
 export const ProjectCard = memo(ProjectCardComponent);
-ProjectCard.displayName = "ProjectCard";
+ProjectCard.displayName = 'ProjectCard';

@@ -1,11 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import type { Project, ProjectFilterCategory, ProjectSortMode } from "./types";
-import projectsData from "../../data/projects.json";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+import projectsData from '../../data/projects.json';
+
+import type { Project, ProjectFilterCategory, ProjectSortMode } from './types';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface ProjectsState {
   entities: Project[];
-  status: "idle" | "loading" | "succeeded" | "failed";
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   filters: {
     activeCategory: ProjectFilterCategory;
@@ -19,33 +21,32 @@ const delay = (ms: number) =>
     setTimeout(resolve, ms);
   });
 
-export const fetchProjects = createAsyncThunk<
-  Project[],
-  void,
-  { rejectValue: string }
->("projects/fetchProjects", async (_, { rejectWithValue }) => {
-  try {
-    const waitMs = 250 + Math.floor(Math.random() * 151);
-    await delay(waitMs);
-    return projectsData as Project[];
-  } catch {
-    return rejectWithValue("Failed to load projects.");
-  }
-});
+export const fetchProjects = createAsyncThunk<Project[], void, { rejectValue: string }>(
+  'projects/fetchProjects',
+  async (_, { rejectWithValue }) => {
+    try {
+      const waitMs = 250 + Math.floor(Math.random() * 151);
+      await delay(waitMs);
+      return projectsData as Project[];
+    } catch {
+      return rejectWithValue('Failed to load projects.');
+    }
+  },
+);
 
 const initialState: ProjectsState = {
   entities: [],
-  status: "idle",
+  status: 'idle',
   error: null,
   filters: {
-    activeCategory: "all",
-    searchQuery: "",
-    sortMode: "recent",
+    activeCategory: 'all',
+    searchQuery: '',
+    sortMode: 'recent',
   },
 };
 
 const projectsSlice = createSlice({
-  name: "projects",
+  name: 'projects',
   initialState,
   reducers: {
     setCategory(state, action: PayloadAction<ProjectFilterCategory>) {
@@ -58,28 +59,27 @@ const projectsSlice = createSlice({
       state.filters.sortMode = action.payload;
     },
     clearFilters(state) {
-      state.filters.activeCategory = "all";
-      state.filters.searchQuery = "";
-      state.filters.sortMode = "recent";
+      state.filters.activeCategory = 'all';
+      state.filters.searchQuery = '';
+      state.filters.sortMode = 'recent';
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProjects.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
         state.error = null;
       })
       .addCase(fetchProjects.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.status = 'succeeded';
         state.entities = action.payload;
       })
       .addCase(fetchProjects.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload ?? "Unable to load projects.";
+        state.status = 'failed';
+        state.error = action.payload ?? 'Unable to load projects.';
       });
   },
 });
 
-export const { setCategory, setSearchQuery, setSortMode, clearFilters } =
-  projectsSlice.actions;
+export const { setCategory, setSearchQuery, setSortMode, clearFilters } = projectsSlice.actions;
 export default projectsSlice.reducer;

@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
-import { toggleTheme } from "../../features/ui/uiSlice";
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+
+import { useAppDispatch } from '../../app/hooks';
+import { toggleTheme } from '../../features/ui/uiSlice';
 
 const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-  isActive ? "nav-link is-active" : "nav-link";
+  isActive ? 'nav-link is-active' : 'nav-link';
 
 export const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -33,10 +34,7 @@ export const Navbar = () => {
         <span />
         <span />
       </button>
-      <div
-        id="primary-nav"
-        className={menuOpen ? "nav-menu is-open" : "nav-menu"}
-      >
+      <div id="primary-nav" className={menuOpen ? 'nav-menu is-open' : 'nav-menu'}>
         <div className="nav-links">
           <NavLink to="/" end className={getNavLinkClass} onClick={handleClose}>
             Home
@@ -44,19 +42,10 @@ export const Navbar = () => {
           <NavLink to="/about" className={getNavLinkClass} onClick={handleClose}>
             About
           </NavLink>
-          <NavLink
-            to="/projects"
-            end={false}
-            className={getNavLinkClass}
-            onClick={handleClose}
-          >
+          <NavLink to="/projects" end={false} className={getNavLinkClass} onClick={handleClose}>
             Projects
           </NavLink>
-          <NavLink
-            to="/contact"
-            className={getNavLinkClass}
-            onClick={handleClose}
-          >
+          <NavLink to="/contact" className={getNavLinkClass} onClick={handleClose}>
             Contact
           </NavLink>
           <a className="nav-link" href="#resume" onClick={handleClose}>

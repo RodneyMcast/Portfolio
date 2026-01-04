@@ -1,13 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export const ProfileBlock = () => (
   <aside className="profile-block">
     <div className="profile-avatar">
-      <svg
-        viewBox="0 0 120 120"
-        role="img"
-        aria-label="Rodney Hili portrait placeholder"
-      >
+      <svg viewBox="0 0 120 120" role="img" aria-label="Rodney Hili portrait placeholder">
         <circle
           cx="60"
           cy="60"

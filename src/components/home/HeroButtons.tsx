@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import styles from "./HomeHero.module.css";
+import { Link } from 'react-router-dom';
+
+import styles from './HomeHero.module.css';
 
 export const HeroButtons = () => (
   <div className={styles.buttons}>

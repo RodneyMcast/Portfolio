@@ -1,49 +1,57 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { SearchBar } from "./SearchBar";
+import { SearchBar } from './SearchBar';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof SearchBar> = {
-  title: "Projects/SearchBar",
+  title: 'Projects/SearchBar',
   component: SearchBar,
   argTypes: {
-    value: { control: "text" },
-    placeholder: { control: "text" },
-    onChange: { action: "onChange" },
+    value: { control: 'text' },
+    placeholder: { control: 'text' },
+    disabled: { control: 'boolean' },
+    onChange: { action: 'onChange' },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof SearchBar>;
 
-export const Empty: Story = {
+export const Default: Story = {
   args: {
-    value: "",
-    placeholder: "Search projects...",
+    value: '',
+    placeholder: 'Search projects...',
+  },
+  parameters: {
+    viewport: { defaultViewport: 'mobile' },
   },
 };
 
-export const WithValue: Story = {
+export const Filled: Story = {
   args: {
-    value: "helix",
+    value: 'helix',
   },
 };
 
 export const Disabled: Story = {
   args: {
-    value: "disabled",
+    value: 'disabled',
+    disabled: true,
+  },
+};
+
+export const HoverPreview: Story = {
+  args: {
+    value: 'hover state',
   },
   render: (args) => (
-    <label className="search-bar">
-      <span className="sr-only">Search projects</span>
-      <input
-        type="search"
-        value={args.value}
-        placeholder={args.placeholder}
-        disabled
-        onChange={() => {}}
-      />
-    </label>
+    <div className="story-hover searchbar-hover">
+      <style>{`
+        .searchbar-hover .search-bar input {
+          border-color: var(--color-border-strong);
+          box-shadow: 0 0 0 4px var(--color-focus-shadow);
+        }
+      `}</style>
+      <SearchBar {...args} />
+    </div>
   ),
-  parameters: {
-    viewport: { defaultViewport: "mobile" },
-  },
 };

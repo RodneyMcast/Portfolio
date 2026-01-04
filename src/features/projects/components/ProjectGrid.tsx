@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import type { Project } from "../types";
-import { ProjectCard } from "./ProjectCard";
+import { useEffect, useState } from 'react';
 
-type ProjectStatus = "idle" | "loading" | "succeeded" | "failed";
+import { ProjectCard } from './ProjectCard';
+
+import type { Project } from '../types';
+
+type ProjectStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 type ProjectGridProps = {
   projects: Project[];
@@ -38,14 +40,14 @@ export const ProjectGrid = ({
     return () => clearTimeout(timer);
   }, [animationKey]);
 
-  if (status === "loading" || status === "idle") {
+  if (status === 'loading' || status === 'idle') {
     return <div className="project-grid">{skeletonItems}</div>;
   }
 
-  if (status === "failed") {
+  if (status === 'failed') {
     return (
       <div className="projects-error">
-        <p>{error ?? "Something went wrong."}</p>
+        <p>{error ?? 'Something went wrong.'}</p>
         <button type="button" className="button-link ghost" onClick={onRetry}>
           Retry
         </button>
@@ -58,7 +60,7 @@ export const ProjectGrid = ({
   }
 
   return (
-    <div className={isAnimating ? "project-grid is-animating" : "project-grid"}>
+    <div className={isAnimating ? 'project-grid is-animating' : 'project-grid'}>
       {projects.map((project) => (
         <ProjectCard key={project.id} project={project} />
       ))}

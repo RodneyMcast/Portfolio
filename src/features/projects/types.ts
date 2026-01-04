@@ -1,6 +1,6 @@
-export type ProjectCategory = "web" | "mobile" | "games" | "api";
-export type ProjectFilterCategory = "all" | ProjectCategory;
-export type ProjectSortMode = "recent" | "name";
+export type ProjectCategory = 'web' | 'mobile' | 'games' | 'api';
+export type ProjectFilterCategory = 'all' | ProjectCategory;
+export type ProjectSortMode = 'recent' | 'name';
 
 export interface Project {
   id: string;

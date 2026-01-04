@@ -1,13 +1,14 @@
-import type { ContactField } from "../contactSlice";
+import type { ContactField } from '../contactSlice';
 
 type FormFieldProps = {
   id: ContactField;
   label: string;
   value: string;
   error: string | null;
-  type?: "text" | "email";
+  type?: 'text' | 'email';
   multiline?: boolean;
   rows?: number;
+  disabled?: boolean;
   onChange: (field: ContactField, value: string) => void;
 };
 
@@ -16,9 +17,10 @@ export const FormField = ({
   label,
   value,
   error,
-  type = "text",
+  type = 'text',
   multiline = false,
   rows = 4,
+  disabled = false,
   onChange,
 }: FormFieldProps) => {
   const errorId = error ? `${id}-error` : undefined;
@@ -34,6 +36,7 @@ export const FormField = ({
           onChange={(event) => onChange(id, event.target.value)}
           aria-invalid={Boolean(error)}
           aria-describedby={errorId}
+          disabled={disabled}
         />
       ) : (
         <input
@@ -43,6 +46,7 @@ export const FormField = ({
           onChange={(event) => onChange(id, event.target.value)}
           aria-invalid={Boolean(error)}
           aria-describedby={errorId}
+          disabled={disabled}
         />
       )}
       {error ? (

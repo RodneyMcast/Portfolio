@@ -1,5 +1,4 @@
-import type { FormEvent } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
   getContactErrors,
   resetForm,
@@ -7,22 +6,23 @@ import {
   submitContactForm,
   validateForm,
   type ContactField,
-} from "../contactSlice";
-import { FormField } from "./FormField";
-import { StatusBanner } from "./StatusBanner";
+} from '../contactSlice';
+
+import { FormField } from './FormField';
+import { StatusBanner } from './StatusBanner';
+
+import type { FormEvent } from 'react';
 
 export const ContactForm = () => {
   const dispatch = useAppDispatch();
-  const { fields, errors, status, errorMessage } = useAppSelector(
-    (state) => state.contact
-  );
+  const { fields, errors, status, errorMessage } = useAppSelector((state) => state.contact);
 
   const handleChange = (field: ContactField, value: string) => {
     dispatch(setField({ field, value }));
   };
 
   const submitForm = () => {
-    if (status === "loading") {
+    if (status === 'loading') {
       return;
     }
     const validationErrors = getContactErrors(fields);
@@ -39,18 +39,11 @@ export const ContactForm = () => {
     submitForm();
   };
 
-  if (status === "succeeded") {
+  if (status === 'succeeded') {
     return (
       <div className="contact-card">
-        <StatusBanner
-          tone="success"
-          message="Thanks for reaching out. I'll reply soon."
-        />
-        <button
-          type="button"
-          className="button-link primary"
-          onClick={() => dispatch(resetForm())}
-        >
+        <StatusBanner tone="success" message="Thanks for reaching out. I'll reply soon." />
+        <button type="button" className="button-link primary" onClick={() => dispatch(resetForm())}>
           Send another
         </button>
       </div>
@@ -60,13 +53,11 @@ export const ContactForm = () => {
   return (
     <form className="contact-card" onSubmit={handleSubmit} noValidate>
       <h2>Send a message</h2>
-      <p className="contact-muted">
-        Fill out the form and I will get back to you.
-      </p>
-      {status === "failed" ? (
+      <p className="contact-muted">Fill out the form and I will get back to you.</p>
+      {status === 'failed' ? (
         <StatusBanner
           tone="error"
-          message={errorMessage ?? "Something went wrong. Please try again."}
+          message={errorMessage ?? 'Something went wrong. Please try again.'}
           actionLabel="Try again"
           onAction={submitForm}
         />
@@ -105,12 +96,8 @@ export const ContactForm = () => {
         />
       </div>
       <div className="contact-actions">
-        <button
-          type="submit"
-          className="button-link primary"
-          disabled={status === "loading"}
-        >
-          {status === "loading" ? "Sending..." : "Send message"}
+        <button type="submit" className="button-link primary" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Sending...' : 'Send message'}
         </button>
       </div>
     </form>

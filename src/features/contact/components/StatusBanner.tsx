@@ -1,19 +1,13 @@
 type StatusBannerProps = {
-  tone: "success" | "error";
+  tone: 'success' | 'error';
   message: string;
   actionLabel?: string;
   onAction?: () => void;
 };
 
-export const StatusBanner = ({
-  tone,
-  message,
-  actionLabel,
-  onAction,
-}: StatusBannerProps) => {
-  const className =
-    tone === "success" ? "status-banner is-success" : "status-banner is-error";
-  const role = tone === "success" ? "status" : "alert";
+export const StatusBanner = ({ tone, message, actionLabel, onAction }: StatusBannerProps) => {
+  const className = tone === 'success' ? 'status-banner is-success' : 'status-banner is-error';
+  const role = tone === 'success' ? 'status' : 'alert';
 
   return (
     <div className={className} role={role}>

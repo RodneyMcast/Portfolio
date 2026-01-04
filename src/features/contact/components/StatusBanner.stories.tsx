@@ -1,11 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { StatusBanner } from "./StatusBanner";
+import { StatusBanner } from './StatusBanner';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof StatusBanner> = {
-  title: "Contact/StatusBanner",
+  title: 'Contact/StatusBanner',
   component: StatusBanner,
   argTypes: {
-    onAction: { action: "onAction" },
+    onAction: { action: 'onAction' },
   },
 };
 
@@ -14,26 +15,26 @@ type Story = StoryObj<typeof StatusBanner>;
 
 export const Success: Story = {
   args: {
-    tone: "success",
+    tone: 'success',
     message: "Message sent. I'll get back to you soon.",
   },
 };
 
 export const Error: Story = {
   args: {
-    tone: "error",
-    message: "Something went wrong. Please try again.",
-    actionLabel: "Try again",
+    tone: 'error',
+    message: 'Something went wrong. Please try again.',
+    actionLabel: 'Try again',
   },
 };
 
 export const ActionOnly: Story = {
   args: {
-    tone: "error",
-    message: "Unable to send right now.",
-    actionLabel: "Retry",
+    tone: 'error',
+    message: 'Unable to send right now.',
+    actionLabel: 'Retry',
   },
   parameters: {
-    viewport: { defaultViewport: "mobile" },
+    viewport: { defaultViewport: 'mobile' },
   },
 };

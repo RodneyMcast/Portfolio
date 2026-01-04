@@ -1,14 +1,16 @@
-import type { Decorator } from "@storybook/react";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import type { ReactNode } from "react";
-import { useContext, useEffect } from "react";
-import { MemoryRouter } from "react-router-dom";
-import { Provider, ReactReduxContext } from "react-redux";
-import type { RootState } from "../app/store";
-import type { ThemeMode } from "../features/ui/uiSlice";
-import contactReducer from "../features/contact/contactSlice";
-import projectsReducer from "../features/projects/projectsSlice";
-import uiReducer from "../features/ui/uiSlice";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { useContext, useEffect } from 'react';
+import { Provider, ReactReduxContext } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+
+import contactReducer from '../features/contact/contactSlice';
+import projectsReducer from '../features/projects/projectsSlice';
+import uiReducer from '../features/ui/uiSlice';
+
+import type { RootState } from '../app/store';
+import type { ThemeMode } from '../features/ui/uiSlice';
+import type { Decorator } from '@storybook/react';
+import type { ReactNode } from 'react';
 
 const rootReducer = combineReducers({
   ui: uiReducer,
@@ -22,24 +24,18 @@ const createStoryStore = (preloadedState?: Partial<RootState>) =>
     preloadedState,
   });
 
-const ThemeSync = ({
-  fallback,
-  children,
-}: {
-  fallback: ThemeMode;
-  children: ReactNode;
-}) => {
+const ThemeSync = ({ fallback, children }: { fallback: ThemeMode; children: ReactNode }) => {
   const reduxContext = useContext(ReactReduxContext);
 
   useEffect(() => {
     if (!reduxContext) {
-      document.documentElement.setAttribute("data-theme", fallback);
+      document.documentElement.setAttribute('data-theme', fallback);
       return;
     }
 
     const updateTheme = () => {
       const state = reduxContext.store.getState() as RootState;
-      document.documentElement.setAttribute("data-theme", state.ui.themeMode);
+      document.documentElement.setAttribute('data-theme', state.ui.themeMode);
     };
 
     updateTheme();
@@ -51,7 +47,7 @@ const ThemeSync = ({
 };
 
 export const withMemoryRouter =
-  (initialRoute = "/"): Decorator =>
+  (initialRoute = '/'): Decorator =>
   (Story, context) => {
     const routeFromParams =
       (context.parameters?.initialRoute as string | undefined) ??
@@ -68,9 +64,7 @@ export const withMemoryRouter =
 export const withReduxStore =
   (preloadedState?: Partial<RootState>): Decorator =>
   (Story, context) => {
-    const stateFromParams = context.parameters?.preloadedState as
-      | Partial<RootState>
-      | undefined;
+    const stateFromParams = context.parameters?.preloadedState as Partial<RootState> | undefined;
     const store = createStoryStore(stateFromParams ?? preloadedState);
 
     return (
@@ -81,7 +75,7 @@ export const withReduxStore =
   };
 
 export const withTheme =
-  (defaultTheme: ThemeMode = "dark"): Decorator =>
+  (defaultTheme: ThemeMode = 'dark'): Decorator =>
   (Story, context) => {
     const themeFromParams = context.parameters?.themeMode as ThemeMode | undefined;
     const themeMode = themeFromParams ?? defaultTheme;

@@ -1,9 +1,9 @@
-import { createSelector } from "@reduxjs/toolkit";
-import type { RootState } from "../../app/store";
-import type { Project } from "./types";
+import { createSelector } from '@reduxjs/toolkit';
 
-export const selectAllProjects = (state: RootState): Project[] =>
-  state.projects.entities;
+import type { Project } from './types';
+import type { RootState } from '../../app/store';
+
+export const selectAllProjects = (state: RootState): Project[] => state.projects.entities;
 
 export const selectProjectById =
   (projectId: string) =>
@@ -19,35 +19,26 @@ export const selectFilteredProjects = createSelector(
 
     let filtered = projects;
 
-    if (filters.activeCategory !== "all") {
-      filtered = filtered.filter(
-        (project) => project.category === filters.activeCategory
-      );
+    if (filters.activeCategory !== 'all') {
+      filtered = filtered.filter((project) => project.category === filters.activeCategory);
     }
 
     if (search) {
       filtered = filtered.filter((project) => {
-        const haystack = [
-          project.title,
-          project.description,
-          project.techStack.join(" "),
-        ]
-          .join(" ")
+        const haystack = [project.title, project.description, project.techStack.join(' ')]
+          .join(' ')
           .toLowerCase();
         return haystack.includes(search);
       });
     }
 
     const sorted = [...filtered];
-    if (filters.sortMode === "recent") {
-      sorted.sort(
-        (a, b) =>
-          b.year - a.year || a.title.localeCompare(b.title, "en-US")
-      );
+    if (filters.sortMode === 'recent') {
+      sorted.sort((a, b) => b.year - a.year || a.title.localeCompare(b.title, 'en-US'));
     } else {
-      sorted.sort((a, b) => a.title.localeCompare(b.title, "en-US"));
+      sorted.sort((a, b) => a.title.localeCompare(b.title, 'en-US'));
     }
 
     return sorted;
-  }
+  },
 );

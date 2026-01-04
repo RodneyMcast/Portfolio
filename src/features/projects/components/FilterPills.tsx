@@ -1,4 +1,4 @@
-import type { ProjectFilterCategory } from "../types";
+import type { ProjectFilterCategory } from '../types';
 
 export type FilterOption = {
   value: ProjectFilterCategory;
@@ -9,13 +9,10 @@ type FilterPillsProps = {
   options: FilterOption[];
   active: ProjectFilterCategory;
   onChange: (value: ProjectFilterCategory) => void;
+  disabled?: boolean;
 };
 
-export const FilterPills = ({
-  options,
-  active,
-  onChange,
-}: FilterPillsProps) => (
+export const FilterPills = ({ options, active, onChange, disabled = false }: FilterPillsProps) => (
   <div className="filter-pills" role="group" aria-label="Project filters">
     {options.map((option) => {
       const isActive = option.value === active;
@@ -27,6 +24,7 @@ export const FilterPills = ({
           className="pill is-active"
           onClick={() => onChange(option.value)}
           aria-pressed="true"
+          disabled={disabled}
         >
           {option.label}
         </button>
@@ -37,6 +35,7 @@ export const FilterPills = ({
           className="pill"
           onClick={() => onChange(option.value)}
           aria-pressed="false"
+          disabled={disabled}
         >
           {option.label}
         </button>

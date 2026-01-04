@@ -60,27 +60,21 @@ button {
 }
 
 .background::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background:
     radial-gradient(var(--color-star) 1px, transparent 1px) 0 0 / 130px 130px,
-    radial-gradient(var(--color-star-soft) 1px, transparent 1px) 40px 60px /
-      190px 190px;
+    radial-gradient(var(--color-star-soft) 1px, transparent 1px) 40px 60px / 190px 190px;
   opacity: 0.6;
 }
 
 .background::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: -10% 0;
   background:
-    radial-gradient(
-      circle at 0% 30%,
-      transparent 0 58%,
-      var(--arc-color) 59% 60%,
-      transparent 61%
-    ),
+    radial-gradient(circle at 0% 30%, transparent 0 58%, var(--arc-color) 59% 60%, transparent 61%),
     radial-gradient(
       circle at 6% 75%,
       transparent 0 64%,
@@ -157,7 +151,10 @@ button {
 .nav-link {
   padding: 0.25rem 0.8rem;
   border-radius: 999px;
-  transition: background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
 }
 
 .nav-link:hover {
@@ -182,7 +179,9 @@ button {
   padding: 0.35rem 0.9rem;
   border-radius: 999px;
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -281,13 +280,20 @@ button {
   color: inherit;
   border-radius: 999px;
   padding: 0.7rem 1.1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .search-bar input:focus-visible {
   outline: none;
   border-color: var(--color-border-strong);
   box-shadow: 0 0 0 4px var(--color-focus-shadow);
+}
+
+.search-bar input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .projects-filters {
@@ -312,7 +318,9 @@ button {
   padding: 0.4rem 1rem;
   border-radius: 999px;
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     background 0.2s ease;
 }
 
@@ -332,6 +340,12 @@ button {
   outline-offset: 3px;
 }
 
+.pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .sort-control {
   display: flex;
   align-items: center;
@@ -345,13 +359,20 @@ button {
   color: inherit;
   border-radius: 999px;
   padding: 0.45rem 0.9rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .sort-control select:focus-visible {
   outline: none;
   border-color: var(--color-border-strong);
   box-shadow: 0 0 0 4px var(--color-focus-shadow);
+}
+
+.sort-control select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .projects-count {
@@ -375,15 +396,19 @@ button {
   flex-direction: column;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease,
-    border-color 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
   backdrop-filter: blur(12px);
 }
 
 .project-card:hover {
   border-color: var(--color-border-strong);
   background: var(--color-card-strong);
-  box-shadow: 0 16px 32px var(--color-shadow),
+  box-shadow:
+    0 16px 32px var(--color-shadow),
     0 0 18px var(--color-glow-faint);
   transform: translateY(-4px);
 }
@@ -391,6 +416,13 @@ button {
 .project-card:focus-visible {
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 3px;
+}
+
+.project-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .project-media img {
@@ -584,7 +616,9 @@ button {
   border-radius: 12px;
   padding: 0.7rem 0.9rem;
   font: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .form-field textarea {
@@ -598,8 +632,14 @@ button {
   box-shadow: 0 0 0 3px var(--color-focus-shadow);
 }
 
-.form-field input[aria-invalid="true"],
-.form-field textarea[aria-invalid="true"] {
+.form-field input:disabled,
+.form-field textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-field input[aria-invalid='true'],
+.form-field textarea[aria-invalid='true'] {
   border-color: var(--color-danger);
   box-shadow: 0 0 0 3px var(--color-danger-bg);
 }
@@ -719,7 +759,7 @@ button {
 }
 
 .about-list li::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 0.45rem;
@@ -745,7 +785,8 @@ button {
   place-items: center;
   background: var(--color-card);
   border: 2px solid var(--color-border-strong);
-  box-shadow: 0 0 0 8px var(--color-glow-faint),
+  box-shadow:
+    0 0 0 8px var(--color-glow-faint),
     0 0 28px var(--color-glow-soft);
   align-self: center;
 }
@@ -836,14 +877,17 @@ button {
   gap: 0.6rem;
   place-items: center;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease,
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
     border-color 0.2s ease;
 }
 
 .skill-tile:hover {
   transform: translateY(-4px);
   border-color: var(--color-border-strong);
-  box-shadow: 0 14px 28px var(--color-shadow),
+  box-shadow:
+    0 14px 28px var(--color-shadow),
     0 0 18px var(--color-glow-faint);
 }
 
@@ -900,7 +944,7 @@ button {
 }
 
 .breadcrumb li + li::before {
-  content: "/";
+  content: '/';
   margin-right: 0.5rem;
   color: var(--color-muted);
 }
@@ -928,7 +972,9 @@ button {
   text-decoration: none;
   background: transparent;
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     background 0.2s ease;
 }
 

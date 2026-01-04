@@ -1,11 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Navbar } from "./Navbar";
-import { withMemoryRouter } from "../../storybook/decorators";
+import { withMemoryRouter } from '../../storybook/decorators';
+
+import { Navbar } from './Navbar';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Navbar> = {
-  title: "Layout/Navbar",
+  title: 'Layout/Navbar',
   component: Navbar,
-  decorators: [withMemoryRouter("/")],
+  decorators: [withMemoryRouter('/')],
 };
 
 export default meta;
@@ -15,7 +17,7 @@ export const HomeActive: Story = {};
 
 export const ProjectsActive: Story = {
   parameters: {
-    initialRoute: "/projects",
-    viewport: { defaultViewport: "mobile" },
+    initialRoute: '/projects',
+    viewport: { defaultViewport: 'mobile' },
   },
 };

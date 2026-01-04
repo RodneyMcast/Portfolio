@@ -1,4 +1,4 @@
-import type { ProjectSortMode } from "../types";
+import type { ProjectSortMode } from '../types';
 
 type SortOption = {
   value: ProjectSortMode;
@@ -9,23 +9,26 @@ type SortControlProps = {
   value: ProjectSortMode;
   onChange: (value: ProjectSortMode) => void;
   options?: SortOption[];
+  disabled?: boolean;
 };
 
 const defaultOptions: SortOption[] = [
-  { value: "recent", label: "Most recent" },
-  { value: "name", label: "Name" },
+  { value: 'recent', label: 'Most recent' },
+  { value: 'name', label: 'Name' },
 ];
 
 export const SortControl = ({
   value,
   onChange,
   options = defaultOptions,
+  disabled = false,
 }: SortControlProps) => (
   <label className="sort-control">
     <span className="sort-label">Sort</span>
     <select
       value={value}
       onChange={(event) => onChange(event.target.value as ProjectSortMode)}
+      disabled={disabled}
     >
       {options.map((option) => (
         <option key={option.value} value={option.value}>

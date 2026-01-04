@@ -1,7 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import uiReducer from "../features/ui/uiSlice";
-import projectsReducer from "../features/projects/projectsSlice";
-import contactReducer from "../features/contact/contactSlice";
+import { configureStore } from '@reduxjs/toolkit';
+
+import contactReducer from '../features/contact/contactSlice';
+import projectsReducer from '../features/projects/projectsSlice';
+import uiReducer from '../features/ui/uiSlice';
 
 export const store = configureStore({
   reducer: {

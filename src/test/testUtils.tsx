@@ -1,13 +1,15 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import type { RenderOptions } from "@testing-library/react";
-import { render } from "@testing-library/react";
-import type { ReactElement, ReactNode } from "react";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
-import type { RootState } from "../app/store";
-import contactReducer from "../features/contact/contactSlice";
-import projectsReducer from "../features/projects/projectsSlice";
-import uiReducer from "../features/ui/uiSlice";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+
+import contactReducer from '../features/contact/contactSlice';
+import projectsReducer from '../features/projects/projectsSlice';
+import uiReducer from '../features/ui/uiSlice';
+
+import type { RootState } from '../app/store';
+import type { RenderOptions } from '@testing-library/react';
+import type { ReactElement, ReactNode } from 'react';
 
 const rootReducer = combineReducers({
   ui: uiReducer,
@@ -25,7 +27,7 @@ export const setupStore = (preloadedState?: TestPreloadedState) =>
 
 export type AppStore = ReturnType<typeof setupStore>;
 
-type ExtendedRenderOptions = Omit<RenderOptions, "queries"> & {
+type ExtendedRenderOptions = Omit<RenderOptions, 'queries'> & {
   preloadedState?: TestPreloadedState;
   store?: AppStore;
   route?: string;
@@ -36,9 +38,9 @@ export const renderWithProviders = (
   {
     preloadedState,
     store = setupStore(preloadedState),
-    route = "/",
+    route = '/',
     ...renderOptions
-  }: ExtendedRenderOptions = {}
+  }: ExtendedRenderOptions = {},
 ) => {
   const Wrapper = ({ children }: { children: ReactNode }) => (
     <Provider store={store}>

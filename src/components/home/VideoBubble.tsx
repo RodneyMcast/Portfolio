@@ -1,4 +1,4 @@
-import styles from "./HomeHero.module.css";
+import styles from './HomeHero.module.css';
 
 export const VideoBubble = () => (
   <div className={styles.bubble} aria-label="Rodney Hili profile">

@@ -1,16 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-export type ThemeMode = "dark" | "light";
+import type { PayloadAction } from '@reduxjs/toolkit';
+
+export type ThemeMode = 'dark' | 'light';
 
 interface UiState {
   themeMode: ThemeMode;
 }
 
-const STORAGE_KEY = "portfolio.themeMode";
+const STORAGE_KEY = 'portfolio.themeMode';
 
 const getStorage = (): Storage | null => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return null;
   }
   try {
@@ -27,7 +28,7 @@ const readStoredTheme = (): ThemeMode | null => {
   }
 
   const stored = storage.getItem(STORAGE_KEY);
-  if (stored === "dark" || stored === "light") {
+  if (stored === 'dark' || stored === 'light') {
     return stored;
   }
 
@@ -44,15 +45,15 @@ const persistTheme = (themeMode: ThemeMode) => {
 };
 
 const initialState: UiState = {
-  themeMode: readStoredTheme() ?? "dark",
+  themeMode: readStoredTheme() ?? 'dark',
 };
 
 const uiSlice = createSlice({
-  name: "ui",
+  name: 'ui',
   initialState,
   reducers: {
     toggleTheme(state) {
-      state.themeMode = state.themeMode === "dark" ? "light" : "dark";
+      state.themeMode = state.themeMode === 'dark' ? 'light' : 'dark';
       persistTheme(state.themeMode);
     },
     setTheme(state, action: PayloadAction<ThemeMode>) {

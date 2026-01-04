@@ -1,17 +1,15 @@
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
+  forceError?: boolean;
 };
 
 type ErrorBoundaryState = {
   hasError: boolean;
 };
 
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = {
     hasError: false,
   };
@@ -21,7 +19,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("App crashed:", error, info);
+    console.error('App crashed:', error, info);
   }
 
   handleReload = () => {
@@ -29,7 +27,7 @@ export class ErrorBoundary extends Component<
   };
 
   render() {
-    if (this.state.hasError) {
+    if (this.state.hasError || this.props.forceError) {
       return (
         <main className="error-boundary">
           <h1>Something went wrong.</h1>

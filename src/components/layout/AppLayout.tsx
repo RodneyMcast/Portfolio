@@ -1,6 +1,8 @@
-import { Outlet } from "react-router-dom";
-import { useApplyTheme } from "../../app/hooks";
-import { Navbar } from "./Navbar";
+import { Outlet } from 'react-router-dom';
+
+import { useApplyTheme } from '../../app/hooks';
+
+import { Navbar } from './Navbar';
 
 const Background = () => <div className="background" aria-hidden="true" />;
 

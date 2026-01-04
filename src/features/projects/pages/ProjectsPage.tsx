@@ -1,25 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import {
-  fetchProjects,
-  setCategory,
-  setSearchQuery,
-  setSortMode,
-} from "../projectsSlice";
-import { selectFilteredProjects } from "../selectors";
-import { FilterPills, type FilterOption } from "../components/FilterPills";
-import { ProjectGrid } from "../components/ProjectGrid";
-import { ProjectsHero } from "../components/ProjectsHero";
-import { SearchBar } from "../components/SearchBar";
-import { SortControl } from "../components/SortControl";
-import type { ProjectFilterCategory, ProjectSortMode } from "../types";
+import { useCallback, useEffect, useState } from 'react';
+
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { FilterPills, type FilterOption } from '../components/FilterPills';
+import { ProjectGrid } from '../components/ProjectGrid';
+import { ProjectsHero } from '../components/ProjectsHero';
+import { SearchBar } from '../components/SearchBar';
+import { SortControl } from '../components/SortControl';
+import { fetchProjects, setCategory, setSearchQuery, setSortMode } from '../projectsSlice';
+import { selectFilteredProjects } from '../selectors';
+
+import type { ProjectFilterCategory, ProjectSortMode } from '../types';
 
 const filterOptions: FilterOption[] = [
-  { value: "all", label: "All" },
-  { value: "web", label: "Web" },
-  { value: "mobile", label: "Mobile" },
-  { value: "games", label: "Games" },
-  { value: "api", label: "API" },
+  { value: 'all', label: 'All' },
+  { value: 'web', label: 'Web' },
+  { value: 'mobile', label: 'Mobile' },
+  { value: 'games', label: 'Games' },
+  { value: 'api', label: 'API' },
 ];
 
 const ProjectsPage = () => {
@@ -27,16 +24,14 @@ const ProjectsPage = () => {
   const status = useAppSelector((state) => state.projects.status);
   const error = useAppSelector((state) => state.projects.error);
   const searchQuery = useAppSelector((state) => state.projects.filters.searchQuery);
-  const activeCategory = useAppSelector(
-    (state) => state.projects.filters.activeCategory
-  );
+  const activeCategory = useAppSelector((state) => state.projects.filters.activeCategory);
   const sortMode = useAppSelector((state) => state.projects.filters.sortMode);
   const projects = useAppSelector(selectFilteredProjects);
   const [searchValue, setSearchValue] = useState(searchQuery);
   const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
-    if (status === "idle") {
+    if (status === 'idle') {
       dispatch(fetchProjects());
     }
   }, [dispatch, status]);
@@ -67,14 +62,14 @@ const ProjectsPage = () => {
     (value: ProjectFilterCategory) => {
       dispatch(setCategory(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleSortChange = useCallback(
     (value: ProjectSortMode) => {
       dispatch(setSortMode(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleRetry = useCallback(() => {

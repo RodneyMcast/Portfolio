@@ -1,18 +1,17 @@
-import { Suspense, lazy } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ErrorBoundary } from "./components/common/ErrorBoundary";
-import { FullPageLoader } from "./components/common/FullPageLoader";
-import { AppLayout } from "./components/layout/AppLayout";
-import { AboutPage } from "./pages/AboutPage";
-import { ContactPage } from "./pages/ContactPage";
-import { HomePage } from "./pages/HomePage";
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { ProjectsLayout } from "./features/projects/pages/ProjectsLayout";
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-const ProjectsPage = lazy(() => import("./features/projects/pages/ProjectsPage"));
-const ProjectDetailPage = lazy(
-  () => import("./features/projects/pages/ProjectDetailPage")
-);
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { FullPageLoader } from './components/common/FullPageLoader';
+import { AppLayout } from './components/layout/AppLayout';
+import { ProjectsLayout } from './features/projects/pages/ProjectsLayout';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
+import { HomePage } from './pages/HomePage';
+import { NotFoundPage } from './pages/NotFoundPage';
+
+const ProjectsPage = lazy(() => import('./features/projects/pages/ProjectsPage'));
+const ProjectDetailPage = lazy(() => import('./features/projects/pages/ProjectDetailPage'));
 
 export const App = () => (
   <BrowserRouter>

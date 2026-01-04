@@ -1,11 +1,11 @@
-import { ContactForm } from "../features/contact/components/ContactForm";
+import { ContactForm } from '../features/contact/components/ContactForm';
 
 export const ContactPage = () => (
   <section className="contact-page">
     <header className="contact-hero">
       <span className="eyebrow">Contact</span>
       <h1>Contact</h1>
-      <p>Send me a message and I'll get back to you.</p>
+      <p>Send me a message and I will get back to you.</p>
     </header>
     <div className="contact-info">
       <div className="contact-info-item">
@@ -14,9 +14,7 @@ export const ContactPage = () => (
       </div>
       <div className="contact-info-item">
         <span className="contact-label">Email</span>
-        <a href="mailto:rodney.hili2005@gmail.com">
-          rodney.hili2005@gmail.com
-        </a>
+        <a href="mailto:rodney.hili2005@gmail.com">rodney.hili2005@gmail.com</a>
       </div>
       <div className="contact-info-item">
         <span className="contact-label">Phone</span>

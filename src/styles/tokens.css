@@ -1,5 +1,5 @@
 :root {
-  --font-sans: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-sans: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --color-bg: #0b1116;
   --color-surface: #121a22;
   --color-surface-alt: #0f161d;
@@ -45,7 +45,7 @@
   --space-md: 16px;
 }
 
-html[data-theme="light"] {
+html[data-theme='light'] {
   --color-bg: #f2fbf8;
   --color-surface: #ffffff;
   --color-surface-alt: #eef7f4;
