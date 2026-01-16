@@ -99,6 +99,7 @@ button {
   padding: var(--space-md) calc(var(--space-md) * 2);
   background: var(--color-nav);
   border-bottom: 1px solid var(--color-border-soft);
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   position: relative;
 }
@@ -401,6 +402,7 @@ button {
     box-shadow 0.2s ease,
     border-color 0.2s ease,
     background 0.2s ease;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 
@@ -580,6 +582,7 @@ button {
   box-shadow: 0 18px 28px var(--color-shadow);
   display: grid;
   gap: var(--space-md);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
 
