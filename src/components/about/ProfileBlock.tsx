@@ -50,9 +50,14 @@ export const ProfileBlock = () => (
       <Link className="button-link primary" to="/projects">
         View Projects
       </Link>
-      <Link className="button-link ghost" to="/resume">
+      <a
+        className="button-link ghost"
+        href="/Rodney%20Hili%20CV.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Resume
-      </Link>
+      </a>
     </div>
   </aside>
 );

@@ -48,7 +48,13 @@ export const Navbar = () => {
           <NavLink to="/contact" className={getNavLinkClass} onClick={handleClose}>
             Contact
           </NavLink>
-          <a className="nav-link" href="#resume" onClick={handleClose}>
+          <a
+            className="nav-link"
+            href="/Rodney%20Hili%20CV.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleClose}
+          >
             Resume
           </a>
         </div>
