@@ -10,12 +10,16 @@ import { ContactPage } from './pages/ContactPage';
 import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
+// Code-split the heavier project pages so they load only when needed.
 const ProjectsPage = lazy(() => import('./features/projects/pages/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('./features/projects/pages/ProjectDetailPage'));
 
 export const App = () => (
+  // BrowserRouter owns the URL-based navigation.
   <BrowserRouter>
+    {/* Catch render errors so the whole app does not crash. */}
     <ErrorBoundary>
+      {/* Nested routes let the layout wrap all pages. */}
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -24,6 +28,7 @@ export const App = () => (
             <Route
               index
               element={
+                // Suspense shows a loader while the lazy page chunk loads.
                 <Suspense fallback={<FullPageLoader />}>
                   <ProjectsPage />
                 </Suspense>
@@ -32,6 +37,7 @@ export const App = () => (
             <Route
               path=":projectId"
               element={
+                // Detail page is also lazy-loaded for faster initial load.
                 <Suspense fallback={<FullPageLoader />}>
                   <ProjectDetailPage />
                 </Suspense>

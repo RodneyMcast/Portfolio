@@ -15,12 +15,15 @@ import type { FormEvent } from 'react';
 
 export const ContactForm = () => {
   const dispatch = useAppDispatch();
+  // Form state lives in Redux so validation and status are shared.
   const { fields, errors, status, errorMessage } = useAppSelector((state) => state.contact);
 
+  // Update a single field and clear its error.
   const handleChange = (field: ContactField, value: string) => {
     dispatch(setField({ field, value }));
   };
 
+  // Validate first, then dispatch the async submit thunk.
   const submitForm = () => {
     if (status === 'loading') {
       return;
@@ -34,11 +37,13 @@ export const ContactForm = () => {
     dispatch(submitContactForm(fields));
   };
 
+  // Prevent full page reload on submit.
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     submitForm();
   };
 
+  // Success state replaces the form with a simple message.
   if (status === 'succeeded') {
     return (
       <div className="contact-card">
@@ -51,6 +56,7 @@ export const ContactForm = () => {
   }
 
   return (
+    // noValidate lets us control messages with Redux errors.
     <form className="contact-card" onSubmit={handleSubmit} noValidate>
       <h2>Send a message</h2>
       <p className="contact-muted">Fill out the form and I will get back to you.</p>

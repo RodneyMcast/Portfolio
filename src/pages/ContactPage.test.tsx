@@ -11,7 +11,9 @@ describe('ContactPage form', () => {
     vi.restoreAllMocks();
   });
 
+  // Proves client validation blocks submit and success flow works.
   it('validates empty fields and submits with valid data', async () => {
+    // Fix randomness so the async delay is predictable.
     vi.spyOn(Math, 'random').mockReturnValue(0);
     const user = userEvent.setup();
 

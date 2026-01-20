@@ -5,12 +5,14 @@ type SearchBarProps = {
   disabled?: boolean;
 };
 
+// Controlled input so Redux can own the search query.
 export const SearchBar = ({
   value,
   onChange,
   placeholder = 'Search projects...',
   disabled = false,
 }: SearchBarProps) => (
+  // Label keeps it accessible even with a hidden text.
   <label className="search-bar">
     <span className="sr-only">Search projects</span>
     <input

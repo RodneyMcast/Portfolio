@@ -17,6 +17,7 @@ const defaultOptions: SortOption[] = [
   { value: 'name', label: 'Name' },
 ];
 
+// Controlled select so Redux keeps the sort mode.
 export const SortControl = ({
   value,
   onChange,

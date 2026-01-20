@@ -8,9 +8,11 @@ type ProjectCardProps = {
   disabled?: boolean;
 };
 
+// Card is a button so it is keyboard accessible by default.
 const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) => {
   const navigate = useNavigate();
 
+  // Stable handler keeps memoized cards from re-rendering.
   const handleOpen = useCallback(() => {
     if (disabled) {
       return;
@@ -27,6 +29,7 @@ const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) =
       disabled={disabled}
     >
       <div className="project-media">
+        {/* Lazy load images to keep the grid fast. */}
         <img src={project.imageUrl} alt={`${project.title} preview`} loading="lazy" />
       </div>
       <div className="project-body">
@@ -51,5 +54,6 @@ const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) =
   );
 };
 
+// React.memo avoids re-rendering cards when props do not change.
 export const ProjectCard = memo(ProjectCardComponent);
 ProjectCard.displayName = 'ProjectCard';

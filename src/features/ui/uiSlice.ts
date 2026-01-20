@@ -10,6 +10,7 @@ interface UiState {
 
 const STORAGE_KEY = 'portfolio.themeMode';
 
+// LocalStorage is optional (SSR/private mode), so we guard access.
 const getStorage = (): Storage | null => {
   if (typeof window === 'undefined') {
     return null;
@@ -21,6 +22,7 @@ const getStorage = (): Storage | null => {
   }
 };
 
+// Try to read a saved theme so refresh keeps the same look.
 const readStoredTheme = (): ThemeMode | null => {
   const storage = getStorage();
   if (!storage) {
@@ -35,6 +37,7 @@ const readStoredTheme = (): ThemeMode | null => {
   return null;
 };
 
+// Persist the choice so theme survives reloads.
 const persistTheme = (themeMode: ThemeMode) => {
   const storage = getStorage();
   if (!storage) {
@@ -44,6 +47,7 @@ const persistTheme = (themeMode: ThemeMode) => {
   storage.setItem(STORAGE_KEY, themeMode);
 };
 
+// Default to saved theme, or dark if nothing is stored.
 const initialState: UiState = {
   themeMode: readStoredTheme() ?? 'dark',
 };
@@ -52,10 +56,12 @@ const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
+    // Toggle flips mode and syncs to localStorage.
     toggleTheme(state) {
       state.themeMode = state.themeMode === 'dark' ? 'light' : 'dark';
       persistTheme(state.themeMode);
     },
+    // Direct set is used when we want a specific mode.
     setTheme(state, action: PayloadAction<ThemeMode>) {
       state.themeMode = action.payload;
       persistTheme(state.themeMode);

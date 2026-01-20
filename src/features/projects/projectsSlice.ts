@@ -16,11 +16,13 @@ interface ProjectsState {
   };
 }
 
+// Small helper to fake loading time for a nicer demo.
 const delay = (ms: number) =>
   new Promise<void>((resolve) => {
     setTimeout(resolve, ms);
   });
 
+// Fetch data from local JSON and simulate async loading.
 export const fetchProjects = createAsyncThunk<Project[], void, { rejectValue: string }>(
   'projects/fetchProjects',
   async (_, { rejectWithValue }) => {
@@ -34,6 +36,7 @@ export const fetchProjects = createAsyncThunk<Project[], void, { rejectValue: st
   },
 );
 
+// Start empty and let the page request data on mount.
 const initialState: ProjectsState = {
   entities: [],
   status: 'idle',
@@ -49,6 +52,7 @@ const projectsSlice = createSlice({
   name: 'projects',
   initialState,
   reducers: {
+    // Filter state lives in Redux so it survives navigation.
     setCategory(state, action: PayloadAction<ProjectFilterCategory>) {
       state.filters.activeCategory = action.payload;
     },
@@ -65,6 +69,7 @@ const projectsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Track async status so UI can show loading or error states.
     builder
       .addCase(fetchProjects.pending, (state) => {
         state.status = 'loading';

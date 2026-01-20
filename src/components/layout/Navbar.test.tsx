@@ -10,6 +10,7 @@ import { AppLayout } from './AppLayout';
 
 import type { RootState } from '../../app/store';
 
+// Preload basic state so the Projects page can render.
 const preloadedState: Partial<RootState> = {
   ui: { themeMode: 'dark' },
   projects: {
@@ -56,6 +57,7 @@ const preloadedState: Partial<RootState> = {
 };
 
 describe('Navbar navigation', () => {
+  // Proves clicking the nav link changes route and active styling.
   it('navigates to the projects page', async () => {
     const user = userEvent.setup();
 

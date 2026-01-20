@@ -12,6 +12,7 @@ type FilterPillsProps = {
   disabled?: boolean;
 };
 
+// Simple pill group with aria-pressed for accessibility.
 export const FilterPills = ({ options, active, onChange, disabled = false }: FilterPillsProps) => (
   <div className="filter-pills" role="group" aria-label="Project filters">
     {options.map((option) => {
@@ -23,6 +24,7 @@ export const FilterPills = ({ options, active, onChange, disabled = false }: Fil
           type="button"
           className="pill is-active"
           onClick={() => onChange(option.value)}
+          // aria-pressed communicates the selected state.
           aria-pressed="true"
           disabled={disabled}
         >
@@ -34,6 +36,7 @@ export const FilterPills = ({ options, active, onChange, disabled = false }: Fil
           type="button"
           className="pill"
           onClick={() => onChange(option.value)}
+          // Keep false for screen readers when not active.
           aria-pressed="false"
           disabled={disabled}
         >

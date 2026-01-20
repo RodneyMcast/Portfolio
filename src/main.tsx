@@ -7,6 +7,7 @@ import { store } from './app/store';
 import './styles/tokens.css';
 import './styles/globals.css';
 
+// Root mount point from index.html.
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
@@ -15,6 +16,7 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
+    {/* Redux provider gives access to state across the app. */}
     <Provider store={store}>
       <App />
     </Provider>

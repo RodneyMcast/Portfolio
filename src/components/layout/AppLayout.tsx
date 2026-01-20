@@ -4,9 +4,11 @@ import { useApplyTheme } from '../../app/hooks';
 
 import { Navbar } from './Navbar';
 
+// Decorative background layer for the whole app.
 const Background = () => <div className="background" aria-hidden="true" />;
 
 export const AppLayout = () => {
+  // Applies data-theme on <html> based on Redux state.
   useApplyTheme();
 
   return (
@@ -16,6 +18,7 @@ export const AppLayout = () => {
         <Navbar />
       </header>
       <main className="app-main">
+        {/* Outlet renders the active route page. */}
         <Outlet />
       </main>
       <footer className="app-footer" />

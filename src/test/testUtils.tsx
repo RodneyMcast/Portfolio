@@ -11,6 +11,7 @@ import type { RootState } from '../app/store';
 import type { RenderOptions } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 
+// Real reducers so tests behave like the app.
 const rootReducer = combineReducers({
   ui: uiReducer,
   projects: projectsReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
 
 type TestPreloadedState = Partial<RootState>;
 
+// Store factory lets each test set its own state.
 export const setupStore = (preloadedState?: TestPreloadedState) =>
   configureStore({
     reducer: rootReducer,
@@ -33,6 +35,7 @@ type ExtendedRenderOptions = Omit<RenderOptions, 'queries'> & {
   route?: string;
 };
 
+// Wrap UI with Redux + Router so components can use hooks.
 export const renderWithProviders = (
   ui: ReactElement,
   {

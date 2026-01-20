@@ -4,6 +4,7 @@ type ProjectsHeroProps = {
   summary?: string;
 };
 
+// Simple hero with one highlighted word.
 export const ProjectsHero = ({ heading, accent, summary }: ProjectsHeroProps) => (
   <header className="projects-hero">
     <span className="eyebrow">Projects</span>

@@ -14,6 +14,7 @@ type ProjectGridProps = {
   animationKey: number;
 };
 
+// Lightweight skeletons for loading state.
 const skeletonItems = Array.from({ length: 6 }, (_, index) => (
   <div key={`skeleton-${index}`} className="project-card skeleton">
     <div className="skeleton-media" />
@@ -34,16 +35,19 @@ export const ProjectGrid = ({
 }: ProjectGridProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Toggle a class so CSS can animate filtered results.
   useEffect(() => {
     setIsAnimating(true);
     const timer = setTimeout(() => setIsAnimating(false), 300);
     return () => clearTimeout(timer);
   }, [animationKey]);
 
+  // Show skeletons while loading.
   if (status === 'loading' || status === 'idle') {
     return <div className="project-grid">{skeletonItems}</div>;
   }
 
+  // Error state with retry button.
   if (status === 'failed') {
     return (
       <div className="projects-error">
@@ -55,6 +59,7 @@ export const ProjectGrid = ({
     );
   }
 
+  // Empty state when filters remove everything.
   if (projects.length === 0) {
     return <p className="projects-empty">No projects yet.</p>;
   }

@@ -8,6 +8,7 @@ import ProjectsPage from './ProjectsPage';
 import type { RootState } from '../../../app/store';
 import type { Project } from '../types';
 
+// Minimal fixtures so filters and search can be tested deterministically.
 const projects: Project[] = [
   {
     id: 'project-1',
@@ -68,6 +69,7 @@ const preloadedState: Partial<RootState> = {
 };
 
 describe('ProjectsPage filters', () => {
+  // Proves category pills + search input reduce visible cards.
   it('filters by category and search text', async () => {
     const user = userEvent.setup();
 

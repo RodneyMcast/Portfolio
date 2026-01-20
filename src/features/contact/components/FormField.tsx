@@ -23,6 +23,7 @@ export const FormField = ({
   disabled = false,
   onChange,
 }: FormFieldProps) => {
+  // Error id is used for aria-describedby to link helper text.
   const errorId = error ? `${id}-error` : undefined;
 
   return (
@@ -34,6 +35,7 @@ export const FormField = ({
           value={value}
           rows={rows}
           onChange={(event) => onChange(id, event.target.value)}
+          // aria-invalid + describedby improves form accessibility.
           aria-invalid={Boolean(error)}
           aria-describedby={errorId}
           disabled={disabled}
@@ -44,6 +46,7 @@ export const FormField = ({
           type={type}
           value={value}
           onChange={(event) => onChange(id, event.target.value)}
+          // Same ARIA pattern for the input version.
           aria-invalid={Boolean(error)}
           aria-describedby={errorId}
           disabled={disabled}

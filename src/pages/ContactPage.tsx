@@ -1,5 +1,6 @@
 import { ContactForm } from '../features/contact/components/ContactForm';
 
+// Page wrapper with a hero and the form card.
 export const ContactPage = () => (
   <section className="contact-page">
     <header className="contact-hero">

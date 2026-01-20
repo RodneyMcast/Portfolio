@@ -7,20 +7,24 @@ import { fetchProjects } from '../projectsSlice';
 import { selectProjectById } from '../selectors';
 
 const ProjectDetailPage = () => {
+  // Read project id from the URL.
   const { projectId } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.projects.status);
+  // Selector keeps lookup logic in one place.
   const project = useAppSelector((state) =>
     projectId ? selectProjectById(projectId)(state) : undefined,
   );
   const previousScroll = useRef(0);
 
+  // Ensure data exists when someone lands directly on a detail route.
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProjects());
     }
   }, [dispatch, status]);
 
+  // Basic scroll restore: top on entry, back on exit.
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
@@ -37,6 +41,7 @@ const ProjectDetailPage = () => {
     return <FullPageLoader />;
   }
 
+  // Handle missing or invalid ids gracefully.
   if (!project) {
     return (
       <section className="project-detail">

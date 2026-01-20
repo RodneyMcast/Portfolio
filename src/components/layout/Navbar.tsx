@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { toggleTheme } from '../../features/ui/uiSlice';
 
+// NavLink uses isActive to style the current route.
 const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'nav-link is-active' : 'nav-link';
 
@@ -11,15 +12,18 @@ export const Navbar = () => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Mobile menu toggle for small screens.
   const handleToggle = () => {
     setMenuOpen((prev) => !prev);
   };
 
+  // Close menu after clicking a link.
   const handleClose = () => {
     setMenuOpen(false);
   };
 
   return (
+    // aria-label helps screen readers understand the nav area.
     <nav className="navbar" aria-label="Main">
       <div className="nav-brand">Portfolio</div>
       <button
@@ -64,6 +68,7 @@ export const Navbar = () => {
           onClick={() => dispatch(toggleTheme())}
           aria-label="Toggle theme"
         >
+          {/* Theme toggle updates Redux, which then updates html data-theme. */}
           Theme
         </button>
       </div>
