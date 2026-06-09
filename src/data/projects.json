@@ -57,7 +57,7 @@
     "year": 2025,
     "category": "games",
     "techStack": ["Unity", "C#"],
-    "imageUrl": "/images/tetris-flip.svg",
+    "imageUrl": "/images/tetris-flip.png",
     "liveUrl": "https://takurun2005.itch.io/tetris-flip",
     "repoUrl": "https://github.com/ChristianMercieca/GameJam"
   },
@@ -69,7 +69,7 @@
     "year": 2025,
     "category": "games",
     "techStack": ["Unity", "C#"],
-    "imageUrl": "/images/bubblebound.svg",
+    "imageUrl": "/images/bubblebound.png",
     "liveUrl": "https://globalgamejam.org/games/2025/bubblebound-3",
     "repoUrl": "https://github.com/VlT9Gaming/FishyFishFisher"
   },
@@ -81,7 +81,7 @@
     "year": 2026,
     "category": "games",
     "techStack": ["Unity", "C#", "WebGL", "Firebase"],
-    "imageUrl": "/images/komet-quest.svg",
+    "imageUrl": "/images/komet-quest.png",
     "liveUrl": "https://rodneyhili.itch.io/komet-quest",
     "repoUrl": "https://github.com/RodneyMcast/Agentic-browser/tree/main"
   },
@@ -94,7 +94,7 @@
     "category": "games",
     "categories": ["games", "mobile"],
     "techStack": ["React", "Vite", "Three.js", "React Three Fiber", "Firebase"],
-    "imageUrl": "/images/webgl-virtual-pet.svg",
+    "imageUrl": "/images/webgl-virtual-pet.png",
     "liveUrl": "https://webgl-rodney.web.app/",
     "repoUrl": "https://github.com/RodneyMcast/webgl-virtual-pet"
   },
