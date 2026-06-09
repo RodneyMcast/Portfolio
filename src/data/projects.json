@@ -100,6 +100,30 @@
     "repoUrl": "https://github.com/RodneyMcast/webgl-virtual-pet"
   },
   {
+    "id": "vr-farm-simulator",
+    "title": "VR Farm Simulator",
+    "description": "Simple Unity VR farming game experiment with crop planting, harvesting, tractor controls, and object interaction.",
+    "longDescription": "A Unity VR farming simulator built as a simple experiment with VR mechanics and farm gameplay. Players can plant and harvest wheat, manage seeds and inventory, drive a tractor, place fences, collect crates, and interact with cows using XR hand interactions, with custom systems for crop growth, inventory, vehicle controls, object rotation, and animal touch feedback.",
+    "year": 2026,
+    "category": "games",
+    "techStack": ["Unity", "C#", "XR Interaction Toolkit", "XR Hands"],
+    "imageUrl": "/images/vr farm game.png",
+    "liveUrl": "https://rodneyhili.itch.io/vr-farm-game",
+    "repoUrl": "https://github.com/RodneyMcast/VR-Farm-Simulator"
+  },
+  {
+    "id": "vr-escape-room",
+    "title": "VR Escape Room",
+    "description": "Unity VR escape room with sci-fi puzzle rooms, object grabbing, keycards, pressure plates, and keypad interactions.",
+    "longDescription": "A Unity VR escape room experience built around three puzzle rooms and a final victory room. Players solve keycard, coloured box, pressure plate, power core, and keypad puzzles using XR grab interactions, snap points, controller button triggers, spatial audio, visual feedback, and scene progression systems.",
+    "year": 2026,
+    "category": "games",
+    "techStack": ["Unity", "C#", "XR Interaction Toolkit", "OpenXR"],
+    "imageUrl": "/images/VR escape room.png",
+    "liveUrl": "https://rodneyhili.itch.io/vr-escape-room",
+    "repoUrl": "https://github.com/RodneyMcast/VR-Escape-Room"
+  },
+  {
     "id": "personal-portfolio",
     "title": "Personal Portfolio",
     "description": "My portfolio website with a projects section, sorting, and detail pages.",
