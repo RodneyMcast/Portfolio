@@ -27,8 +27,9 @@ export const selectFilteredProjects = createSelector(
 
     // Category filter is simple equality, "all" keeps everything.
     if (filters.activeCategory !== 'all') {
+      const activeCategory = filters.activeCategory;
       filtered = filtered.filter((project) =>
-        getProjectCategories(project).includes(filters.activeCategory),
+        getProjectCategories(project).includes(activeCategory),
       );
     }
 

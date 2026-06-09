@@ -1,60 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 347 260" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 795 477" role="img" aria-labelledby="title desc">
   <title id="title">WebGL Virtual Pet</title>
-  <desc id="desc">A cute blob-style virtual pet in a bright 3D room with game controls.</desc>
+  <desc id="desc">A round tan virtual pet standing in a simple 3D room with a blue sky background.</desc>
   <defs>
-    <linearGradient id="room" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e7fbff" />
-      <stop offset="55%" stop-color="#c3f1db" />
-      <stop offset="100%" stop-color="#f7e6a3" />
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5cb2c3" />
+      <stop offset="45%" stop-color="#79c7d2" />
+      <stop offset="100%" stop-color="#4aa1bb" />
     </linearGradient>
-    <radialGradient id="blob" cx="36%" cy="28%" r="74%">
-      <stop offset="0" stop-color="#ffe7ff" />
-      <stop offset="52%" stop-color="#bb78ff" />
-      <stop offset="100%" stop-color="#7450d8" />
+    <linearGradient id="floor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#579a9b" />
+      <stop offset="100%" stop-color="#468986" />
+    </linearGradient>
+    <radialGradient id="body" cx="38%" cy="34%" r="72%">
+      <stop offset="0" stop-color="#d3b56b" />
+      <stop offset="56%" stop-color="#bb9350" />
+      <stop offset="100%" stop-color="#8c6836" />
+    </radialGradient>
+    <radialGradient id="muzzle" cx="42%" cy="32%" r="72%">
+      <stop offset="0" stop-color="#eee8dd" />
+      <stop offset="70%" stop-color="#cbc4b4" />
+      <stop offset="100%" stop-color="#aaa28f" />
+    </radialGradient>
+    <radialGradient id="nose" cx="40%" cy="32%" r="70%">
+      <stop offset="0" stop-color="#e5a8ca" />
+      <stop offset="100%" stop-color="#a55a82" />
     </radialGradient>
     <filter id="softShadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feDropShadow dx="0" dy="8" stdDeviation="5" flood-color="#365044" flood-opacity="0.35" />
+      <feGaussianBlur stdDeviation="8" />
     </filter>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
+    <filter id="petShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="-8" dy="15" stdDeviation="8" flood-color="#153f43" flood-opacity="0.45" />
     </filter>
   </defs>
-  <rect width="347" height="260" fill="url(#room)" />
-  <path d="M0 198 L148 132 L347 199 L347 260 L0 260 Z" fill="#7fcaaa" opacity="0.62" />
-  <g stroke="#3ba581" stroke-width="1" opacity="0.32">
-    <path d="M0 222 H347 M16 260 L156 132 M72 260 L177 139 M138 260 L205 148 M217 260 L246 162 M302 260 L294 180" />
-  </g>
-  <g filter="url(#softShadow)">
-    <ellipse cx="181" cy="215" rx="76" ry="16" fill="#5d9477" opacity="0.36" />
-    <path d="M123 145 C123 98 158 67 202 72 C244 77 273 113 265 156 C258 200 221 222 178 215 C141 209 123 184 123 145 Z" fill="url(#blob)" stroke="#402a7d" stroke-width="4" />
-    <path d="M134 142 C120 137 108 142 102 157 C96 171 104 188 121 192" fill="none" stroke="#7450d8" stroke-width="16" stroke-linecap="round" />
-    <path d="M259 139 C278 134 291 143 294 160 C297 177 286 190 269 190" fill="none" stroke="#7450d8" stroke-width="16" stroke-linecap="round" />
-    <circle cx="172" cy="140" r="13" fill="#211a3d" />
-    <circle cx="218" cy="140" r="13" fill="#211a3d" />
-    <circle cx="167" cy="135" r="4" fill="#fff" />
-    <circle cx="213" cy="135" r="4" fill="#fff" />
-    <path d="M179 171 C191 183 211 183 223 171" fill="none" stroke="#211a3d" stroke-width="5" stroke-linecap="round" />
-    <circle cx="146" cy="165" r="7" fill="#ff9ed8" opacity="0.8" />
-    <circle cx="242" cy="165" r="7" fill="#ff9ed8" opacity="0.8" />
-  </g>
-  <g filter="url(#softShadow)">
-    <path d="M45 170 h68 a10 10 0 0 1 10 10 v36 a10 10 0 0 1 -10 10 H45 a10 10 0 0 1 -10 -10 v-36 a10 10 0 0 1 10 -10 Z" fill="#ffffff" stroke="#28a47c" stroke-width="3" />
-    <rect x="50" y="185" width="32" height="8" rx="4" fill="#57d69f" />
-    <rect x="50" y="203" width="54" height="8" rx="4" fill="#7c8cff" />
-    <circle cx="99" cy="189" r="8" fill="#ffd65a" />
-  </g>
-  <g filter="url(#glow)" font-family="Arial Black, Impact, sans-serif" font-weight="900">
-    <text x="24" y="50" font-size="31" fill="#3f2fb8">Virtual Pet</text>
-    <text x="25" y="82" font-size="25" fill="#00a982">WebGL Game</text>
-  </g>
-  <g fill="#fff" stroke="#4f6b75" stroke-width="3">
-    <circle cx="292" cy="74" r="20" fill="#ffd75b" />
-    <path d="M284 74 h16 M292 66 v16" />
-    <path d="M283 112 h53 a8 8 0 0 1 8 8 v27 a8 8 0 0 1 -8 8 h-53 a8 8 0 0 1 -8 -8 v-27 a8 8 0 0 1 8 -8 Z" fill="#ffffff" />
-    <path d="M292 129 h18 M292 140 h29" />
+
+  <rect width="795" height="477" fill="url(#floor)" />
+  <rect width="795" height="124" fill="url(#sky)" />
+  <path d="M0 12 C80 22 95 6 160 15 C232 25 285 10 356 23 C430 37 507 10 580 18 C646 25 695 7 795 17 L795 0 L0 0 Z" fill="#8bd1df" opacity="0.38" />
+  <path d="M0 78 C60 70 95 91 150 78 C215 62 267 84 337 71 C409 58 471 89 548 72 C624 55 688 77 795 62 L795 0 L0 0 Z" fill="#b8e1e5" opacity="0.2" />
+  <rect y="123" width="795" height="14" fill="#d9c2a8" />
+  <rect y="137" width="795" height="32" fill="#cdbba5" />
+  <line x1="0" y1="123" x2="795" y2="123" stroke="#e9e4d7" stroke-width="4" />
+
+  <ellipse cx="310" cy="363" rx="94" ry="47" fill="#164f53" opacity="0.85" filter="url(#softShadow)" />
+
+  <g filter="url(#petShadow)">
+    <path d="M323 128 L367 177 L327 202 Z" fill="#b88d43" stroke="#8b672f" stroke-width="3" />
+    <path d="M472 128 L430 202 L514 177 Z" fill="#b88d43" stroke="#8b672f" stroke-width="3" />
+    <ellipse cx="398" cy="267" rx="117" ry="119" fill="url(#body)" />
+    <path d="M343 357 C350 381 374 403 395 380 C377 372 361 363 343 357 Z" fill="#8a5f2e" opacity="0.85" />
+    <path d="M452 357 C445 381 421 403 400 380 C418 372 434 363 452 357 Z" fill="#8a5f2e" opacity="0.85" />
+    <ellipse cx="399" cy="303" rx="80" ry="59" fill="url(#muzzle)" />
+    <circle cx="357" cy="255" r="20" fill="#030814" />
+    <circle cx="439" cy="255" r="20" fill="#030814" />
+    <circle cx="398" cy="279" r="13" fill="url(#nose)" />
+    <path d="M387 301 C390 314 398 315 398 304 C398 315 407 314 410 301" fill="none" stroke="#170d0b" stroke-width="6" stroke-linecap="round" />
+    <path d="M392 309 C396 316 403 316 407 309" fill="none" stroke="#170d0b" stroke-width="5" stroke-linecap="round" />
+    <path d="M333 142 L352 178 L323 196 Z" fill="#ccaa63" opacity="0.65" />
+    <path d="M463 142 L446 178 L493 196 Z" fill="#ccaa63" opacity="0.65" />
   </g>
 </svg>
