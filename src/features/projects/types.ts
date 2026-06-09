@@ -10,6 +10,7 @@ export interface Project {
   year: number;
   category: ProjectCategory;
   categories?: ProjectCategory[];
+  hidden?: boolean;
   techStack: string[];
   imageUrl: string;
   liveUrl: string;

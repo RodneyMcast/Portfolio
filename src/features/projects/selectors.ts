@@ -23,7 +23,7 @@ export const selectFilteredProjects = createSelector(
   (projects, filters) => {
     const search = filters.searchQuery.trim().toLowerCase();
 
-    let filtered = projects;
+    let filtered = projects.filter((project) => !project.hidden);
 
     // Category filter is simple equality, "all" keeps everything.
     if (filters.activeCategory !== 'all') {

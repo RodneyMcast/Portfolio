@@ -8,7 +8,7 @@
     "category": "web",
     "categories": ["web", "mobile", "games"],
     "techStack": ["React", "TypeScript", "CSS", "HTML"],
-    "imageUrl": "/images/project-placeholder.svg",
+    "imageUrl": "/images/Helix-Outriders.png",
     "liveUrl": "https://helixoutriders.vercel.app/",
     "repoUrl": "https://github.com/RodneyMcast/helix-outriders."
   },
@@ -19,6 +19,7 @@
     "longDescription": "A budgeting-themed website project. Deployed on Vercel and written primarily in TypeScript with supporting CSS/HTML. ",
     "year": 2025,
     "category": "mobile",
+    "hidden": true,
     "techStack": ["React", "TypeScript", "CSS", "HTML", "Vercel"],
     "imageUrl": "/images/project-placeholder.svg",
     "liveUrl": "https://budgewebsite.vercel.app/",
@@ -33,7 +34,7 @@
     "category": "web",
     "categories": ["web", "mobile"],
     "techStack": ["vue", "javascript", "tailwind", "firebase store", "firebase hosting"],
-    "imageUrl": "/images/project-placeholder.svg",
+    "imageUrl": "/images/WARS.png",
     "liveUrl": "https://wars-dd7a9.firebaseapp.com/",
     "repoUrl": "https://github.com/RodneyMcast/warswebsite"
   },
