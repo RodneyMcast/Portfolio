@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 347 260" role="img" aria-labelledby="title desc">
+  <title id="title">WebGL Virtual Pet</title>
+  <desc id="desc">A cute blob-style virtual pet in a bright 3D room with game controls.</desc>
+  <defs>
+    <linearGradient id="room" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e7fbff" />
+      <stop offset="55%" stop-color="#c3f1db" />
+      <stop offset="100%" stop-color="#f7e6a3" />
+    </linearGradient>
+    <radialGradient id="blob" cx="36%" cy="28%" r="74%">
+      <stop offset="0" stop-color="#ffe7ff" />
+      <stop offset="52%" stop-color="#bb78ff" />
+      <stop offset="100%" stop-color="#7450d8" />
+    </radialGradient>
+    <filter id="softShadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="5" flood-color="#365044" flood-opacity="0.35" />
+    </filter>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="347" height="260" fill="url(#room)" />
+  <path d="M0 198 L148 132 L347 199 L347 260 L0 260 Z" fill="#7fcaaa" opacity="0.62" />
+  <g stroke="#3ba581" stroke-width="1" opacity="0.32">
+    <path d="M0 222 H347 M16 260 L156 132 M72 260 L177 139 M138 260 L205 148 M217 260 L246 162 M302 260 L294 180" />
+  </g>
+  <g filter="url(#softShadow)">
+    <ellipse cx="181" cy="215" rx="76" ry="16" fill="#5d9477" opacity="0.36" />
+    <path d="M123 145 C123 98 158 67 202 72 C244 77 273 113 265 156 C258 200 221 222 178 215 C141 209 123 184 123 145 Z" fill="url(#blob)" stroke="#402a7d" stroke-width="4" />
+    <path d="M134 142 C120 137 108 142 102 157 C96 171 104 188 121 192" fill="none" stroke="#7450d8" stroke-width="16" stroke-linecap="round" />
+    <path d="M259 139 C278 134 291 143 294 160 C297 177 286 190 269 190" fill="none" stroke="#7450d8" stroke-width="16" stroke-linecap="round" />
+    <circle cx="172" cy="140" r="13" fill="#211a3d" />
+    <circle cx="218" cy="140" r="13" fill="#211a3d" />
+    <circle cx="167" cy="135" r="4" fill="#fff" />
+    <circle cx="213" cy="135" r="4" fill="#fff" />
+    <path d="M179 171 C191 183 211 183 223 171" fill="none" stroke="#211a3d" stroke-width="5" stroke-linecap="round" />
+    <circle cx="146" cy="165" r="7" fill="#ff9ed8" opacity="0.8" />
+    <circle cx="242" cy="165" r="7" fill="#ff9ed8" opacity="0.8" />
+  </g>
+  <g filter="url(#softShadow)">
+    <path d="M45 170 h68 a10 10 0 0 1 10 10 v36 a10 10 0 0 1 -10 10 H45 a10 10 0 0 1 -10 -10 v-36 a10 10 0 0 1 10 -10 Z" fill="#ffffff" stroke="#28a47c" stroke-width="3" />
+    <rect x="50" y="185" width="32" height="8" rx="4" fill="#57d69f" />
+    <rect x="50" y="203" width="54" height="8" rx="4" fill="#7c8cff" />
+    <circle cx="99" cy="189" r="8" fill="#ffd65a" />
+  </g>
+  <g filter="url(#glow)" font-family="Arial Black, Impact, sans-serif" font-weight="900">
+    <text x="24" y="50" font-size="31" fill="#3f2fb8">Virtual Pet</text>
+    <text x="25" y="82" font-size="25" fill="#00a982">WebGL Game</text>
+  </g>
+  <g fill="#fff" stroke="#4f6b75" stroke-width="3">
+    <circle cx="292" cy="74" r="20" fill="#ffd75b" />
+    <path d="M284 74 h16 M292 66 v16" />
+    <path d="M283 112 h53 a8 8 0 0 1 8 8 v27 a8 8 0 0 1 -8 8 h-53 a8 8 0 0 1 -8 -8 v-27 a8 8 0 0 1 8 -8 Z" fill="#ffffff" />
+    <path d="M292 129 h18 M292 140 h29" />
+  </g>
+</svg>

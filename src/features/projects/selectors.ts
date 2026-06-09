@@ -1,5 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
+import { getProjectCategories } from './types';
+
 import type { Project } from './types';
 import type { RootState } from '../../app/store';
 
@@ -25,13 +27,20 @@ export const selectFilteredProjects = createSelector(
 
     // Category filter is simple equality, "all" keeps everything.
     if (filters.activeCategory !== 'all') {
-      filtered = filtered.filter((project) => project.category === filters.activeCategory);
+      filtered = filtered.filter((project) =>
+        getProjectCategories(project).includes(filters.activeCategory),
+      );
     }
 
     // Search runs on title, short description, and tech stack.
     if (search) {
       filtered = filtered.filter((project) => {
-        const haystack = [project.title, project.description, project.techStack.join(' ')]
+        const haystack = [
+          project.title,
+          project.description,
+          getProjectCategories(project).join(' '),
+          project.techStack.join(' '),
+        ]
           .join(' ')
           .toLowerCase();
         return haystack.includes(search);

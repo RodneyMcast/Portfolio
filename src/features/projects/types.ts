@@ -9,8 +9,12 @@ export interface Project {
   longDescription: string;
   year: number;
   category: ProjectCategory;
+  categories?: ProjectCategory[];
   techStack: string[];
   imageUrl: string;
   liveUrl: string;
   repoUrl: string;
 }
+
+export const getProjectCategories = (project: Project): ProjectCategory[] =>
+  project.categories ?? [project.category];

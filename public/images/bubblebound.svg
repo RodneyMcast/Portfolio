@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 335 335" role="img" aria-labelledby="title desc">
+  <title id="title">BubbleBound</title>
+  <desc id="desc">Cartoon orange fish walking beside blue bubbles with the BubbleBound logo.</desc>
+  <defs>
+    <radialGradient id="bubbleGradient" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#37c9ff" />
+      <stop offset="65%" stop-color="#0b9fe0" />
+      <stop offset="100%" stop-color="#077fc0" />
+    </radialGradient>
+    <filter id="textShadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="3" dy="5" stdDeviation="2" flood-color="#7e680f" flood-opacity="0.55" />
+    </filter>
+  </defs>
+  <rect width="335" height="335" fill="#efe2bb" />
+  <rect y="220" width="335" height="115" fill="#cab26a" />
+  <ellipse cx="139" cy="227" rx="50" ry="5" fill="#7c5a20" opacity="0.55" />
+  <path d="M99 139 C64 119 30 101 9 99 C32 119 44 136 51 157 C37 164 22 168 1 164 C32 178 55 178 74 170 C68 183 61 195 55 213 C77 209 89 193 99 174 C105 192 108 206 118 217 C127 199 126 179 120 159 Z" fill="#ff7a0a" stroke="#101010" stroke-width="2" />
+  <path d="M103 119 C126 100 147 99 166 97 C163 117 167 132 179 146 C152 145 130 141 103 119 Z" fill="#ff7a0a" stroke="#101010" stroke-width="2" />
+  <path d="M94 145 C112 115 153 112 185 128 C213 142 220 163 207 178 C190 200 146 193 111 174 C94 166 88 156 94 145 Z" fill="#ff850c" stroke="#101010" stroke-width="2" />
+  <path d="M190 129 C205 116 220 118 232 134 C219 141 205 145 190 129 Z" fill="#f2a000" stroke="#101010" stroke-width="2" />
+  <circle cx="176" cy="146" r="21" fill="#ffd51c" stroke="#101010" stroke-width="2" />
+  <circle cx="176" cy="146" r="14" fill="#050505" />
+  <circle cx="220" cy="137" r="13" fill="#050505" stroke="#101010" stroke-width="2" />
+  <path d="M205 166 C211 168 215 174 213 180" fill="none" stroke="#101010" stroke-width="4" stroke-linecap="round" />
+  <path d="M212 178 C220 175 220 183 213 186 C210 184 209 181 212 178 Z" fill="#d21c16" />
+  <path d="M123 176 C119 191 117 207 119 229 C111 229 105 226 101 221 C110 220 112 211 112 199 C112 188 115 181 123 176 Z" fill="#ff7a0a" stroke="#101010" stroke-width="2" />
+  <path d="M153 183 C141 195 130 205 118 214 C137 216 153 206 166 191 Z" fill="#ff7a0a" stroke="#101010" stroke-width="2" />
+  <path d="M113 141 C101 135 91 130 78 126" fill="none" stroke="#d95f00" stroke-width="2" />
+  <path d="M133 129 C139 124 145 120 153 117" fill="none" stroke="#d95f00" stroke-width="2" />
+  <g fill="none" stroke="#d95f00" stroke-linecap="round" opacity="0.75">
+    <path d="M136 145 q3 2 0 5" />
+    <path d="M151 139 q3 2 0 5" />
+    <path d="M163 155 q3 2 0 5" />
+    <path d="M132 163 q3 2 0 5" />
+    <path d="M149 172 q3 2 0 5" />
+  </g>
+  <circle cx="261" cy="102" r="22" fill="url(#bubbleGradient)" stroke="#10212b" stroke-width="2" />
+  <circle cx="307" cy="94" r="15" fill="url(#bubbleGradient)" stroke="#10212b" stroke-width="2" />
+  <circle cx="264" cy="176" r="48" fill="url(#bubbleGradient)" stroke="#10212b" stroke-width="2" />
+  <ellipse cx="291" cy="153" rx="5" ry="3" fill="#9deaff" opacity="0.85" transform="rotate(44 291 153)" />
+  <path d="M282 195 C293 188 302 178 306 166" fill="none" stroke="#7adbf7" stroke-width="7" stroke-linecap="round" opacity="0.45" />
+  <text x="168" y="286" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="40" font-weight="900" letter-spacing="2" fill="#095bf2" stroke="#0647cc" stroke-width="1.5" filter="url(#textShadow)">BUBBLEBOUND</text>
+</svg>

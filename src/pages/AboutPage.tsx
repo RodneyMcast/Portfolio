@@ -38,6 +38,7 @@ export const AboutPage = () => (
               <li>Clean UI layouts with solid spacing</li>
               <li>Interactive front-end features</li>
               <li>Small tools that solve a real need</li>
+              <li>Fun game ideas with playful mechanics</li>
             </ul>
           </AboutCard>
           <AboutCard title="Outside of coding">

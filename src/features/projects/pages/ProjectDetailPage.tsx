@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { FullPageLoader } from '../../../components/common/FullPageLoader';
 import { fetchProjects } from '../projectsSlice';
 import { selectProjectById } from '../selectors';
+import { getProjectCategories } from '../types';
 
 const ProjectDetailPage = () => {
   // Read project id from the URL.
@@ -81,7 +82,11 @@ const ProjectDetailPage = () => {
       <div className="detail-header">
         <h1>{project.title}</h1>
         <div className="detail-chips">
-          <span className="chip">{project.category}</span>
+          {getProjectCategories(project).map((category) => (
+            <span className="chip" key={category}>
+              {category}
+            </span>
+          ))}
           <span className="chip">{project.year}</span>
         </div>
       </div>

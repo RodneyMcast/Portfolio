@@ -1,6 +1,8 @@
 import { memo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { getProjectCategories } from '../types';
+
 import type { Project } from '../types';
 
 type ProjectCardProps = {
@@ -11,6 +13,7 @@ type ProjectCardProps = {
 // Card is a button so it is keyboard accessible by default.
 const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) => {
   const navigate = useNavigate();
+  const categories = getProjectCategories(project);
 
   // Stable handler keeps memoized cards from re-rendering.
   const handleOpen = useCallback(() => {
@@ -34,7 +37,7 @@ const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) =
       </div>
       <div className="project-body">
         <div className="project-top">
-          <span className="project-category">{project.category}</span>
+          <span className="project-category">{categories.join(' / ')}</span>
           <span className="project-year">{project.year}</span>
         </div>
         <h3>{project.title}</h3>
