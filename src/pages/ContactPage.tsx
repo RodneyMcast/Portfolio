@@ -21,6 +21,18 @@ export const ContactPage = () => (
         <span className="contact-label">Phone</span>
         <a href="tel:+35699551429">+356 99551429</a>
       </div>
+      <div className="contact-info-item">
+        <span className="contact-label">GitHub</span>
+        <a href="https://github.com/RodneyMcast" target="_blank" rel="noopener noreferrer">
+          github.com/RodneyMcast
+        </a>
+      </div>
+      <div className="contact-info-item">
+        <span className="contact-label">Itch.io</span>
+        <a href="https://rodneyhili.itch.io/" target="_blank" rel="noopener noreferrer">
+          rodneyhili.itch.io
+        </a>
+      </div>
     </div>
     <ContactForm />
   </section>
