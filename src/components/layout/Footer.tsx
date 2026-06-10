@@ -33,7 +33,9 @@ export const Footer = () => (
   <footer className="app-footer">
     <div className="site-footer">
       <div className="footer-brand">
-        <span className="footer-name">Rodney Hili</span>
+        <span className="footer-name">
+          Rodney <span className="footer-name-accent">Hili</span>
+        </span>
         <span className="footer-subtitle">Portfolio</span>
       </div>
 

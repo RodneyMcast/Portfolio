@@ -268,11 +268,15 @@ button {
   font-size: clamp(2rem, 4vw, 3.1rem);
   font-weight: 700;
   line-height: 1;
+  color: var(--color-text);
+  text-shadow: 0 0 18px var(--color-glow-soft);
+}
+
+.footer-name-accent {
   background: var(--accent-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 18px var(--color-glow-soft);
 }
 
 .footer-subtitle {
@@ -740,22 +744,57 @@ button {
 }
 
 .contact-profile-link {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   width: fit-content;
+  padding: 0.1rem 0.28rem;
+  margin-left: -0.28rem;
+  border-radius: 999px;
   font-weight: 700;
   transition:
     color 0.2s ease,
     text-shadow 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.contact-profile-link:hover {
+.contact-profile-link::before {
+  content: '';
+  position: absolute;
+  inset: -0.25rem -0.45rem;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 30% 50%, var(--color-glow-strong), transparent 62%),
+    radial-gradient(circle at 75% 40%, var(--color-glow-soft), transparent 70%);
+  box-shadow:
+    0 0 16px var(--color-glow-soft),
+    inset 0 0 12px var(--color-glow-faint);
+  -webkit-backdrop-filter: blur(8px) saturate(1.25);
+  backdrop-filter: blur(8px) saturate(1.25);
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.contact-profile-link:hover,
+.contact-profile-link:focus-visible {
   color: var(--color-accent-secondary);
+  background-color: color-mix(in srgb, var(--color-accent) 8%, transparent);
   text-shadow:
     0 0 8px var(--color-glow-soft),
     0 0 18px var(--color-glow-strong);
   transform: translateY(-2px);
   animation: contactLinkGlow 1.1s ease-in-out infinite alternate;
+}
+
+.contact-profile-link:hover::before,
+.contact-profile-link:focus-visible::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .contact-label {
