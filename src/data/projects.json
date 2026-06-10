@@ -77,8 +77,8 @@
   {
     "id": "komet-quest",
     "title": "Komet Quest",
-    "description": "Unity WebGL serious game that simulates AI agentic browsers through interactive levels and guided digital tasks.",
-    "longDescription": "Agentic Browser Simulator is a Unity WebGL serious game built for a June 2026 thesis. It teaches users how AI-powered agentic browsers work through guided challenges such as research, form filling, and online assistance, while using missions, hints, feedback, progression, achievements, and analytics to highlight AI capabilities, limitations, risks, and responsible use.",
+    "description": "Unity WebGL game used for my bachelor's thesis in June 2026, simulating AI agentic browsers through interactive levels and guided digital tasks.",
+    "longDescription": "Agentic Browser Simulator is a Unity WebGL game used for my bachelor's thesis in June 2026. It teaches users how AI-powered agentic browsers work through guided challenges such as research, form filling, and online assistance, while using missions, hints, feedback, progression, achievements, and analytics to highlight AI capabilities, limitations, risks, and responsible use.",
     "year": 2026,
     "category": "games",
     "techStack": ["Unity", "C#", "WebGL", "Firebase"],

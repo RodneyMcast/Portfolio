@@ -36,15 +36,25 @@ const skillGroups: SkillGroup[] = [
         description: 'General programming foundation for object-oriented development.',
       },
       {
+        name: 'Kotlin',
+        iconText: 'KT',
+        description: 'Android-focused language experience for mobile development coursework.',
+      },
+      {
         name: 'Dart',
         iconText: 'DT',
         description: 'Used with Flutter for mobile app development and cross-platform UI work.',
       },
+      {
+        name: 'PHP',
+        iconText: 'PHP',
+        description: 'Server-side scripting experience, including web and WordPress-style workflows.',
+      },
     ],
   },
   {
-    title: 'Frontend & App Interfaces',
-    summary: 'Frameworks and styling tools for polished, responsive user interfaces.',
+    title: 'Frontend, Design & App Interfaces',
+    summary: 'Frameworks, styling tools, and design platforms for polished user interfaces.',
     skills: [
       {
         name: 'React',
@@ -67,9 +77,24 @@ const skillGroups: SkillGroup[] = [
         description: 'Reliable UI framework for quick responsive layouts and common components.',
       },
       {
+        name: 'Bulma',
+        iconText: 'BU',
+        description: 'CSS framework experience for clean responsive layouts and simple components.',
+      },
+      {
         name: 'Flutter',
         iconText: 'FL',
         description: 'Cross-platform app framework for mobile-first screens and app prototypes.',
+      },
+      {
+        name: 'Figma',
+        iconText: 'FG',
+        description: 'Design and prototyping tool for layouts, UI ideas, and presentation assets.',
+      },
+      {
+        name: 'WordPress',
+        iconText: 'WP',
+        description: 'CMS experience for editing, managing, and publishing website content.',
       },
       {
         name: 'UI/UX Prototyping',
@@ -101,6 +126,11 @@ const skillGroups: SkillGroup[] = [
         name: 'Firestore',
         iconText: 'FS',
         description: 'Cloud database used for saved game/app state and user-specific records.',
+      },
+      {
+        name: 'Google Cloud',
+        iconText: 'GCP',
+        description: 'Cloud platform experience connected to hosting, services, and deployment workflows.',
       },
       {
         name: 'MongoDB',
@@ -144,6 +174,11 @@ const skillGroups: SkillGroup[] = [
         description: 'Web framework for VR and 3D scenes using familiar HTML-style structure.',
       },
       {
+        name: 'Blender',
+        iconText: 'BL',
+        description: '3D asset and scene creation tool for models, visuals, and game-ready assets.',
+      },
+      {
         name: 'Game Design',
         iconText: 'GD',
         description: 'Designing mechanics, progression, feedback, puzzles, and player goals.',
@@ -151,8 +186,8 @@ const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    title: 'Testing, Tools & Workflow',
-    summary: 'Quality, debugging, and collaboration tools I use to build and ship projects.',
+    title: 'Testing, Tools & Hardware',
+    summary: 'Quality, debugging, collaboration, mobile tooling, and practical hardware experience.',
     skills: [
       {
         name: 'Software Testing',
@@ -180,9 +215,14 @@ const skillGroups: SkillGroup[] = [
         description: 'Repository hosting, version control workflow, issues, and project sharing.',
       },
       {
-        name: 'Figma',
-        iconText: 'FG',
-        description: 'Design and prototyping tool for layouts, UI ideas, and presentation assets.',
+        name: 'Android Studio',
+        iconText: 'AS',
+        description: 'IDE experience for Android development, testing, and mobile app tooling.',
+      },
+      {
+        name: 'Raspberry Pi',
+        iconText: 'PI',
+        description: 'Small hardware platform experience for practical computing experiments.',
       },
     ],
   },
