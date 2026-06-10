@@ -33,6 +33,13 @@ const initialErrors: ContactErrors = {
 // Simple email check for client-side validation.
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const emailJsConfig = {
+  endpoint: 'https://api.emailjs.com/api/v1.0/email/send',
+  serviceId: 'service_j5kk5lh',
+  templateId: 'template_gup9ak9',
+  publicKey: '83Tlbc6F7UBvXU9mf',
+} as const;
+
 // Central validation so UI and tests use the same rules.
 export const getContactErrors = (fields: ContactFields): ContactErrors => {
   const errors: ContactErrors = { ...initialErrors };
@@ -56,13 +63,39 @@ export const getContactErrors = (fields: ContactFields): ContactErrors => {
   return errors;
 };
 
-// Fake submit to show loading/success without a real API.
+const getEmailJsTemplateParams = (fields: ContactFields) => ({
+  name: fields.name.trim(),
+  email: fields.email.trim(),
+  title: fields.subject.trim(),
+  subject: fields.subject.trim(),
+  message: fields.message.trim(),
+  time: new Date().toLocaleString(),
+  to_email: 'rodney.hili2005@gmail.com',
+  reply_to: fields.email.trim(),
+});
+
+// Send the validated form through EmailJS.
 export const submitContactForm = createAsyncThunk<string, ContactFields, { rejectValue: string }>(
   'contact/submitContactForm',
-  async (_, { rejectWithValue }) => {
+  async (fields, { rejectWithValue }) => {
     try {
-      const waitMs = 600 + Math.floor(Math.random() * 301);
-      await new Promise((resolve) => setTimeout(resolve, waitMs));
+      const response = await fetch(emailJsConfig.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: emailJsConfig.serviceId,
+          template_id: emailJsConfig.templateId,
+          user_id: emailJsConfig.publicKey,
+          template_params: getEmailJsTemplateParams(fields),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('EmailJS request failed.');
+      }
+
       return 'Message sent.';
     } catch {
       return rejectWithValue('Unable to send the message right now.');
