@@ -77,7 +77,12 @@ const ProjectDetailPage = () => {
         Back to projects
       </Link>
       <div className="detail-banner">
-        <img src={project.imageUrl} alt={`${project.title} banner`} loading="lazy" />
+        <img
+          src={project.imageUrl}
+          alt={`${project.title} banner`}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div className="detail-header">
         <h1>{project.title}</h1>

@@ -33,7 +33,12 @@ const ProjectCardComponent = ({ project, disabled = false }: ProjectCardProps) =
     >
       <div className="project-media">
         {/* Lazy load images to keep the grid fast. */}
-        <img src={project.imageUrl} alt={`${project.title} preview`} loading="lazy" />
+        <img
+          src={project.imageUrl}
+          alt={`${project.title} preview`}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div className="project-body">
         <div className="project-top">
