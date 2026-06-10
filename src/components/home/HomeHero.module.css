@@ -107,9 +107,11 @@
 .signatureMask,
 .signatureAura {
   position: absolute;
-  width: 70%;
-  height: 60%;
-  transform: translate(3%, 3%);
+  top: 50%;
+  left: 50%;
+  width: 72%;
+  height: 62%;
+  transform: translate(-50%, -50%);
   background: var(--accent-gradient);
   -webkit-mask: url('/images/signature.png') center / contain no-repeat;
   mask: url('/images/signature.png') center / contain no-repeat;
@@ -123,9 +125,9 @@
 
 .signatureAura {
   z-index: 1;
-  opacity: 0.42;
-  filter: blur(10px);
-  transform: translate(3%, 3%) scale(1.06);
+  opacity: 0.22;
+  filter: blur(16px);
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
 .previewSection {
