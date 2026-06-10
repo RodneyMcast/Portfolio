@@ -3,27 +3,8 @@ import { Link } from 'react-router-dom';
 export const ProfileBlock = () => (
   <aside className="profile-block">
     <div className="profile-avatar">
-      <svg viewBox="0 0 120 120" role="img" aria-label="Rodney Hili portrait placeholder">
-        <circle
-          cx="60"
-          cy="60"
-          r="56"
-          fill="var(--color-card)"
-          stroke="var(--color-border)"
-          strokeWidth="2"
-        />
-        <text
-          x="50%"
-          y="54%"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize="42"
-          fontFamily="var(--font-sans)"
-          fill="var(--color-accent)"
-        >
-          RH
-        </text>
-      </svg>
+      <span className="profile-avatar-ring" aria-hidden="true" />
+      <span className="profile-signature" aria-hidden="true" />
     </div>
     <div className="profile-card">
       <h3>Quick Facts</h3>

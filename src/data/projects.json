@@ -131,7 +131,7 @@
     "year": 2026,
     "category": "web",
     "techStack": ["TypeScript", "CSS", "HTML", "Vercel", "Storybook", "Vitest"],
-    "imageUrl": "/images/Portfolio.png", 
+    "imageUrl": "/images/Portfolio_siganture_logo.png",
     "liveUrl": "https://portfolio-ten-lyart-xkfb5dgtmq.vercel.app/",
     "repoUrl": "https://github.com/RodneyMcast/Portfolio"
   }
