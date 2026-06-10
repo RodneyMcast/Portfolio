@@ -6,19 +6,20 @@ import { SkillsGrid } from '../components/about/SkillsGrid';
 import type { Skill } from '../components/about/SkillTile';
 
 const skills: Skill[] = [
-  { name: 'HTML', iconText: 'HTML' },
-  { name: 'CSS', iconText: 'CSS' },
   { name: 'JavaScript', iconText: 'JS' },
   { name: 'TypeScript', iconText: 'TS' },
   { name: 'React', iconText: 'RE' },
   { name: 'Vue', iconText: 'VU' },
   { name: 'Tailwind', iconText: 'TW' },
-  { name: 'Python', iconText: 'PY' },
-  { name: 'Firebase', iconText: 'FB' },
-  { name: 'Git', iconText: 'GIT' },
-  { name: 'GitHub', iconText: 'GH' },
   { name: 'Unity', iconText: 'U' },
-  { name: 'Raspberry Pi', iconText: 'PI' },
+  { name: 'C#', iconText: 'C#' },
+  { name: 'WebGL', iconText: 'WGL' },
+  { name: 'XR Interaction Toolkit', iconText: 'XR' },
+  { name: 'Three.js', iconText: '3D' },
+  { name: 'Firebase', iconText: 'FB' },
+  { name: 'REST APIs', iconText: 'API' },
+  { name: 'Game Systems', iconText: 'GS' },
+  { name: 'UI/UX Prototyping', iconText: 'UX' },
 ];
 
 export const AboutPage = () => (

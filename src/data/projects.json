@@ -77,8 +77,8 @@
   {
     "id": "komet-quest",
     "title": "Komet Quest",
-    "description": "Educational Unity WebGL prototype built for a June 2026 thesis, teaching browser navigation through guided digital tasks.",
-    "longDescription": "Komet Quest is a thesis project completed in June 2026: a Unity-based serious game and guided browser-training experience. Players learn to search, inspect pages, navigate browser states, use an in-game assistant, and complete structured digital tasks across multiple levels, with objectives, scoring, achievements, progression, and Firebase/WebGL telemetry supporting the learning flow.",
+    "description": "Unity WebGL serious game that simulates AI agentic browsers through interactive levels and guided digital tasks.",
+    "longDescription": "Agentic Browser Simulator is a Unity WebGL serious game built for a June 2026 thesis. It teaches users how AI-powered agentic browsers work through guided challenges such as research, form filling, and online assistance, while using missions, hints, feedback, progression, achievements, and analytics to highlight AI capabilities, limitations, risks, and responsible use.",
     "year": 2026,
     "category": "games",
     "techStack": ["Unity", "C#", "WebGL", "Firebase"],

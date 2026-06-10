@@ -59,7 +59,7 @@ export const ContactForm = () => {
     // noValidate lets us control messages with Redux errors.
     <form className="contact-card" onSubmit={handleSubmit} noValidate>
       <h2>Send a message</h2>
-      <p className="contact-muted">Fill out the form and I will get back to you.</p>
+      <p className="contact-muted">Share the details and I will get back to you within 24-48 hours.</p>
       {status === 'failed' ? (
         <StatusBanner
           tone="error"

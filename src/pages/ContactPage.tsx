@@ -6,7 +6,7 @@ export const ContactPage = () => (
     <header className="contact-hero">
       <span className="eyebrow">Contact</span>
       <h1>Contact</h1>
-      <p>Send me a message and I will get back to you.</p>
+      <p>Send me a message about a project, opportunity, or idea. I usually reply within 24-48 hours.</p>
     </header>
     <div className="contact-info">
       <div className="contact-info-item">

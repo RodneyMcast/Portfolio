@@ -38,7 +38,7 @@ export const ProfileBlock = () => (
         </div>
         <div>
           <dt>Focus</dt>
-          <dd>Front-end, APIs, Unity</dd>
+          <dd>Front-end, APIs, Games</dd>
         </div>
         <div>
           <dt>Location</dt>
