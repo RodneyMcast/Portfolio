@@ -95,9 +95,33 @@
   place-items: center;
 }
 
-.bubble svg {
-  width: 72%;
-  height: 72%;
+.bubble .signatureSvg {
+  width: 86%;
+  height: 86%;
+  overflow: visible;
+}
+
+.signatureMark {
+  transform-origin: center;
+  animation: signatureMist 3.8s ease-in-out infinite;
+}
+
+.signatureStroke,
+.signatureMistLine {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.signatureStroke {
+  stroke-width: 6.5;
+  filter: drop-shadow(0 0 7px var(--color-glow-soft));
+}
+
+.signatureMistLine {
+  stroke-width: 12;
+  opacity: 0.26;
+  filter: blur(4px);
 }
 
 .previewSection {
@@ -119,6 +143,18 @@
   50% {
     opacity: 1;
     transform: scale(1.4);
+  }
+}
+
+@keyframes signatureMist {
+  0%,
+  100% {
+    opacity: 0.92;
+    filter: drop-shadow(0 0 8px var(--color-glow-soft));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 16px var(--color-glow-strong));
   }
 }
 
