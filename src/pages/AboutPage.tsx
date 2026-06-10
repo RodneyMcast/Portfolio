@@ -146,12 +146,12 @@ const skillGroups: SkillGroup[] = [
   },
   {
     title: 'Games, VR & Interactive 3D',
-    summary: 'Tools and systems used for game jams, serious games, WebGL, and VR prototypes.',
+    summary: 'Tools and systems used for game jams, WebGL, VR prototypes, and interactive learning projects.',
     skills: [
       {
         name: 'Unity',
         iconText: 'U',
-        description: 'Primary engine for 2D/3D games, serious games, VR projects, and prototypes.',
+        description: 'Primary engine for 2D/3D games, VR projects, and interactive prototypes.',
       },
       {
         name: 'XR Interaction Toolkit',
@@ -237,10 +237,10 @@ export const AboutPage = () => (
           <AboutCard title="Quick intro">
             <p>I am Rodney Hili, a 3rd year Creative Computing Level 6 student at MCAST.</p>
             <p>I enjoy turning ideas into practical projects and learning by building.</p>
-            <p>Lately I have been mixing web apps, APIs, and small Unity game experiments.</p>
+            <p>Lately I have been mixing web apps, APIs, and small game experiments.</p>
           </AboutCard>
           <AboutCard title="What I build">
-            <p>I build APIs, websites for mobile and desktop, and a few Unity games.</p>
+            <p>I build APIs, websites for mobile and desktop, and a few small games.</p>
             <ul className="about-list">
               <li>Clean UI layouts with solid spacing</li>
               <li>Interactive front-end features</li>

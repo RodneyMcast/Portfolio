@@ -23,14 +23,35 @@ export const ContactPage = () => (
       </div>
       <div className="contact-info-item">
         <span className="contact-label">GitHub</span>
-        <a href="https://github.com/RodneyMcast" target="_blank" rel="noopener noreferrer">
-          github.com/RodneyMcast
+        <a
+          className="contact-profile-link"
+          href="https://github.com/RodneyMcast"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          RodneyMcast
+        </a>
+      </div>
+      <div className="contact-info-item">
+        <span className="contact-label">LinkedIn</span>
+        <a
+          className="contact-profile-link"
+          href="https://www.linkedin.com/in/rodney-hili-7693b42b5/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Rodney Hili
         </a>
       </div>
       <div className="contact-info-item">
         <span className="contact-label">Itch.io</span>
-        <a href="https://rodneyhili.itch.io/" target="_blank" rel="noopener noreferrer">
-          rodneyhili.itch.io
+        <a
+          className="contact-profile-link"
+          href="https://rodneyhili.itch.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          rodneyhili
         </a>
       </div>
     </div>

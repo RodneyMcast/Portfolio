@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 import { useApplyTheme } from '../../app/hooks';
 
+import { Footer } from './Footer';
 import { Navbar } from './Navbar';
 
 // Decorative background layer for the whole app.
@@ -21,7 +22,7 @@ export const AppLayout = () => {
         {/* Outlet renders the active route page. */}
         <Outlet />
       </main>
-      <footer className="app-footer" />
+      <Footer />
     </div>
   );
 };
