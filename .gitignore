@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Local visual previews generated while checking layout
+signature-badge-*.png
+signature-placement-options.png
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

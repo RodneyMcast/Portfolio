@@ -104,13 +104,12 @@
   box-shadow: inset 0 0 18px var(--color-glow-faint);
 }
 
-.signatureMask,
-.signatureAura {
+.signatureMask {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 72%;
-  height: 62%;
+  top: 46%;
+  left: 55%;
+  width: 66%;
+  height: 57%;
   transform: translate(-50%, -50%);
   background: var(--accent-gradient);
   -webkit-mask: url('/images/signature.png') center / contain no-repeat;
@@ -119,15 +118,10 @@
 
 .signatureMask {
   z-index: 2;
-  filter: drop-shadow(0 0 7px var(--color-glow-soft));
+  filter:
+    drop-shadow(0 0 7px var(--color-glow-soft))
+    drop-shadow(0 0 16px var(--color-glow-faint));
   animation: signatureMist 3.8s ease-in-out infinite;
-}
-
-.signatureAura {
-  z-index: 1;
-  opacity: 0.22;
-  filter: blur(16px);
-  transform: translate(-50%, -50%) scale(1.08);
 }
 
 .previewSection {
