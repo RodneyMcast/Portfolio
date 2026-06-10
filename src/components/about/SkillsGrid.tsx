@@ -1,19 +1,36 @@
 import { SkillTile, type Skill } from './SkillTile';
 
-type SkillsGridProps = {
+export type SkillGroup = {
+  title: string;
+  summary: string;
   skills: Skill[];
 };
 
-export const SkillsGrid = ({ skills }: SkillsGridProps) => (
+type SkillsGridProps = {
+  groups: SkillGroup[];
+};
+
+export const SkillsGrid = ({ groups }: SkillsGridProps) => (
   <section className="skills-section">
     <div className="skills-header">
-      <h2>Technical Skills</h2>
-      <p>Technologies I am confident using</p>
+      <span className="eyebrow">Toolkit</span>
+      <h2>Skills & Expertise</h2>
+      <p>Focused capabilities from my web, game, VR, and cloud projects.</p>
     </div>
-    <ul className="skills-grid">
-      {skills.map((skill) => (
-        <SkillTile key={skill.name} skill={skill} />
+    <div className="skills-groups">
+      {groups.map((group) => (
+        <article className="skill-group" key={group.title}>
+          <div className="skill-group-copy">
+            <h3>{group.title}</h3>
+            <p>{group.summary}</p>
+          </div>
+          <ul className="skills-grid">
+            {group.skills.map((skill) => (
+              <SkillTile key={skill.name} skill={skill} />
+            ))}
+          </ul>
+        </article>
       ))}
-    </ul>
+    </div>
   </section>
 );
