@@ -2,55 +2,39 @@ import styles from './HomeHero.module.css';
 
 export const VideoBubble = () => (
   <div className={styles.bubble} aria-label="Rodney Hili profile">
-    <svg className={styles.signatureSvg} viewBox="0 0 160 160" role="img" aria-label="Rodney Hili signature">
+    <svg className={styles.signatureSvg} viewBox="0 0 240 200" role="img" aria-label="Rodney Hili signature">
       <defs>
-        <linearGradient id="signatureGradient" x1="34" y1="126" x2="126" y2="36" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="homeSignatureGradient"
+          x1="42"
+          y1="176"
+          x2="164"
+          y2="34"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="var(--color-accent-strong)" />
-          <stop offset="48%" stopColor="var(--color-accent)" />
+          <stop offset="55%" stopColor="var(--color-accent)" />
           <stop offset="100%" stopColor="var(--color-accent-secondary)" />
         </linearGradient>
-        <filter id="signatureMist" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="4.5" result="blur" />
-          <feColorMatrix
-            in="blur"
-            type="matrix"
-            values="0 0 0 0 0.17 0 0 0 0 0.83 0 0 0 0 0.75 0 0 0 0.75 0"
-            result="glow"
-          />
-          <feMerge>
-            <feMergeNode in="glow" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
       <circle
-        cx="80"
-        cy="80"
-        r="74"
+        cx="120"
+        cy="100"
+        r="93"
         fill="var(--color-card)"
         stroke="var(--color-border)"
-        strokeWidth="2.5"
+        strokeWidth="2"
       />
-      <g className={styles.signatureMark} filter="url(#signatureMist)">
+      <g className={styles.signatureMark}>
         <path
           className={styles.signatureMistLine}
-          stroke="url(#signatureGradient)"
-          d="M49 111 C61 128 81 132 88 112 C96 88 97 54 111 34 C118 24 128 38 121 49 C113 62 93 67 77 68 C57 69 55 77 60 91 C69 117 86 120 101 104 C114 90 121 74 111 62 C101 49 75 55 68 73 C58 100 69 130 76 136"
-        />
-        <path
-          className={styles.signatureMistLine}
-          stroke="url(#signatureGradient)"
-          d="M72 92 C87 102 101 118 121 132 C109 119 94 98 78 82 C70 75 68 79 72 92 Z M44 112 C70 113 101 122 139 121"
+          stroke="url(#homeSignatureGradient)"
+          d="M77 125 C58 111 42 79 55 67 C68 56 99 64 126 55 C132 49 130 28 140 23 C151 17 164 44 147 58 C137 67 128 58 136 45 M126 55 C126 92 130 130 118 161 C112 176 98 187 75 181 C55 176 37 161 43 151 C53 137 104 153 158 158 C184 161 204 160 216 161 M126 55 C161 51 181 72 175 100 C169 130 139 145 111 122 M94 103 C122 121 152 149 176 170 C151 142 124 111 94 87 C85 80 82 93 94 103"
         />
         <path
           className={styles.signatureStroke}
-          stroke="url(#signatureGradient)"
-          d="M49 111 C61 128 81 132 88 112 C96 88 97 54 111 34 C118 24 128 38 121 49 C113 62 93 67 77 68 C57 69 55 77 60 91 C69 117 86 120 101 104 C114 90 121 74 111 62 C101 49 75 55 68 73 C58 100 69 130 76 136"
-        />
-        <path
-          className={styles.signatureStroke}
-          stroke="url(#signatureGradient)"
-          d="M72 92 C87 102 101 118 121 132 C109 119 94 98 78 82 C70 75 68 79 72 92 Z M44 112 C70 113 101 122 139 121"
+          stroke="url(#homeSignatureGradient)"
+          d="M77 125 C58 111 42 79 55 67 C68 56 99 64 126 55 C132 49 130 28 140 23 C151 17 164 44 147 58 C137 67 128 58 136 45 M126 55 C126 92 130 130 118 161 C112 176 98 187 75 181 C55 176 37 161 43 151 C53 137 104 153 158 158 C184 161 204 160 216 161 M126 55 C161 51 181 72 175 100 C169 130 139 145 111 122 M94 103 C122 121 152 149 176 170 C151 142 124 111 94 87 C85 80 82 93 94 103"
         />
       </g>
     </svg>

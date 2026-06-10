@@ -96,13 +96,14 @@
 }
 
 .bubble .signatureSvg {
-  width: 86%;
-  height: 86%;
+  width: 92%;
+  height: 92%;
   overflow: visible;
 }
 
 .signatureMark {
   transform-origin: center;
+  transform: translate(-5px, -2px) scale(0.86);
   animation: signatureMist 3.8s ease-in-out infinite;
 }
 
@@ -114,14 +115,14 @@
 }
 
 .signatureStroke {
-  stroke-width: 6.5;
-  filter: drop-shadow(0 0 7px var(--color-glow-soft));
+  stroke-width: 4.2;
+  filter: drop-shadow(0 0 5px var(--color-glow-soft));
 }
 
 .signatureMistLine {
-  stroke-width: 12;
-  opacity: 0.26;
-  filter: blur(4px);
+  stroke-width: 8.5;
+  opacity: 0.2;
+  filter: blur(5px);
 }
 
 .previewSection {
