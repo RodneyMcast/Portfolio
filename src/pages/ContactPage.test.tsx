@@ -18,7 +18,10 @@ describe('ContactPage form', () => {
     const fetchPromise = new Promise<Response>((resolve) => {
       resolveFetch = resolve;
     });
-    const fetchMock = vi.fn(() => fetchPromise);
+    const fetchMock = vi.fn((...args: Parameters<typeof fetch>) => {
+      void args;
+      return fetchPromise;
+    });
     vi.stubGlobal('fetch', fetchMock);
 
     renderWithProviders(<ContactPage />, { route: '/contact' });
@@ -40,8 +43,11 @@ describe('ContactPage form', () => {
     expect(await screen.findByRole('button', { name: /sending/i })).toBeDisabled();
     expect(fetchMock).toHaveBeenCalledTimes(1);
 
-    const [, request] = fetchMock.mock.calls[0];
-    const body = JSON.parse(String((request as RequestInit).body));
+    const request = fetchMock.mock.calls[0]?.[1];
+    if (!request?.body) {
+      throw new Error('Expected EmailJS request body.');
+    }
+    const body = JSON.parse(String(request.body));
     expect(body).toMatchObject({
       service_id: 'service_j5kk5lh',
       template_id: 'template_gup9ak9',
