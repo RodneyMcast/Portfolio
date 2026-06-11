@@ -32,12 +32,9 @@ export const Navbar = () => {
     // aria-label helps screen readers understand the nav area.
     <nav className="navbar" aria-label="Main">
       <NavLink to="/" className="nav-brand" aria-label="Rodney Hili home" onClick={handleClose}>
-        <img
-          src="/images/Portfolio_siganture_logo.png"
-          alt=""
-          className="nav-brand-logo"
-          aria-hidden="true"
-        />
+        <span className="nav-brand-logo" aria-hidden="true">
+          <span className="nav-brand-logo-signature" />
+        </span>
         <span className="nav-brand-wordmark" aria-hidden="true">
           Rodney <span className="nav-brand-accent">Hili</span>
         </span>
