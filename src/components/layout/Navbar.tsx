@@ -1,7 +1,9 @@
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { toggleTheme } from '../../features/ui/uiSlice';
 
 // NavLink uses isActive to style the current route.
@@ -10,7 +12,10 @@ const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 export const Navbar = () => {
   const dispatch = useAppDispatch();
+  const themeMode = useAppSelector((state) => state.ui.themeMode);
   const [menuOpen, setMenuOpen] = useState(false);
+  const nextThemeLabel =
+    themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
 
   // Mobile menu toggle for small screens.
   const handleToggle = () => {
@@ -66,10 +71,18 @@ export const Navbar = () => {
           type="button"
           className="theme-toggle"
           onClick={() => dispatch(toggleTheme())}
-          aria-label="Toggle theme"
+          aria-label={nextThemeLabel}
+          aria-pressed={themeMode === 'light'}
         >
-          {/* Theme toggle updates Redux, which then updates html data-theme. */}
-          Theme
+          <span className="theme-toggle-track" aria-hidden="true">
+            <span className="theme-toggle-icon theme-toggle-icon-sun">
+              <LightModeOutlinedIcon fontSize="inherit" />
+            </span>
+            <span className="theme-toggle-icon theme-toggle-icon-moon">
+              <DarkModeOutlinedIcon fontSize="inherit" />
+            </span>
+            <span className="theme-toggle-thumb" />
+          </span>
         </button>
       </div>
     </nav>

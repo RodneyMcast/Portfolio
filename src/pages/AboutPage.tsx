@@ -239,13 +239,25 @@ export const AboutPage = () => (
             <p>I enjoy turning ideas into practical projects and learning by building.</p>
             <p>Lately I have been mixing web apps, APIs, and small game experiments.</p>
           </AboutCard>
+          <AboutCard title="Current focus">
+            <p>
+              My current focus is my dissertation project, an Agentic Browser Simulator built as
+              a Unity WebGL sandbox game. It lets users learn how AI-powered browsers work through
+              guided levels, practical tasks, and rewards for learning.
+            </p>
+            <p>
+              The project explores how people can build trust and confidence with AI tools while
+              understanding responsible use, limitations, and the risks that come with relying on
+              emerging technology.
+            </p>
+          </AboutCard>
           <AboutCard title="What I build">
             <p>I build APIs, websites for mobile and desktop, and a few small games.</p>
             <ul className="about-list">
               <li>Clean UI layouts with solid spacing</li>
               <li>Interactive front-end features</li>
               <li>Small tools that solve a real need</li>
-              <li>Fun game ideas with playful mechanics</li>
+              <li>Fun game mechanics, player feedback, and playful interaction design</li>
             </ul>
           </AboutCard>
           <AboutCard title="Outside of coding">
