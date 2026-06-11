@@ -105,8 +105,38 @@ button {
 }
 
 .nav-brand {
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--color-text);
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+.nav-brand-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  object-fit: cover;
+  box-shadow:
+    0 0 0 1px var(--color-border-strong),
+    0 0 16px var(--color-glow-soft);
+}
+
+.nav-brand-wordmark {
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-text);
+  white-space: nowrap;
+  text-shadow: 0 0 14px var(--color-glow-soft);
+}
+
+.nav-brand-accent {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .nav-links {
@@ -152,10 +182,18 @@ button {
 .nav-link {
   padding: 0.25rem 0.8rem;
   border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   transition:
     background 0.2s ease,
     box-shadow 0.2s ease,
     color 0.2s ease;
+}
+
+.nav-link-icon {
+  font-size: 1rem;
 }
 
 .nav-link:hover {
@@ -1124,9 +1162,9 @@ html[data-theme='light'] .theme-toggle-thumb {
   -webkit-mask: url('/images/signature.png') center / contain no-repeat;
   mask: url('/images/signature.png') center / contain no-repeat;
   filter:
-    drop-shadow(0 0 7px var(--color-glow-soft))
-    drop-shadow(0 0 16px var(--color-glow-faint));
-  animation: signatureMist 3.8s ease-in-out infinite;
+    drop-shadow(0 0 9px var(--color-glow-soft))
+    drop-shadow(0 0 20px var(--color-glow-faint));
+  animation: profileSignatureMist 3.8s ease-in-out infinite;
 }
 
 .profile-card {
@@ -1559,6 +1597,28 @@ html[data-theme='light'] .theme-toggle-thumb {
   }
 }
 
+@keyframes profileSignatureMist {
+  0%,
+  100% {
+    opacity: 0.88;
+    filter:
+      drop-shadow(0 0 9px var(--color-glow-soft))
+      drop-shadow(0 0 18px var(--color-glow-faint));
+  }
+  50% {
+    opacity: 1;
+    filter:
+      drop-shadow(0 0 15px var(--color-glow-strong))
+      drop-shadow(0 0 28px var(--color-glow-soft));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-signature {
+    animation: none;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
@@ -1582,6 +1642,8 @@ html[data-theme='light'] .theme-toggle-thumb {
     gap: var(--space-md);
     padding: var(--space-md);
     box-shadow: 0 18px 24px var(--color-shadow);
+    max-height: calc(100vh - 84px);
+    overflow-y: auto;
   }
 
   .nav-menu.is-open {
@@ -1608,6 +1670,21 @@ html[data-theme='light'] .theme-toggle-thumb {
 
   .left-social {
     display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-brand {
+    gap: 0.5rem;
+  }
+
+  .nav-brand-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-brand-wordmark {
+    font-size: 1rem;
   }
 }
 
@@ -1639,6 +1716,18 @@ html[data-theme='light'] .theme-toggle-thumb {
 @media (max-width: 540px) {
   .app-main {
     padding: var(--space-md);
+  }
+
+  .about-card {
+    padding: 1rem 0;
+  }
+
+  .about-card-body {
+    gap: 0.7rem;
+  }
+
+  .profile-avatar {
+    width: clamp(150px, 52vw, 210px);
   }
 
   .app-footer {

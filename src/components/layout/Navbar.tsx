@@ -1,4 +1,5 @@
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -30,7 +31,17 @@ export const Navbar = () => {
   return (
     // aria-label helps screen readers understand the nav area.
     <nav className="navbar" aria-label="Main">
-      <div className="nav-brand">Portfolio</div>
+      <NavLink to="/" className="nav-brand" aria-label="Rodney Hili home" onClick={handleClose}>
+        <img
+          src="/images/Portfolio_siganture_logo.png"
+          alt=""
+          className="nav-brand-logo"
+          aria-hidden="true"
+        />
+        <span className="nav-brand-wordmark" aria-hidden="true">
+          Rodney <span className="nav-brand-accent">Hili</span>
+        </span>
+      </NavLink>
       <button
         type="button"
         className="nav-toggle"
@@ -64,7 +75,8 @@ export const Navbar = () => {
             rel="noopener noreferrer"
             onClick={handleClose}
           >
-            Resume
+            <DownloadOutlinedIcon className="nav-link-icon" fontSize="small" aria-hidden="true" />
+            <span>Resume</span>
           </a>
         </div>
         <button

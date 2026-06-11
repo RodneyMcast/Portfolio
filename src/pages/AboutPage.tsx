@@ -235,9 +235,16 @@ export const AboutPage = () => (
       <div className="about-grid">
         <div className="about-left">
           <AboutCard title="Quick intro">
-            <p>I am Rodney Hili, a 3rd year Creative Computing Level 6 student at MCAST.</p>
-            <p>I enjoy turning ideas into practical projects and learning by building.</p>
-            <p>Lately I have been mixing web apps, APIs, and small game experiments.</p>
+            <p>
+              I enjoy turning ideas into practical projects, usually through web apps, APIs, and
+              small game experiments.
+            </p>
+            <ul className="about-list">
+              <li>Clean UI layouts with solid spacing</li>
+              <li>Interactive front-end features</li>
+              <li>Small tools that solve a real need</li>
+              <li>Fun game mechanics, player feedback, and playful interaction design</li>
+            </ul>
           </AboutCard>
           <AboutCard title="Current focus">
             <p>
@@ -250,15 +257,6 @@ export const AboutPage = () => (
               understanding responsible use, limitations, and the risks that come with relying on
               emerging technology.
             </p>
-          </AboutCard>
-          <AboutCard title="What I build">
-            <p>I build APIs, websites for mobile and desktop, and a few small games.</p>
-            <ul className="about-list">
-              <li>Clean UI layouts with solid spacing</li>
-              <li>Interactive front-end features</li>
-              <li>Small tools that solve a real need</li>
-              <li>Fun game mechanics, player feedback, and playful interaction design</li>
-            </ul>
           </AboutCard>
           <AboutCard title="Outside of coding">
             <p>

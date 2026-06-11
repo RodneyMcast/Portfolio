@@ -28,8 +28,10 @@
   margin: 0;
   min-height: 2rem;
   max-width: 560px;
+  width: 100%;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.18rem;
   color: var(--color-text);
   font-size: clamp(1.05rem, 2vw, 1.3rem);
@@ -37,6 +39,8 @@
 }
 
 .typewriterText {
+  min-width: 0;
+  overflow-wrap: anywhere;
   text-shadow: 0 0 14px var(--color-glow-faint);
 }
 
@@ -204,8 +208,8 @@
 .signatureMask {
   z-index: 2;
   filter:
-    drop-shadow(0 0 7px var(--color-glow-soft))
-    drop-shadow(0 0 16px var(--color-glow-faint));
+    drop-shadow(0 0 9px var(--color-glow-soft))
+    drop-shadow(0 0 20px var(--color-glow-faint));
   animation: signatureMist 3.8s ease-in-out infinite;
 }
 
@@ -234,12 +238,16 @@
 @keyframes signatureMist {
   0%,
   100% {
-    opacity: 0.92;
-    filter: drop-shadow(0 0 8px var(--color-glow-soft));
+    opacity: 0.88;
+    filter:
+      drop-shadow(0 0 9px var(--color-glow-soft))
+      drop-shadow(0 0 18px var(--color-glow-faint));
   }
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 16px var(--color-glow-strong));
+    filter:
+      drop-shadow(0 0 15px var(--color-glow-strong))
+      drop-shadow(0 0 28px var(--color-glow-soft));
   }
 }
 
@@ -300,6 +308,11 @@
 }
 
 @media (max-width: 540px) {
+  .typewriterLine {
+    justify-content: center;
+    min-height: 3.4rem;
+  }
+
   .bubble {
     width: clamp(220px, 70vw, 280px);
   }
