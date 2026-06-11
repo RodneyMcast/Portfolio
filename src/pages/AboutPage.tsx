@@ -262,7 +262,10 @@ export const AboutPage = () => (
           </AboutCard>
           <AboutCard title="Outside of coding">
             <p>
-              When I am not coding, I am usually gaming, travelling, hitting the gym, or drawing.
+              Outside of coding, I like staying active through running, training, and going to the
+              gym. I also enjoy drawing, experimenting in Blender, playing games, tinkering with PC
+              hardware, and researching new tools or ideas that challenge how I think about design,
+              interaction, and technology.
             </p>
           </AboutCard>
         </div>
