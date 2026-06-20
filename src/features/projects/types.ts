@@ -1,4 +1,4 @@
-export type ProjectCategory = 'web' | 'mobile' | 'games' | 'api';
+export type ProjectCategory = 'web' | 'mobile' | 'games' | 'blender' | 'api';
 export type ProjectFilterCategory = 'all' | ProjectCategory;
 export type ProjectSortMode = 'recent' | 'name';
 
