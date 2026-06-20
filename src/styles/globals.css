@@ -1151,9 +1151,7 @@ html[data-theme='light'] .theme-toggle-thumb {
   background: var(--accent-gradient);
   -webkit-mask: url('/images/signature.png') center / contain no-repeat;
   mask: url('/images/signature.png') center / contain no-repeat;
-  filter:
-    drop-shadow(0 0 9px var(--color-glow-soft))
-    drop-shadow(0 0 20px var(--color-glow-faint));
+  filter: drop-shadow(0 0 9px var(--color-glow-soft)) drop-shadow(0 0 20px var(--color-glow-faint));
   animation: profileSignatureMist 3.8s ease-in-out infinite;
 }
 
@@ -1164,6 +1162,184 @@ html[data-theme='light'] .theme-toggle-thumb {
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+.experience-panel {
+  width: 100%;
+  padding: 1.3rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, var(--color-glow-faint), transparent 42%), var(--color-card);
+  box-shadow: 0 16px 36px var(--color-shadow);
+}
+
+.experience-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.experience-heading h3 {
+  margin: 0.15rem 0 0;
+}
+
+.experience-eyebrow,
+.experience-hint {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experience-hint {
+  max-width: 8rem;
+  text-align: right;
+  line-height: 1.35;
+}
+
+.experience-timeline {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0.65rem;
+  bottom: 0.65rem;
+  left: 0.28rem;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    var(--color-accent),
+    var(--color-border-strong),
+    transparent
+  );
+}
+
+.experience-item {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.experience-entry {
+  position: relative;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.experience-entry:hover,
+.experience-entry:focus-visible,
+.experience-entry:focus-within {
+  border-color: var(--color-border-strong);
+  background: var(--color-glow-faint);
+  transform: translateX(0.18rem);
+}
+
+.experience-dot {
+  position: absolute;
+  top: 1rem;
+  left: -1.13rem;
+  width: 0.58rem;
+  height: 0.58rem;
+  border: 2px solid var(--color-card);
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px var(--color-glow-strong);
+}
+
+.experience-entry time {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.experience-entry-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.experience-entry h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.experience-current {
+  flex: 0 0 auto;
+  padding: 0.14rem 0.4rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-accent);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.experience-organisation {
+  margin: 0.2rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.experience-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  color: var(--color-muted);
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows 220ms ease,
+    margin-top 220ms ease,
+    opacity 160ms ease;
+}
+
+.experience-details-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.experience-entry:hover .experience-details,
+.experience-entry:focus-visible .experience-details,
+.experience-entry:focus-within .experience-details {
+  grid-template-rows: 1fr;
+  margin-top: 0.65rem;
+  opacity: 1;
+}
+
+.experience-details-inner p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.experience-details-inner ul {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.55rem 0 0;
+  padding-left: 1rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
 }
 
 .profile-card h3 {
@@ -1591,14 +1767,12 @@ html[data-theme='light'] .theme-toggle-thumb {
   0%,
   100% {
     opacity: 0.88;
-    filter:
-      drop-shadow(0 0 9px var(--color-glow-soft))
+    filter: drop-shadow(0 0 9px var(--color-glow-soft))
       drop-shadow(0 0 18px var(--color-glow-faint));
   }
   50% {
     opacity: 1;
-    filter:
-      drop-shadow(0 0 15px var(--color-glow-strong))
+    filter: drop-shadow(0 0 15px var(--color-glow-strong))
       drop-shadow(0 0 28px var(--color-glow-soft));
   }
 }
@@ -1606,6 +1780,11 @@ html[data-theme='light'] .theme-toggle-thumb {
 @media (prefers-reduced-motion: reduce) {
   .profile-signature {
     animation: none;
+  }
+
+  .experience-entry,
+  .experience-details {
+    transition: none;
   }
 }
 
@@ -1687,6 +1866,11 @@ html[data-theme='light'] .theme-toggle-thumb {
     grid-template-columns: 1fr;
   }
 
+  .experience-panel {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
   .skill-group {
     grid-template-columns: 1fr;
     gap: 0.8rem;
@@ -1709,6 +1893,20 @@ html[data-theme='light'] .theme-toggle-thumb {
 
   .about-card-body {
     gap: 0.7rem;
+  }
+
+  .experience-panel {
+    padding: 1rem;
+  }
+
+  .experience-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .experience-hint {
+    max-width: none;
+    text-align: left;
   }
 
   .app-footer {

@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 
+import { WorkExperienceTimeline } from './WorkExperienceTimeline';
+
 export const ProfileBlock = () => (
   <aside className="profile-block">
     <div className="profile-avatar">
       <span className="profile-avatar-ring" aria-hidden="true" />
       <span className="profile-signature" aria-hidden="true" />
     </div>
+    <WorkExperienceTimeline />
     <div className="profile-card">
       <h3>Quick Facts</h3>
       <dl>
@@ -33,7 +36,7 @@ export const ProfileBlock = () => (
       </Link>
       <a
         className="button-link ghost"
-        href="/Rodney%20Hili%20CV.pdf"
+        href="/Rodney_Hili_CV.pdf"
         target="_blank"
         rel="noopener noreferrer"
       >

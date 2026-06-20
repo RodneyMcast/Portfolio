@@ -15,8 +15,7 @@ export const Navbar = () => {
   const dispatch = useAppDispatch();
   const themeMode = useAppSelector((state) => state.ui.themeMode);
   const [menuOpen, setMenuOpen] = useState(false);
-  const nextThemeLabel =
-    themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  const nextThemeLabel = themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
 
   // Mobile menu toggle for small screens.
   const handleToggle = () => {
@@ -64,7 +63,7 @@ export const Navbar = () => {
           </NavLink>
           <a
             className="nav-link"
-            href="/Rodney%20Hili%20CV.pdf"
+            href="/Rodney_Hili_CV.pdf"
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleClose}
