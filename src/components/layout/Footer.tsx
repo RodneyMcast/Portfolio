@@ -9,6 +9,7 @@ const footerLinks = [
   { label: 'About', to: '/about' },
   { label: 'Projects', to: '/projects' },
   { label: 'Contact', to: '/contact' },
+  { label: 'Dev/Admin', to: '/admin' },
 ] as const;
 
 const socialLinks = [
@@ -41,7 +42,12 @@ export const Footer = () => (
 
       <nav className="footer-nav" aria-label="Footer">
         {footerLinks.map((link) => (
-          <Link key={link.to} to={link.to} aria-label={`Footer link to ${link.label}`}>
+          <Link
+            key={link.to}
+            to={link.to}
+            className={link.to === '/admin' ? 'footer-admin-link' : undefined}
+            aria-label={`Footer link to ${link.label}`}
+          >
             {link.label}
           </Link>
         ))}

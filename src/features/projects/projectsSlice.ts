@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import projectsData from '../../data/projects.json';
+import { fetchPortfolioContent } from '../../services/portfolioContentApi';
 
 import type { Project, ProjectFilterCategory, ProjectSortMode } from './types';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -22,14 +22,14 @@ const delay = (ms: number) =>
     setTimeout(resolve, ms);
   });
 
-// Fetch data from local JSON and simulate async loading.
+// Fetch data from Firestore when configured, otherwise fall back to local defaults.
 export const fetchProjects = createAsyncThunk<Project[], void, { rejectValue: string }>(
   'projects/fetchProjects',
   async (_, { rejectWithValue }) => {
     try {
-      const waitMs = 250 + Math.floor(Math.random() * 151);
-      await delay(waitMs);
-      return projectsData as Project[];
+      await delay(180);
+      const result = await fetchPortfolioContent();
+      return result.content.projects;
     } catch {
       return rejectWithValue('Failed to load projects.');
     }
@@ -67,6 +67,11 @@ const projectsSlice = createSlice({
       state.filters.searchQuery = '';
       state.filters.sortMode = 'recent';
     },
+    replaceProjects(state, action: PayloadAction<Project[]>) {
+      state.entities = action.payload;
+      state.status = 'succeeded';
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     // Track async status so UI can show loading or error states.
@@ -86,5 +91,6 @@ const projectsSlice = createSlice({
   },
 });
 
-export const { setCategory, setSearchQuery, setSortMode, clearFilters } = projectsSlice.actions;
+export const { setCategory, setSearchQuery, setSortMode, clearFilters, replaceProjects } =
+  projectsSlice.actions;
 export default projectsSlice.reducer;

@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import contactReducer from '../features/contact/contactSlice';
 import projectsReducer from '../features/projects/projectsSlice';
+import siteContentReducer from '../features/siteContent/siteContentSlice';
 import uiReducer from '../features/ui/uiSlice';
 
 // Single Redux store shared across the app.
@@ -10,6 +11,7 @@ export const store = configureStore({
     ui: uiReducer,
     projects: projectsReducer,
     contact: contactReducer,
+    siteContent: siteContentReducer,
   },
 });
 

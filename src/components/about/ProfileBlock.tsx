@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 
-export const ProfileBlock = () => (
+import type { ProfileFact } from '../../data/portfolioContent';
+
+type ProfileBlockProps = {
+  facts: ProfileFact[];
+};
+
+export const ProfileBlock = ({ facts }: ProfileBlockProps) => (
   <aside className="profile-block">
     <div className="profile-avatar">
       <span className="profile-avatar-ring" aria-hidden="true" />
@@ -9,22 +15,12 @@ export const ProfileBlock = () => (
     <div className="profile-card">
       <h3>Quick Facts</h3>
       <dl>
-        <div>
-          <dt>Study</dt>
-          <dd>MCAST - Creative Computing Level 6</dd>
-        </div>
-        <div>
-          <dt>Current</dt>
-          <dd>3rd year</dd>
-        </div>
-        <div>
-          <dt>Focus</dt>
-          <dd>Front-end, APIs, Games</dd>
-        </div>
-        <div>
-          <dt>Location</dt>
-          <dd>Malta</dd>
-        </div>
+        {facts.map((fact) => (
+          <div key={fact.label}>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
       </dl>
     </div>
     <div className="profile-actions">

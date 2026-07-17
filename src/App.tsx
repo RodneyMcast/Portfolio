@@ -13,6 +13,7 @@ import { NotFoundPage } from './pages/NotFoundPage';
 // Code-split the heavier project pages so they load only when needed.
 const ProjectsPage = lazy(() => import('./features/projects/pages/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('./features/projects/pages/ProjectDetailPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 export const App = () => (
   // BrowserRouter owns the URL-based navigation.
@@ -45,6 +46,14 @@ export const App = () => (
             />
           </Route>
           <Route path="/contact" element={<ContactPage />} />
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={<FullPageLoader />}>
+                <AdminPage />
+              </Suspense>
+            }
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
