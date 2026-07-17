@@ -124,6 +124,31 @@
     "repoUrl": "https://github.com/RodneyMcast/VR-Escape-Room"
   },
   {
+    "id": "blender-park",
+    "title": "Blender Park",
+    "description": "Detailed animated Blender urban park scene with custom environments, characters, vehicles, lighting, and camera work.",
+    "longDescription": "A detailed Blender urban park scene featuring a cafeteria and bar, bridges, benches, trees, lamp posts, a skate park, moving cars, animated characters, custom textures, realistic lighting, and a sunset environment. The project includes generated turf and grass areas, interior and exterior lighting with realistic shadows, a Nishita Sky Texture for daylight and sunset lighting, an animated sunset created by lowering the sun elevation over time, curve paths for the walking character, skateboarder, and moving cars, plus drone, follow, and track/aim camera views.",
+    "year": 2025,
+    "category": "blender",
+    "categories": ["blender", "games"],
+    "techStack": ["Blender", "3D Modelling", "Animation", "Nishita Sky Texture"],
+    "imageUrl": "/images/Park.png",
+    "liveUrl": "https://rodneyhili.itch.io/blender-park",
+    "repoUrl": "https://rodneyhili.itch.io/blender-park"
+  },
+  {
+    "id": "dungeon-saver",
+    "title": "Dungeon Saver",
+    "description": "Simple turn-based Unity combat game where players can cast spells, attack, defend, or heal.",
+    "longDescription": "A turn-based combat prototype made with Unity, C#, and object-oriented programming principles. During each round, the player and enemy choose between healing, dealing damage, or using a shield, while the player's available actions include casting a spell, attacking, defending, and healing.",
+    "year": 2024,
+    "category": "games",
+    "techStack": ["Unity", "C#", "Object-Oriented Programming", "Turn-Based Combat"],
+    "imageUrl": "/images/Dungeon Saver.png",
+    "liveUrl": "https://rodneyhili.itch.io/dungeon-saver",
+    "repoUrl": "https://github.com/RodneyMcast/Dungeon-Saver"
+  },
+  {
     "id": "personal-portfolio",
     "title": "Personal Portfolio",
     "description": "My portfolio website with a projects section, sorting, and detail pages.",

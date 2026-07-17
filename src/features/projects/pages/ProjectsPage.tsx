@@ -16,6 +16,7 @@ const filterOptions: FilterOption[] = [
   { value: 'web', label: 'Web' },
   { value: 'mobile', label: 'Mobile' },
   { value: 'games', label: 'Games' },
+  { value: 'blender', label: 'Blender' },
   { value: 'api', label: 'API' },
 ];
 
