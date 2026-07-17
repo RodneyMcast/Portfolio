@@ -1591,6 +1591,13 @@ html[data-theme='light'] .theme-toggle-thumb {
   border: 1px solid var(--color-border-soft);
 }
 
+.skill-icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0.45rem;
+}
+
 .skill-name {
   font-size: 0.95rem;
   color: var(--color-text);
@@ -1933,6 +1940,78 @@ html[data-theme='light'] .theme-toggle-thumb {
   font-weight: 700;
 }
 
+.admin-editor-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.admin-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.admin-item,
+.admin-sub-item {
+  border: 1px solid var(--color-border-soft);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: color-mix(in srgb, var(--color-card) 75%, transparent);
+}
+
+.admin-sub-item {
+  margin-top: 0.7rem;
+}
+
+.admin-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.65rem;
+}
+
+.admin-form-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.admin-form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-form-grid label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.admin-form-grid label > span {
+  font-size: 0.76rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.admin-form-grid select {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background: var(--color-card-strong);
+  color: var(--color-text);
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+}
+
+.admin-sub-actions {
+  display: flex;
+  margin: 0.7rem 0 0.3rem;
+}
+
 .admin-editor textarea {
   min-height: 340px;
   resize: vertical;
@@ -2238,6 +2317,10 @@ html[data-theme='light'] .theme-toggle-thumb {
 
   .admin-editor textarea {
     min-height: 260px;
+  }
+
+  .admin-form-grid.two {
+    grid-template-columns: 1fr;
   }
 
   .project-grid {

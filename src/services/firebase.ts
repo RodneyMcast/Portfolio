@@ -1,5 +1,6 @@
 import { getApps, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,
@@ -11,10 +12,13 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string | undefined,
 };
 
+const isLikelyProjectId = (value: string | undefined) =>
+  Boolean(value && /^[a-z0-9-]+$/.test(value));
+
 export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey &&
     firebaseConfig.authDomain &&
-    firebaseConfig.projectId &&
+    isLikelyProjectId(firebaseConfig.projectId) &&
     firebaseConfig.storageBucket &&
     firebaseConfig.messagingSenderId &&
     firebaseConfig.appId,
@@ -25,3 +29,4 @@ const firebaseApp = isFirebaseConfigured
   : null;
 
 export const firestoreDb = firebaseApp ? getFirestore(firebaseApp) : null;
+export const storageDb = firebaseApp ? getStorage(firebaseApp) : null;

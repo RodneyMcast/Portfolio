@@ -1,10 +1,11 @@
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import {
   defaultPortfolioContent,
   type PortfolioContent,
 } from '../data/portfolioContent';
-import { firestoreDb, isFirebaseConfigured } from './firebase';
+import { firestoreDb, isFirebaseConfigured, storageDb } from './firebase';
 
 const contentDocPath = ['portfolioContent', 'site'] as const;
 
@@ -107,4 +108,26 @@ export const savePortfolioContent = async (content: PortfolioContent) => {
 
 export const resetPortfolioContentToDefaults = async () => {
   await savePortfolioContent(clonePortfolioContent());
+};
+
+const sanitizeFileName = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9._-]/g, '');
+
+export const uploadPortfolioImage = async (file: File, folder: 'projects' | 'skills') => {
+  if (!isFirebaseConfigured || !storageDb) {
+    throw new Error('Firebase Storage is not configured. Check your Firebase environment variables.');
+  }
+
+  const timestamp = Date.now();
+  const safeFileName = sanitizeFileName(file.name) || `upload-${timestamp}.png`;
+  const fileRef = ref(storageDb, `portfolio/${folder}/${timestamp}-${safeFileName}`);
+
+  await uploadBytes(fileRef, file, {
+    contentType: file.type || 'application/octet-stream',
+  });
+
+  return getDownloadURL(fileRef);
 };
