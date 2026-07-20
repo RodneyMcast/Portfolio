@@ -88,11 +88,6 @@ export const fetchPortfolioContent = async (): Promise<PortfolioContentResult> =
   }
 };
 
-export const fetchAdminKey = async () => {
-  const result = await fetchPortfolioContent();
-  return result.content.adminKey || defaultPortfolioContent.adminKey;
-};
-
 export const savePortfolioContent = async (content: PortfolioContent) => {
   const docRef = getContentDocRef();
 

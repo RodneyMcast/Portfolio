@@ -1,0 +1,41 @@
+{
+  "profileFacts": [
+    {
+      "value": "MCAST - Creative Computing Level 6",
+      "label": "Study"
+    },
+    {
+      "value": "3rd year",
+      "label": "Current"
+    },
+    {
+      "value": "Front-end, APIs, Games",
+      "label": "Focus"
+    },
+    {
+      "value": "Malta",
+      "label": "Location"
+    }
+  ],
+  "currentFocus": {
+    "paragraphs": [
+      "My current focus is making projects, doing my work well, and staying open to commissions."
+    ]
+  },
+  "quickIntro": {
+    "bullets": [
+      "Clean UI layouts with solid spacing",
+      "Interactive front-end features",
+      "Small tools that solve a real need",
+      "Fun game mechanics, player feedback, and playful interaction design"
+    ],
+    "paragraphs": [
+      "I graduated with First Honours, and my thesis is complete with an A."
+    ]
+  },
+  "outsideCoding": {
+    "paragraphs": [
+      "Outside of coding, I like staying active through running, training, and going to the gym. I also enjoy drawing, experimenting in Blender, playing games, tinkering with PC hardware, and researching new tools or ideas that challenge how I think about design, interaction, and technology."
+    ]
+  }
+}

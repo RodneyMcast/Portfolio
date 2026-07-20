@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { onAuthStateChanged, signInWithEmailAndPassword, type User } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '../app/hooks';
 import {
@@ -13,11 +15,11 @@ import type { WorkExperienceEntry } from '../data/portfolioContent';
 import { setSiteContent } from '../features/siteContent/siteContentSlice';
 import {
   clonePortfolioContent,
-  fetchAdminKey,
   fetchPortfolioContent,
   savePortfolioContent,
   uploadPortfolioImage,
 } from '../services/portfolioContentApi';
+import { authService } from '../services/firebase';
 
 import type { FormEvent } from 'react';
 
@@ -36,7 +38,6 @@ const adminTabs: Array<{ id: AdminTab; label: string }> = [
   { id: 'settings', label: 'Admin' },
 ];
 
-const sessionKey = 'portfolio.adminUnlocked';
 const projectCategoryOptions: ProjectCategory[] = ['web', 'mobile', 'games', 'blender', 'api'];
 
 const stringify = (value: unknown) => JSON.stringify(value, null, 2);
@@ -135,15 +136,17 @@ type FocusTarget =
 
 export const AdminPage = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const autosaveTimerRef = useRef<number | null>(null);
+  const loginRedirectTimerRef = useRef<number | null>(null);
   const projectIdInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const skillGroupTitleRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const workTitleRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const pendingFocusRef = useRef<FocusTarget>(null);
-  const [isUnlocked, setIsUnlocked] = useState(
-    () => window.sessionStorage.getItem(sessionKey) === 'true',
-  );
-  const [keycode, setKeycode] = useState('');
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [projects, setProjects] = useState<Project[]>(() => clonePortfolioContent().projects);
@@ -198,7 +201,7 @@ export const AdminPage = () => {
   const [pendingFocus, setPendingFocus] = useState<FocusTarget>(null);
   const [message, setMessage] = useState<AdminMessage>({
     tone: 'info',
-    text: 'Unlock the admin panel to edit portfolio content.',
+    text: 'Admin and dev access only. Sign in with your Firebase email account.',
   });
 
   const localDefaultText = useMemo(() => stringify(defaultPortfolioContent), []);
@@ -241,10 +244,24 @@ export const AdminPage = () => {
   }, [loadContentIntoEditors]);
 
   useEffect(() => {
-    if (isUnlocked) {
+    if (authUser) {
       void loadRemoteContent();
     }
-  }, [isUnlocked, loadRemoteContent]);
+  }, [authUser, loadRemoteContent]);
+
+  useEffect(() => {
+    if (!authService) {
+      setAuthReady(true);
+      return undefined;
+    }
+
+    const unsubscribe = onAuthStateChanged(authService, (user) => {
+      setAuthUser(user);
+      setAuthReady(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const buildContentFromEditors = useCallback(
     (): PortfolioContent => ({
@@ -698,29 +715,46 @@ export const AdminPage = () => {
     }
   };
 
-  const handleUnlock = async (event: FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsBusy(true);
 
-    try {
-      const storedKey = await fetchAdminKey();
-      if (keycode.trim() !== storedKey) {
-        setMessage({ tone: 'error', text: 'Incorrect keycode.' });
-        return;
-      }
+    if (!authService) {
+      setMessage({
+        tone: 'error',
+        text: 'Firebase Auth is not configured. Check your Firebase environment variables.',
+      });
+      setIsBusy(false);
+      return;
+    }
 
-      window.sessionStorage.setItem(sessionKey, 'true');
-      setIsUnlocked(true);
-      setMessage({ tone: 'success', text: 'Admin panel unlocked.' });
+    try {
+      await signInWithEmailAndPassword(authService, loginEmail.trim(), loginPassword);
+      setMessage({ tone: 'success', text: 'Admin access granted.' });
     } catch (error) {
       setMessage({
         tone: 'error',
-        text: error instanceof Error ? error.message : 'Unable to unlock admin panel.',
+        text: 'Wrong email or password. Redirecting to the home page.',
       });
+      if (loginRedirectTimerRef.current) {
+        window.clearTimeout(loginRedirectTimerRef.current);
+      }
+      loginRedirectTimerRef.current = window.setTimeout(() => {
+        navigate('/');
+      }, 2500);
+      return;
     } finally {
       setIsBusy(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (loginRedirectTimerRef.current) {
+        window.clearTimeout(loginRedirectTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleSave = async () => {
     try {
@@ -856,7 +890,7 @@ export const AdminPage = () => {
   }, [pendingFocus, projectUiIds.length, skillGroupUiIds.length, workExperienceUiIds.length]);
 
   useEffect(() => {
-    if (!isUnlocked || !isHydrated || isBusy || isSaving || !currentContent || !isDirty) {
+    if (!authUser || !isHydrated || isBusy || isSaving || !currentContent || !isDirty) {
       return undefined;
     }
 
@@ -869,7 +903,7 @@ export const AdminPage = () => {
         window.clearTimeout(autosaveTimerRef.current);
       }
     };
-  }, [currentContent, isBusy, isDirty, isHydrated, isSaving, isUnlocked, saveContent]);
+  }, [authUser, currentContent, isBusy, isDirty, isHydrated, isSaving, saveContent]);
 
   useEffect(() => {
     const handleKeyboardShortcut = (event: KeyboardEvent) => {
@@ -887,29 +921,53 @@ export const AdminPage = () => {
     return () => window.removeEventListener('keydown', handleKeyboardShortcut);
   }, [collapseAllPanels, handleSave]);
 
-  if (!isUnlocked) {
+  if (!authReady) {
     return (
       <section className="admin-page">
         <div className="admin-card admin-login">
-          <span className="eyebrow">Dev Admin</span>
+          <span className="eyebrow">Admin / Dev Access Only</span>
+          <h1>Checking access</h1>
+          <p>Loading Firebase Auth...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!authUser) {
+    return (
+      <section className="admin-page">
+        <div className="admin-card admin-login">
+          <span className="eyebrow">Admin / Dev Access Only</span>
           <h1>Portfolio Admin</h1>
           <p>
-            Enter the keycode to edit projects, about content, quick facts, and technical skills.
+            Sign in with your admin email and password to edit projects, about content, quick facts,
+            and technical skills.
           </p>
-          <form className="admin-login-form" onSubmit={handleUnlock}>
-            <label htmlFor="admin-keycode">Keycode</label>
+          <form className="admin-login-form" onSubmit={handleLogin}>
+            <label htmlFor="admin-email">Email</label>
             <input
-              id="admin-keycode"
+              id="admin-email"
+              type="email"
+              value={loginEmail}
+              onChange={(event) => setLoginEmail(event.target.value)}
+              autoComplete="username"
+              placeholder="you@example.com"
+            />
+            <label htmlFor="admin-password">Password</label>
+            <input
+              id="admin-password"
               type="password"
-              value={keycode}
-              onChange={(event) => setKeycode(event.target.value)}
+              value={loginPassword}
+              onChange={(event) => setLoginPassword(event.target.value)}
               autoComplete="current-password"
+              placeholder="Your Firebase password"
             />
             <button className="button-link primary" type="submit" disabled={isBusy}>
-              Unlock
+              Sign In
             </button>
           </form>
           <p className={`admin-message is-${message.tone}`}>{message.text}</p>
+          <p className="admin-muted">If sign in fails, you will be sent back to the home page.</p>
         </div>
       </section>
     );
@@ -919,7 +977,7 @@ export const AdminPage = () => {
     <section className="admin-page">
       <div className="admin-header">
         <div>
-          <span className="eyebrow">Dev Admin</span>
+          <span className="eyebrow">Admin / Dev Access Only</span>
           <h1>Portfolio Admin</h1>
         </div>
         <div className="admin-status-stack">
@@ -1563,10 +1621,6 @@ export const AdminPage = () => {
 
       {activeTab === 'settings' ? (
         <section className="admin-panel admin-settings-panel">
-          <label className="admin-editor admin-editor-small">
-            <span>Admin keycode</span>
-            <input value={adminKey} onChange={(event) => setAdminKey(event.target.value)} />
-          </label>
           <details className="admin-defaults">
             <summary>View local fallback payload</summary>
             <pre>{localDefaultText}</pre>
