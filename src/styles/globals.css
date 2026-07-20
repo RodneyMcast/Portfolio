@@ -1920,6 +1920,12 @@ html[data-theme='light'] .theme-toggle-thumb {
   align-items: flex-end;
 }
 
+.admin-status-stack {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: end;
+}
+
 .admin-source {
   flex: 0 0 auto;
   border: 1px solid var(--color-border);
@@ -1929,10 +1935,92 @@ html[data-theme='light'] .theme-toggle-thumb {
   background: var(--color-card);
 }
 
+.admin-source.is-dirty {
+  color: var(--color-warning, #f4c95d);
+  border-color: color-mix(in srgb, var(--color-warning, #f4c95d) 45%, var(--color-border));
+}
+
 .admin-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
+}
+
+.admin-actions-sticky {
+  position: sticky;
+  top: 84px;
+  z-index: 2;
+  padding: 0.45rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-bg) 48%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-border-soft);
+}
+
+.admin-tools {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.admin-search {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-search input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background: var(--color-card-strong);
+  color: var(--color-text);
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+}
+
+.admin-search input:focus-visible {
+  outline: none;
+  border-color: var(--color-border-strong);
+  box-shadow: 0 0 0 3px var(--color-focus-shadow);
+}
+
+.admin-quick-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-quick-jump .pill {
+  border-color: var(--color-border-soft);
+  background: color-mix(in srgb, var(--color-card) 72%, transparent);
+}
+
+.admin-preview-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.admin-preview-card {
+  border: 1px solid var(--color-border-soft);
+  border-radius: 16px;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at top left, var(--color-glow-faint), transparent 45%),
+    color-mix(in srgb, var(--color-card) 82%, transparent);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-preview-card h2,
+.admin-preview-card h3,
+.admin-preview-card p {
+  margin: 0;
+}
+
+.admin-preview-card p {
+  color: var(--color-muted);
+  line-height: 1.5;
 }
 
 .admin-tabs {
@@ -2127,6 +2215,10 @@ html[data-theme='light'] .theme-toggle-thumb {
   flex-wrap: wrap;
   gap: 0.55rem;
   justify-content: flex-end;
+}
+
+.admin-work-note {
+  margin: -0.3rem 0 0;
 }
 
 .admin-form-grid {
@@ -2329,6 +2421,19 @@ html[data-theme='light'] .theme-toggle-thumb {
     flex-direction: column;
   }
 
+  .admin-status-stack {
+    width: 100%;
+    justify-items: start;
+  }
+
+  .admin-actions-sticky {
+    top: 76px;
+  }
+
+  .admin-preview-dashboard {
+    grid-template-columns: 1fr;
+  }
+
   .admin-tabs {
     width: 100%;
     overflow-x: auto;
@@ -2484,6 +2589,10 @@ html[data-theme='light'] .theme-toggle-thumb {
 
   .admin-actions .button-link {
     width: 100%;
+  }
+
+  .admin-quick-jump .pill {
+    width: auto;
   }
 
   .admin-editor textarea {

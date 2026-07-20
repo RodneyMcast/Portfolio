@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAppDispatch } from '../app/hooks';
 import {
@@ -104,13 +104,38 @@ const listToLines = (items: string[]) => items.join('\n');
 
 const createAccordionState = (length: number, open = false) => Array.from({ length }, () => open);
 const createStableId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+const moveItem = <T,>(items: T[], fromIndex: number, toIndex: number) => {
+  if (toIndex < 0 || toIndex >= items.length || fromIndex === toIndex) {
+    return items;
+  }
+
+  const next = [...items];
+  const [item] = next.splice(fromIndex, 1);
+  next.splice(toIndex, 0, item);
+  return next;
+};
+
+const includesQuery = (values: Array<string | number | boolean | undefined>, query: string) => {
+  if (!query) {
+    return true;
+  }
+
+  const normalizedQuery = query.toLowerCase();
+  return values.some((value) => String(value ?? '').toLowerCase().includes(normalizedQuery));
+};
+
+const formatTime = (date: Date) =>
+  date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
 export const AdminPage = () => {
   const dispatch = useAppDispatch();
+  const autosaveTimerRef = useRef<number | null>(null);
   const [isUnlocked, setIsUnlocked] = useState(
     () => window.sessionStorage.getItem(sessionKey) === 'true',
   );
   const [keycode, setKeycode] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showPreview, setShowPreview] = useState(true);
   const [projects, setProjects] = useState<Project[]>(() => clonePortfolioContent().projects);
   const [projectUiIds, setProjectUiIds] = useState<string[]>(() =>
     clonePortfolioContent().projects.map((_, index) => createStableId(`project-${index}`)),
@@ -142,6 +167,9 @@ export const AdminPage = () => {
   const [workExperience, setWorkExperience] = useState<WorkExperienceEntry[]>(() =>
     clonePortfolioContent().workExperience,
   );
+  const [workHighlightsDrafts, setWorkHighlightsDrafts] = useState<string[]>(() =>
+    clonePortfolioContent().workExperience.map((entry) => listToLines(entry.highlights)),
+  );
   const [workExperienceUiIds, setWorkExperienceUiIds] = useState<string[]>(() =>
     clonePortfolioContent().workExperience.map((_, index) => createStableId(`work-${index}`)),
   );
@@ -152,6 +180,11 @@ export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
   const [source, setSource] = useState<'firestore' | 'local'>('local');
   const [isBusy, setIsBusy] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [lastSavedSignature, setLastSavedSignature] = useState('');
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  const [savedSnapshot, setSavedSnapshot] = useState<PortfolioContent | null>(null);
   const [message, setMessage] = useState<AdminMessage>({
     tone: 'info',
     text: 'Unlock the admin panel to edit portfolio content.',
@@ -175,9 +208,13 @@ export const AdminPage = () => {
     setSkillGroupOpenState(createAccordionState(content.skillGroups.length));
     setSkillOpenState(content.skillGroups.map((group) => createAccordionState(group.skills.length)));
     setWorkExperience(content.workExperience);
+    setWorkHighlightsDrafts(content.workExperience.map((entry) => listToLines(entry.highlights)));
     setWorkExperienceUiIds(content.workExperience.map((_, index) => createStableId(`work-${index}`)));
     setWorkExperienceOpenState(createAccordionState(content.workExperience.length));
     setAdminKey(content.adminKey || defaultPortfolioContent.adminKey);
+    setSavedSnapshot(clonePortfolioContent(content));
+    setLastSavedSignature(stringify(content));
+    setIsHydrated(true);
   }, []);
 
   const loadRemoteContent = useCallback(async () => {
@@ -206,10 +243,135 @@ export const AdminPage = () => {
       })),
       about: parseEditorJson<PortfolioContent['about']>('About content', aboutJson),
       skillGroups,
-      workExperience: sortWorkExperienceEntries(workExperience),
+      workExperience: sortWorkExperienceEntries(
+        workExperience.map((entry, index) => ({
+          ...entry,
+          highlights: linesToList(workHighlightsDrafts[index] ?? listToLines(entry.highlights)),
+        })),
+      ),
       adminKey: adminKey.trim() || defaultPortfolioContent.adminKey,
     }),
-    [aboutJson, adminKey, projectTechStackDrafts, projects, skillGroups, workExperience],
+    [aboutJson, adminKey, projectTechStackDrafts, projects, skillGroups, workExperience, workHighlightsDrafts],
+  );
+
+  const currentContent = useMemo(() => {
+    try {
+      return buildContentFromEditors();
+    } catch {
+      return null;
+    }
+  }, [buildContentFromEditors]);
+
+  const currentSignature = useMemo(
+    () => (currentContent ? stringify(currentContent) : ''),
+    [currentContent],
+  );
+
+  const isDirty = isHydrated && (currentContent ? currentSignature !== lastSavedSignature : true);
+  const currentTimeLabel = lastSavedAt ?? 'Not saved yet';
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const filteredProjects = useMemo(
+    () =>
+      projects
+        .map((project, projectIndex) => ({ project, projectIndex }))
+        .filter(({ project }) =>
+          includesQuery(
+            [
+              project.id,
+              project.title,
+              project.description,
+              project.longDescription,
+              project.year,
+              project.category,
+              project.liveUrl,
+              project.repoUrl,
+              ...project.techStack,
+            ],
+            normalizedQuery,
+          ),
+        ),
+    [normalizedQuery, projects],
+  );
+
+  const filteredSkillGroups = useMemo(
+    () =>
+      skillGroups
+        .map((group, groupIndex) => {
+          const skills = group.skills
+            .map((skill, skillIndex) => ({ skill, skillIndex }))
+            .filter(({ skill }) =>
+              includesQuery(
+                [skill.name, skill.iconText, skill.iconUrl, skill.description, group.title, group.summary],
+                normalizedQuery,
+              ),
+            );
+
+          const groupMatches = includesQuery([group.title, group.summary], normalizedQuery);
+          if (!groupMatches && skills.length === 0) {
+            return null;
+          }
+
+          return { group, groupIndex, skills: groupMatches ? group.skills.map((skill, skillIndex) => ({ skill, skillIndex })) : skills };
+        })
+        .filter((group): group is { group: SkillGroup; groupIndex: number; skills: Array<{ skill: SkillGroup['skills'][number]; skillIndex: number }> } => Boolean(group)),
+    [normalizedQuery, skillGroups],
+  );
+
+  const filteredWorkExperience = useMemo(
+    () =>
+      workExperience
+        .map((entry, entryIndex) => ({ entry, entryIndex }))
+        .filter(({ entry }) =>
+          includesQuery(
+            [
+              entry.start,
+              entry.end,
+              entry.current,
+              entry.title,
+              entry.organisation,
+              entry.location,
+              entry.summary,
+              ...entry.highlights,
+            ],
+            normalizedQuery,
+          ),
+        ),
+    [normalizedQuery, workExperience],
+  );
+
+  const saveContent = useCallback(
+    async (content: PortfolioContent, successMessage: string, options?: { silent?: boolean }) => {
+      setIsSaving(true);
+
+      try {
+        const normalizedContent = {
+          ...content,
+          workExperience: sortWorkExperienceEntries(content.workExperience),
+        };
+        await savePortfolioContent(normalizedContent);
+        dispatch(setSiteContent(normalizedContent));
+        dispatch(replaceProjects(normalizedContent.projects));
+        setSource('firestore');
+        setSavedSnapshot(clonePortfolioContent(normalizedContent));
+        setLastSavedSignature(stringify(normalizedContent));
+        setLastSavedAt(formatTime(new Date()));
+
+        if (!options?.silent) {
+          setMessage({ tone: 'success', text: successMessage });
+        }
+      } catch (error) {
+        setMessage({
+          tone: 'error',
+          text: error instanceof Error ? error.message : 'Unable to save Firestore content.',
+        });
+        throw error;
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [dispatch],
   );
 
   const updateProject = useCallback(
@@ -241,6 +403,14 @@ export const AdminPage = () => {
     setProjectOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
 
+  const moveProject = useCallback((index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    setProjects((current) => moveItem(current, index, targetIndex));
+    setProjectUiIds((current) => moveItem(current, index, targetIndex));
+    setProjectTechStackDrafts((current) => moveItem(current, index, targetIndex));
+    setProjectOpenState((current) => moveItem(current, index, targetIndex));
+  }, []);
+
   const toggleProject = useCallback((index: number) => {
     setProjectOpenState((current) => current.map((isOpen, i) => (i === index ? !isOpen : isOpen)));
   }, []);
@@ -268,6 +438,15 @@ export const AdminPage = () => {
     setSkillUiIds((current) => current.filter((_, i) => i !== groupIndex));
     setSkillGroupOpenState((current) => current.filter((_, i) => i !== groupIndex));
     setSkillOpenState((current) => current.filter((_, i) => i !== groupIndex));
+  }, []);
+
+  const moveSkillGroup = useCallback((groupIndex: number, direction: -1 | 1) => {
+    const targetIndex = groupIndex + direction;
+    setSkillGroups((current) => moveItem(current, groupIndex, targetIndex));
+    setSkillGroupUiIds((current) => moveItem(current, groupIndex, targetIndex));
+    setSkillUiIds((current) => moveItem(current, groupIndex, targetIndex));
+    setSkillGroupOpenState((current) => moveItem(current, groupIndex, targetIndex));
+    setSkillOpenState((current) => moveItem(current, groupIndex, targetIndex));
   }, []);
 
   const toggleSkillGroup = useCallback((groupIndex: number) => {
@@ -344,14 +523,43 @@ export const AdminPage = () => {
     );
   }, []);
 
+  const moveSkill = useCallback((groupIndex: number, skillIndex: number, direction: -1 | 1) => {
+    const targetIndex = skillIndex + direction;
+
+    setSkillGroups((current) =>
+      current.map((group, i) => {
+        if (i !== groupIndex) {
+          return group;
+        }
+
+        return {
+          ...group,
+          skills: moveItem(group.skills, skillIndex, targetIndex),
+        };
+      }),
+    );
+    setSkillOpenState((current) =>
+      current.map((groupState, i) =>
+        i === groupIndex ? moveItem(groupState, skillIndex, targetIndex) : groupState,
+      ),
+    );
+    setSkillUiIds((current) =>
+      current.map((groupIds, i) =>
+        i === groupIndex ? moveItem(groupIds, skillIndex, targetIndex) : groupIds,
+      ),
+    );
+  }, []);
+
   const addWorkExperience = useCallback(() => {
     setWorkExperience((current) => [...current, createEmptyWorkExperience()]);
+    setWorkHighlightsDrafts((current) => [...current, '']);
     setWorkExperienceUiIds((current) => [...current, createStableId('work')]);
     setWorkExperienceOpenState((current) => [...current, true]);
   }, []);
 
   const removeWorkExperience = useCallback((index: number) => {
     setWorkExperience((current) => current.filter((_, i) => i !== index));
+    setWorkHighlightsDrafts((current) => current.filter((_, i) => i !== index));
     setWorkExperienceUiIds((current) => current.filter((_, i) => i !== index));
     setWorkExperienceOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
@@ -372,8 +580,8 @@ export const AdminPage = () => {
   );
 
   const updateWorkHighlights = useCallback((index: number, value: string) => {
-    updateWorkExperience(index, 'highlights', linesToList(value));
-  }, [updateWorkExperience]);
+    setWorkHighlightsDrafts((current) => current.map((draft, i) => (i === index ? value : draft)));
+  }, []);
 
   const toggleSkill = useCallback((groupIndex: number, skillIndex: number) => {
     setSkillOpenState((current) =>
@@ -450,22 +658,17 @@ export const AdminPage = () => {
   };
 
   const handleSave = async () => {
-    setIsBusy(true);
-
     try {
-      const content = buildContentFromEditors();
-      await savePortfolioContent(content);
-      dispatch(setSiteContent(content));
-      dispatch(replaceProjects(content.projects));
-      setSource('firestore');
-      setMessage({ tone: 'success', text: 'Saved to Firestore.' });
+      if (!currentContent) {
+        throw new Error('One of the editor panels contains invalid data. Fix it before saving.');
+      }
+
+      await saveContent(currentContent, 'Saved to Firestore.');
     } catch (error) {
       setMessage({
         tone: 'error',
         text: error instanceof Error ? error.message : 'Unable to save Firestore content.',
       });
-    } finally {
-      setIsBusy(false);
     }
   };
 
@@ -478,82 +681,113 @@ export const AdminPage = () => {
       return;
     }
 
-    setIsBusy(true);
-
     try {
       const defaults = clonePortfolioContent();
-      await savePortfolioContent(defaults);
+      await saveContent(defaults, 'Firestore reset to local defaults.');
       loadContentIntoEditors(defaults);
-      dispatch(setSiteContent(defaults));
-      dispatch(replaceProjects(defaults.projects));
-      setSource('firestore');
-      setMessage({ tone: 'success', text: 'Firestore reset to local defaults.' });
     } catch (error) {
       setMessage({
         tone: 'error',
         text: error instanceof Error ? error.message : 'Unable to reset Firestore content.',
       });
-    } finally {
-      setIsBusy(false);
     }
   };
 
-  const saveWithCurrentContent = useCallback(async (successMessage: string) => {
-    const content = buildContentFromEditors();
-    await savePortfolioContent(content);
-    dispatch(setSiteContent(content));
-    dispatch(replaceProjects(content.projects));
-    setSource('firestore');
-    setMessage({ tone: 'success', text: successMessage });
-  }, [buildContentFromEditors, dispatch]);
-
   const handleSaveProject = useCallback(async (projectIndex: number) => {
-    setIsBusy(true);
     try {
-      const content = buildContentFromEditors();
-      const updatedProjects = [...content.projects];
-      updatedProjects[projectIndex] = content.projects[projectIndex];
-      await savePortfolioContent({ ...content, projects: updatedProjects });
-      dispatch(setSiteContent({ ...content, projects: updatedProjects }));
-      dispatch(replaceProjects(updatedProjects));
-      setMessage({ tone: 'success', text: 'Project saved.' });
+      if (!currentContent) {
+        throw new Error('Fix the invalid editor content before saving this project.');
+      }
+
+      const updatedProjects = [...currentContent.projects];
+      updatedProjects[projectIndex] = currentContent.projects[projectIndex];
+      await saveContent({ ...currentContent, projects: updatedProjects }, 'Project saved.');
     } catch (error) {
       setMessage({
         tone: 'error',
         text: error instanceof Error ? error.message : 'Unable to save this project.',
       });
-    } finally {
-      setIsBusy(false);
     }
-  }, [buildContentFromEditors, dispatch]);
+  }, [currentContent, saveContent]);
 
   const handleSaveSkillGroup = useCallback(async () => {
-    setIsBusy(true);
     try {
-      await saveWithCurrentContent('Skill group saved.');
+      if (!currentContent) {
+        throw new Error('Fix the invalid editor content before saving this skill group.');
+      }
+
+      await saveContent(currentContent, 'Skill group saved.');
     } catch (error) {
       setMessage({
         tone: 'error',
         text: error instanceof Error ? error.message : 'Unable to save this skill group.',
       });
-    } finally {
-      setIsBusy(false);
     }
-  }, [saveWithCurrentContent]);
+  }, [currentContent, saveContent]);
 
   const handleSaveWorkExperience = useCallback(async () => {
-    setIsBusy(true);
     try {
-      await saveWithCurrentContent('Job saved.');
+      if (!currentContent) {
+        throw new Error('Fix the invalid editor content before saving this role.');
+      }
+
+      await saveContent(currentContent, 'Job saved.');
     } catch (error) {
       setMessage({
         tone: 'error',
         text: error instanceof Error ? error.message : 'Unable to save this job.',
       });
-    } finally {
-      setIsBusy(false);
     }
-  }, [saveWithCurrentContent]);
+  }, [currentContent, saveContent]);
+
+  const handleUndoLastSave = useCallback(() => {
+    if (!savedSnapshot) {
+      setMessage({ tone: 'info', text: 'Nothing to undo yet.' });
+      return;
+    }
+
+    loadContentIntoEditors(savedSnapshot);
+    setMessage({ tone: 'success', text: 'Reverted to the last saved version.' });
+  }, [loadContentIntoEditors, savedSnapshot]);
+
+  const collapseAllPanels = useCallback(() => {
+    setProjectOpenState(createAccordionState(projects.length));
+    setSkillGroupOpenState(createAccordionState(skillGroups.length));
+    setSkillOpenState(skillGroups.map((group) => createAccordionState(group.skills.length)));
+    setWorkExperienceOpenState(createAccordionState(workExperience.length));
+  }, [projects.length, skillGroups, workExperience.length]);
+
+  useEffect(() => {
+    if (!isUnlocked || !isHydrated || isBusy || isSaving || !currentContent || !isDirty) {
+      return undefined;
+    }
+
+    autosaveTimerRef.current = window.setTimeout(() => {
+      void saveContent(currentContent, 'Autosaved.', { silent: true });
+    }, 1200);
+
+    return () => {
+      if (autosaveTimerRef.current) {
+        window.clearTimeout(autosaveTimerRef.current);
+      }
+    };
+  }, [currentContent, isBusy, isDirty, isHydrated, isSaving, isUnlocked, saveContent]);
+
+  useEffect(() => {
+    const handleKeyboardShortcut = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        void handleSave();
+      }
+
+      if (event.key === 'Escape') {
+        collapseAllPanels();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyboardShortcut);
+    return () => window.removeEventListener('keydown', handleKeyboardShortcut);
+  }, [collapseAllPanels, handleSave]);
 
   if (!isUnlocked) {
     return (
@@ -591,18 +825,31 @@ export const AdminPage = () => {
           <h1>Portfolio Admin</h1>
           <p>Edit Firestore content while keeping the current local site as the fallback.</p>
         </div>
-        <span className="admin-source">Source: {source}</span>
+        <div className="admin-status-stack">
+          <span className={`admin-source${isDirty ? ' is-dirty' : ''}`}>
+            {isDirty ? 'Unsaved changes' : `Saved ${currentTimeLabel}`}
+          </span>
+          <span className="admin-source">Source: {source}</span>
+        </div>
       </div>
 
-      <div className="admin-actions">
-        <button className="button-link primary" type="button" onClick={handleSave} disabled={isBusy}>
+      <div className="admin-actions admin-actions-sticky">
+        <button className="button-link primary" type="button" onClick={handleSave} disabled={isBusy || isSaving}>
           Save to Firestore
         </button>
         <button
           className="button-link ghost"
           type="button"
+          onClick={handleUndoLastSave}
+          disabled={!savedSnapshot || isBusy || isSaving}
+        >
+          Undo Last Save
+        </button>
+        <button
+          className="button-link ghost"
+          type="button"
           onClick={loadRemoteContent}
-          disabled={isBusy}
+          disabled={isBusy || isSaving}
         >
           Reload Firestore
         </button>
@@ -610,11 +857,67 @@ export const AdminPage = () => {
           className="button-link ghost"
           type="button"
           onClick={handleResetDefaults}
-          disabled={isBusy}
+          disabled={isBusy || isSaving}
         >
           Reset Firebase to Local Defaults
         </button>
+        <button
+          className="button-link ghost"
+          type="button"
+          onClick={() => setShowPreview((current) => !current)}
+          disabled={isBusy || isSaving}
+        >
+          {showPreview ? 'Hide Preview' : 'Show Preview'}
+        </button>
       </div>
+
+      <div className="admin-tools">
+        <label className="admin-search">
+          <span>Search dashboard</span>
+          <input
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search projects, jobs, skills, URLs..."
+          />
+        </label>
+        <div className="admin-quick-jump" aria-label="Quick jump to sections">
+          <button className="pill" type="button" onClick={() => setActiveTab('projects')}>
+            Projects {filteredProjects.length}/{projects.length}
+          </button>
+          <button className="pill" type="button" onClick={() => setActiveTab('skills')}>
+            Skills {filteredSkillGroups.length}/{skillGroups.length}
+          </button>
+          <button className="pill" type="button" onClick={() => setActiveTab('jobs')}>
+            Jobs {filteredWorkExperience.length}/{workExperience.length}
+          </button>
+          <button className="pill" type="button" onClick={() => setActiveTab('about')}>
+            About JSON
+          </button>
+        </div>
+      </div>
+
+      {showPreview ? (
+        <div className="admin-preview-dashboard">
+          <div className="admin-preview-card">
+            <span className="eyebrow">Live Preview</span>
+            <h2>{(currentContent ?? savedSnapshot ?? clonePortfolioContent()).about.profileFacts[0]?.value ?? 'Preview'}</h2>
+            <p>
+              {(currentContent ?? savedSnapshot ?? clonePortfolioContent()).about.quickIntro.paragraphs[0] ??
+                'Your live content preview appears here.'}
+            </p>
+          </div>
+          <div className="admin-preview-card">
+            <span className="eyebrow">Top Project</span>
+            <h3>{(currentContent ?? savedSnapshot ?? clonePortfolioContent()).projects[0]?.title ?? 'No project yet'}</h3>
+            <p>{(currentContent ?? savedSnapshot ?? clonePortfolioContent()).projects[0]?.description ?? 'Add a project to preview it here.'}</p>
+          </div>
+          <div className="admin-preview-card">
+            <span className="eyebrow">Work Snapshot</span>
+            <h3>{sortWorkExperienceEntries((currentContent ?? savedSnapshot ?? clonePortfolioContent()).workExperience)[0]?.title ?? 'No roles yet'}</h3>
+            <p>{sortWorkExperienceEntries((currentContent ?? savedSnapshot ?? clonePortfolioContent()).workExperience)[0]?.organisation ?? 'Your current role preview will appear here.'}</p>
+          </div>
+        </div>
+      ) : null}
 
       <p className={`admin-message is-${message.tone}`}>{message.text}</p>
 
@@ -637,13 +940,13 @@ export const AdminPage = () => {
         <section className="admin-panel">
           <div className="admin-editor">
             <div className="admin-editor-title-row">
-              <span>Projects</span>
+              <span>Projects ({filteredProjects.length})</span>
               <button className="button-link ghost" type="button" onClick={addProject} disabled={isBusy}>
                 Add Project
               </button>
             </div>
             <div className="admin-list">
-              {projects.map((project, projectIndex) => (
+              {filteredProjects.map(({ project, projectIndex }) => (
                 <article className="admin-item" key={projectUiIds[projectIndex] || `project-${projectIndex}`}>
                   <button
                     type="button"
@@ -662,8 +965,24 @@ export const AdminPage = () => {
                           <button
                             className="button-link ghost"
                             type="button"
+                            onClick={() => moveProject(projectIndex, -1)}
+                            disabled={isBusy || isSaving || projectIndex === 0}
+                          >
+                            Move Up
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => moveProject(projectIndex, 1)}
+                            disabled={isBusy || isSaving || projectIndex === projects.length - 1}
+                          >
+                            Move Down
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
                             onClick={() => handleSaveProject(projectIndex)}
-                            disabled={isBusy}
+                            disabled={isBusy || isSaving}
                           >
                             Save This Project
                           </button>
@@ -671,7 +990,7 @@ export const AdminPage = () => {
                             className="button-link ghost"
                             type="button"
                             onClick={() => removeProject(projectIndex)}
-                            disabled={isBusy}
+                            disabled={isBusy || isSaving}
                           >
                             Remove
                           </button>
@@ -807,13 +1126,13 @@ export const AdminPage = () => {
         <section className="admin-panel">
           <div className="admin-editor">
             <div className="admin-editor-title-row">
-              <span>Technical Skills</span>
-              <button className="button-link ghost" type="button" onClick={addSkillGroup} disabled={isBusy}>
+              <span>Technical Skills ({filteredSkillGroups.length})</span>
+              <button className="button-link ghost" type="button" onClick={addSkillGroup} disabled={isBusy || isSaving}>
                 Add Group
               </button>
             </div>
             <div className="admin-list">
-              {skillGroups.map((group, groupIndex) => (
+              {filteredSkillGroups.map(({ group, groupIndex, skills }) => (
                 <article className="admin-item" key={skillGroupUiIds[groupIndex] || `${group.title}-${groupIndex}`}>
                   <button
                     type="button"
@@ -832,8 +1151,24 @@ export const AdminPage = () => {
                           <button
                             className="button-link ghost"
                             type="button"
+                            onClick={() => moveSkillGroup(groupIndex, -1)}
+                            disabled={isBusy || isSaving || groupIndex === 0}
+                          >
+                            Move Up
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => moveSkillGroup(groupIndex, 1)}
+                            disabled={isBusy || isSaving || groupIndex === skillGroups.length - 1}
+                          >
+                            Move Down
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
                             onClick={handleSaveSkillGroup}
-                            disabled={isBusy}
+                            disabled={isBusy || isSaving}
                           >
                             Save This Group
                           </button>
@@ -869,13 +1204,13 @@ export const AdminPage = () => {
                           className="button-link ghost"
                           type="button"
                           onClick={() => addSkill(groupIndex)}
-                          disabled={isBusy}
+                          disabled={isBusy || isSaving}
                         >
                           Add Skill
                         </button>
                       </div>
 
-                      {group.skills.map((skill, skillIndex) => (
+                      {skills.map(({ skill, skillIndex }) => (
                         <article className="admin-sub-item" key={skillUiIds[groupIndex]?.[skillIndex] || `${skill.name}-${skillIndex}`}>
                           <button
                             type="button"
@@ -890,14 +1225,32 @@ export const AdminPage = () => {
                             <div className="admin-item-body">
                               <div className="admin-item-actions">
                                 <span className="admin-muted">Edit skill</span>
-                                <button
-                                  className="button-link ghost"
-                                  type="button"
-                                  onClick={() => removeSkill(groupIndex, skillIndex)}
-                                  disabled={isBusy}
-                                >
-                                  Remove Skill
-                                </button>
+                                <div className="admin-inline-actions">
+                                  <button
+                                    className="button-link ghost"
+                                    type="button"
+                                    onClick={() => moveSkill(groupIndex, skillIndex, -1)}
+                                    disabled={isBusy || isSaving || skillIndex === 0}
+                                  >
+                                    Move Up
+                                  </button>
+                                  <button
+                                    className="button-link ghost"
+                                    type="button"
+                                    onClick={() => moveSkill(groupIndex, skillIndex, 1)}
+                                    disabled={isBusy || isSaving || skillIndex === group.skills.length - 1}
+                                  >
+                                    Move Down
+                                  </button>
+                                  <button
+                                    className="button-link ghost"
+                                    type="button"
+                                    onClick={() => removeSkill(groupIndex, skillIndex)}
+                                    disabled={isBusy || isSaving}
+                                  >
+                                    Remove Skill
+                                  </button>
+                                </div>
                               </div>
                               <div className="admin-preview-row">
                                 <div className="skill-icon admin-skill-preview" aria-hidden="true">
@@ -978,13 +1331,16 @@ export const AdminPage = () => {
         <section className="admin-panel">
           <div className="admin-editor">
             <div className="admin-editor-title-row">
-              <span>Work History</span>
-              <button className="button-link ghost" type="button" onClick={addWorkExperience} disabled={isBusy}>
+              <span>Work History ({filteredWorkExperience.length})</span>
+              <button className="button-link ghost" type="button" onClick={addWorkExperience} disabled={isBusy || isSaving}>
                 Add Role
               </button>
             </div>
+            <p className="admin-muted admin-work-note">
+              Jobs are sorted automatically with current roles first, then newest to oldest by start date.
+            </p>
             <div className="admin-list">
-              {workExperience.map((entry, entryIndex) => (
+              {filteredWorkExperience.map(({ entry, entryIndex }) => (
                 <article className="admin-item" key={workExperienceUiIds[entryIndex] || `${entry.start}-${entry.title}-${entryIndex}`}>
                   <button
                     type="button"
@@ -1004,7 +1360,7 @@ export const AdminPage = () => {
                             className="button-link ghost"
                             type="button"
                             onClick={handleSaveWorkExperience}
-                            disabled={isBusy}
+                            disabled={isBusy || isSaving}
                           >
                             Save This Role
                           </button>
@@ -1012,7 +1368,7 @@ export const AdminPage = () => {
                             className="button-link ghost"
                             type="button"
                             onClick={() => removeWorkExperience(entryIndex)}
-                            disabled={isBusy}
+                            disabled={isBusy || isSaving}
                           >
                             Remove Role
                           </button>
