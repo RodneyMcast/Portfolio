@@ -1,4 +1,4 @@
-import type { WorkExperienceEntry } from '../../data/portfolioContent';
+import { sortWorkExperienceEntries, type WorkExperienceEntry } from '../../data/portfolioContent';
 
 type WorkExperienceTimelineProps = {
   isOpen: boolean;
@@ -34,7 +34,7 @@ export const WorkExperienceTimeline = ({ isOpen, onToggle, entries }: WorkExperi
       <div className="experience-content" id="work-experience-content">
         <p className="experience-hint">Hover or focus a role to see more</p>
         <ol className="experience-timeline">
-          {entries.map((experience) => (
+          {sortWorkExperienceEntries(entries).map((experience) => (
             <li className="experience-item" key={`${experience.start}-${experience.title}`}>
               <article className="experience-entry" tabIndex={0}>
                 <span className="experience-dot" aria-hidden="true" />

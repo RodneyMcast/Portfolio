@@ -41,6 +41,50 @@ export type PortfolioContent = {
   adminKey: string;
 };
 
+const MONTHS: Record<string, number> = {
+  Jan: 0,
+  Feb: 1,
+  Mar: 2,
+  Apr: 3,
+  May: 4,
+  Jun: 5,
+  Jul: 6,
+  Aug: 7,
+  Sep: 8,
+  Oct: 9,
+  Nov: 10,
+  Dec: 11,
+};
+
+const parseWorkDate = (value: string) => {
+  const match = value.trim().match(/^([A-Za-z]{3})\s+(\d{4})$/);
+
+  if (!match) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  const month = MONTHS[match[1]];
+  const year = Number.parseInt(match[2], 10);
+
+  if (month === undefined || Number.isNaN(year)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  return Date.UTC(year, month, 1);
+};
+
+export const sortWorkExperienceEntries = (entries: WorkExperienceEntry[]) =>
+  [...entries].sort((left, right) => {
+    if (left.current !== right.current) {
+      return left.current ? -1 : 1;
+    }
+
+    const leftDate = parseWorkDate(left.start);
+    const rightDate = parseWorkDate(right.start);
+
+    return rightDate - leftDate;
+  });
+
 export const defaultAboutContent: AboutContent = {
   quickIntro: {
     paragraphs: [

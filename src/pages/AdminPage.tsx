@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useAppDispatch } from '../app/hooks';
-import { defaultPortfolioContent, type PortfolioContent } from '../data/portfolioContent';
+import {
+  defaultPortfolioContent,
+  sortWorkExperienceEntries,
+  type PortfolioContent,
+} from '../data/portfolioContent';
 import type { SkillGroup } from '../components/about/SkillsGrid';
 import { replaceProjects } from '../features/projects/projectsSlice';
 import type { Project, ProjectCategory } from '../features/projects/types';
@@ -99,6 +103,7 @@ const linesToList = (value: string) =>
 const listToLines = (items: string[]) => items.join('\n');
 
 const createAccordionState = (length: number, open = false) => Array.from({ length }, () => open);
+const createStableId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 export const AdminPage = () => {
   const dispatch = useAppDispatch();
@@ -107,6 +112,9 @@ export const AdminPage = () => {
   );
   const [keycode, setKeycode] = useState('');
   const [projects, setProjects] = useState<Project[]>(() => clonePortfolioContent().projects);
+  const [projectUiIds, setProjectUiIds] = useState<string[]>(() =>
+    clonePortfolioContent().projects.map((_, index) => createStableId(`project-${index}`)),
+  );
   const [projectTechStackDrafts, setProjectTechStackDrafts] = useState<string[]>(() =>
     clonePortfolioContent().projects.map((project) => listToText(project.techStack)),
   );
@@ -117,6 +125,14 @@ export const AdminPage = () => {
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(() =>
     clonePortfolioContent().skillGroups,
   );
+  const [skillGroupUiIds, setSkillGroupUiIds] = useState<string[]>(() =>
+    clonePortfolioContent().skillGroups.map((_, index) => createStableId(`skill-group-${index}`)),
+  );
+  const [skillUiIds, setSkillUiIds] = useState<string[][]>(() =>
+    clonePortfolioContent().skillGroups.map((group, groupIndex) =>
+      group.skills.map((_, skillIndex) => createStableId(`skill-${groupIndex}-${skillIndex}`)),
+    ),
+  );
   const [skillGroupOpenState, setSkillGroupOpenState] = useState<boolean[]>(() =>
     createAccordionState(clonePortfolioContent().skillGroups.length),
   );
@@ -125,6 +141,9 @@ export const AdminPage = () => {
   );
   const [workExperience, setWorkExperience] = useState<WorkExperienceEntry[]>(() =>
     clonePortfolioContent().workExperience,
+  );
+  const [workExperienceUiIds, setWorkExperienceUiIds] = useState<string[]>(() =>
+    clonePortfolioContent().workExperience.map((_, index) => createStableId(`work-${index}`)),
   );
   const [workExperienceOpenState, setWorkExperienceOpenState] = useState<boolean[]>(() =>
     createAccordionState(clonePortfolioContent().workExperience.length),
@@ -142,13 +161,21 @@ export const AdminPage = () => {
 
   const loadContentIntoEditors = useCallback((content: PortfolioContent) => {
     setProjects(content.projects);
+    setProjectUiIds(content.projects.map((_, index) => createStableId(`project-${index}`)));
     setProjectTechStackDrafts(content.projects.map((project) => listToText(project.techStack)));
     setProjectOpenState(createAccordionState(content.projects.length));
     setAboutJson(stringify(content.about));
     setSkillGroups(content.skillGroups);
+    setSkillGroupUiIds(content.skillGroups.map((_, index) => createStableId(`skill-group-${index}`)));
+    setSkillUiIds(
+      content.skillGroups.map((group, groupIndex) =>
+        group.skills.map((_, skillIndex) => createStableId(`skill-${groupIndex}-${skillIndex}`)),
+      ),
+    );
     setSkillGroupOpenState(createAccordionState(content.skillGroups.length));
     setSkillOpenState(content.skillGroups.map((group) => createAccordionState(group.skills.length)));
     setWorkExperience(content.workExperience);
+    setWorkExperienceUiIds(content.workExperience.map((_, index) => createStableId(`work-${index}`)));
     setWorkExperienceOpenState(createAccordionState(content.workExperience.length));
     setAdminKey(content.adminKey || defaultPortfolioContent.adminKey);
   }, []);
@@ -179,7 +206,7 @@ export const AdminPage = () => {
       })),
       about: parseEditorJson<PortfolioContent['about']>('About content', aboutJson),
       skillGroups,
-      workExperience,
+      workExperience: sortWorkExperienceEntries(workExperience),
       adminKey: adminKey.trim() || defaultPortfolioContent.adminKey,
     }),
     [aboutJson, adminKey, projectTechStackDrafts, projects, skillGroups, workExperience],
@@ -202,12 +229,14 @@ export const AdminPage = () => {
 
   const addProject = useCallback(() => {
     setProjects((current) => [...current, createEmptyProject()]);
+    setProjectUiIds((current) => [...current, createStableId('project')]);
     setProjectTechStackDrafts((current) => [...current, '']);
     setProjectOpenState((current) => [...current, true]);
   }, []);
 
   const removeProject = useCallback((index: number) => {
     setProjects((current) => current.filter((_, i) => i !== index));
+    setProjectUiIds((current) => current.filter((_, i) => i !== index));
     setProjectTechStackDrafts((current) => current.filter((_, i) => i !== index));
     setProjectOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
@@ -227,12 +256,16 @@ export const AdminPage = () => {
 
   const addSkillGroup = useCallback(() => {
     setSkillGroups((current) => [...current, createEmptySkillGroup()]);
+    setSkillGroupUiIds((current) => [...current, createStableId('skill-group')]);
+    setSkillUiIds((current) => [...current, [createStableId('skill')]]);
     setSkillGroupOpenState((current) => [...current, true]);
     setSkillOpenState((current) => [...current, [true]]);
   }, []);
 
   const removeSkillGroup = useCallback((groupIndex: number) => {
     setSkillGroups((current) => current.filter((_, i) => i !== groupIndex));
+    setSkillGroupUiIds((current) => current.filter((_, i) => i !== groupIndex));
+    setSkillUiIds((current) => current.filter((_, i) => i !== groupIndex));
     setSkillGroupOpenState((current) => current.filter((_, i) => i !== groupIndex));
     setSkillOpenState((current) => current.filter((_, i) => i !== groupIndex));
   }, []);
@@ -274,6 +307,11 @@ export const AdminPage = () => {
         i === groupIndex ? { ...group, skills: [...group.skills, createEmptySkill()] } : group,
       ),
     );
+    setSkillUiIds((current) =>
+      current.map((groupIds, i) =>
+        i === groupIndex ? [...groupIds, createStableId('skill')] : groupIds,
+      ),
+    );
     setSkillOpenState((current) =>
       current.map((groupState, i) =>
         i === groupIndex ? [...groupState, true] : groupState,
@@ -299,15 +337,22 @@ export const AdminPage = () => {
         i === groupIndex ? groupState.filter((_, j) => j !== skillIndex) : groupState,
       ),
     );
+    setSkillUiIds((current) =>
+      current.map((groupIds, i) =>
+        i === groupIndex ? groupIds.filter((_, j) => j !== skillIndex) : groupIds,
+      ),
+    );
   }, []);
 
   const addWorkExperience = useCallback(() => {
     setWorkExperience((current) => [...current, createEmptyWorkExperience()]);
+    setWorkExperienceUiIds((current) => [...current, createStableId('work')]);
     setWorkExperienceOpenState((current) => [...current, true]);
   }, []);
 
   const removeWorkExperience = useCallback((index: number) => {
     setWorkExperience((current) => current.filter((_, i) => i !== index));
+    setWorkExperienceUiIds((current) => current.filter((_, i) => i !== index));
     setWorkExperienceOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
 
@@ -453,6 +498,63 @@ export const AdminPage = () => {
     }
   };
 
+  const saveWithCurrentContent = useCallback(async (successMessage: string) => {
+    const content = buildContentFromEditors();
+    await savePortfolioContent(content);
+    dispatch(setSiteContent(content));
+    dispatch(replaceProjects(content.projects));
+    setSource('firestore');
+    setMessage({ tone: 'success', text: successMessage });
+  }, [buildContentFromEditors, dispatch]);
+
+  const handleSaveProject = useCallback(async (projectIndex: number) => {
+    setIsBusy(true);
+    try {
+      const content = buildContentFromEditors();
+      const updatedProjects = [...content.projects];
+      updatedProjects[projectIndex] = content.projects[projectIndex];
+      await savePortfolioContent({ ...content, projects: updatedProjects });
+      dispatch(setSiteContent({ ...content, projects: updatedProjects }));
+      dispatch(replaceProjects(updatedProjects));
+      setMessage({ tone: 'success', text: 'Project saved.' });
+    } catch (error) {
+      setMessage({
+        tone: 'error',
+        text: error instanceof Error ? error.message : 'Unable to save this project.',
+      });
+    } finally {
+      setIsBusy(false);
+    }
+  }, [buildContentFromEditors, dispatch]);
+
+  const handleSaveSkillGroup = useCallback(async () => {
+    setIsBusy(true);
+    try {
+      await saveWithCurrentContent('Skill group saved.');
+    } catch (error) {
+      setMessage({
+        tone: 'error',
+        text: error instanceof Error ? error.message : 'Unable to save this skill group.',
+      });
+    } finally {
+      setIsBusy(false);
+    }
+  }, [saveWithCurrentContent]);
+
+  const handleSaveWorkExperience = useCallback(async () => {
+    setIsBusy(true);
+    try {
+      await saveWithCurrentContent('Job saved.');
+    } catch (error) {
+      setMessage({
+        tone: 'error',
+        text: error instanceof Error ? error.message : 'Unable to save this job.',
+      });
+    } finally {
+      setIsBusy(false);
+    }
+  }, [saveWithCurrentContent]);
+
   if (!isUnlocked) {
     return (
       <section className="admin-page">
@@ -542,7 +644,7 @@ export const AdminPage = () => {
             </div>
             <div className="admin-list">
               {projects.map((project, projectIndex) => (
-                <article className="admin-item" key={project.id || `project-${projectIndex}`}>
+                <article className="admin-item" key={projectUiIds[projectIndex] || `project-${projectIndex}`}>
                   <button
                     type="button"
                     className="admin-item-summary"
@@ -556,14 +658,24 @@ export const AdminPage = () => {
                     <div className="admin-item-body">
                       <div className="admin-item-actions">
                         <span className="admin-muted">Edit project details</span>
-                        <button
-                          className="button-link ghost"
-                          type="button"
-                          onClick={() => removeProject(projectIndex)}
-                          disabled={isBusy}
-                        >
-                          Remove
-                        </button>
+                        <div className="admin-inline-actions">
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => handleSaveProject(projectIndex)}
+                            disabled={isBusy}
+                          >
+                            Save This Project
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => removeProject(projectIndex)}
+                            disabled={isBusy}
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                       <div className="admin-preview-row">
                         <img
@@ -702,7 +814,7 @@ export const AdminPage = () => {
             </div>
             <div className="admin-list">
               {skillGroups.map((group, groupIndex) => (
-                <article className="admin-item" key={`${group.title}-${groupIndex}`}>
+                <article className="admin-item" key={skillGroupUiIds[groupIndex] || `${group.title}-${groupIndex}`}>
                   <button
                     type="button"
                     className="admin-item-summary"
@@ -716,14 +828,24 @@ export const AdminPage = () => {
                     <div className="admin-item-body">
                       <div className="admin-item-actions">
                         <span className="admin-muted">Edit group and skills</span>
-                        <button
-                          className="button-link ghost"
-                          type="button"
-                          onClick={() => removeSkillGroup(groupIndex)}
-                          disabled={isBusy}
-                        >
-                          Remove Group
-                        </button>
+                        <div className="admin-inline-actions">
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={handleSaveSkillGroup}
+                            disabled={isBusy}
+                          >
+                            Save This Group
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => removeSkillGroup(groupIndex)}
+                            disabled={isBusy}
+                          >
+                            Remove Group
+                          </button>
+                        </div>
                       </div>
                       <div className="admin-form-grid two">
                         <label>
@@ -754,7 +876,7 @@ export const AdminPage = () => {
                       </div>
 
                       {group.skills.map((skill, skillIndex) => (
-                        <article className="admin-sub-item" key={`${skill.name}-${skillIndex}`}>
+                        <article className="admin-sub-item" key={skillUiIds[groupIndex]?.[skillIndex] || `${skill.name}-${skillIndex}`}>
                           <button
                             type="button"
                             className="admin-item-summary admin-sub-summary"
@@ -863,7 +985,7 @@ export const AdminPage = () => {
             </div>
             <div className="admin-list">
               {workExperience.map((entry, entryIndex) => (
-                <article className="admin-item" key={`${entry.start}-${entry.title}-${entryIndex}`}>
+                <article className="admin-item" key={workExperienceUiIds[entryIndex] || `${entry.start}-${entry.title}-${entryIndex}`}>
                   <button
                     type="button"
                     className="admin-item-summary"
@@ -877,14 +999,24 @@ export const AdminPage = () => {
                     <div className="admin-item-body">
                       <div className="admin-item-actions">
                         <span className="admin-muted">Edit role details</span>
-                        <button
-                          className="button-link ghost"
-                          type="button"
-                          onClick={() => removeWorkExperience(entryIndex)}
-                          disabled={isBusy}
-                        >
-                          Remove Role
-                        </button>
+                        <div className="admin-inline-actions">
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={handleSaveWorkExperience}
+                            disabled={isBusy}
+                          >
+                            Save This Role
+                          </button>
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => removeWorkExperience(entryIndex)}
+                            disabled={isBusy}
+                          >
+                            Remove Role
+                          </button>
+                        </div>
                       </div>
                       <div className="admin-form-grid two">
                         <label>

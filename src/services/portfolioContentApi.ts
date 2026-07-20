@@ -3,6 +3,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import {
   defaultPortfolioContent,
+  sortWorkExperienceEntries,
   type PortfolioContent,
 } from '../data/portfolioContent';
 import { firestoreDb, isFirebaseConfigured, storageDb } from './firebase';
@@ -39,7 +40,7 @@ const mergePortfolioContent = (value: unknown): PortfolioContent => {
       ? (value.skillGroups as PortfolioContent['skillGroups'])
       : clonePortfolioContent().skillGroups,
     workExperience: Array.isArray(value.workExperience)
-      ? (value.workExperience as PortfolioContent['workExperience'])
+      ? sortWorkExperienceEntries(value.workExperience as PortfolioContent['workExperience'])
       : clonePortfolioContent().workExperience,
     adminKey: typeof value.adminKey === 'string' ? value.adminKey : defaultPortfolioContent.adminKey,
   };
@@ -103,6 +104,7 @@ export const savePortfolioContent = async (content: PortfolioContent) => {
     docRef,
     {
       ...content,
+      workExperience: sortWorkExperienceEntries(content.workExperience),
       updatedAt: serverTimestamp(),
     },
     { merge: true },

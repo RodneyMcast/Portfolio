@@ -5,6 +5,7 @@ import { AboutCard } from '../components/about/AboutCard';
 import { AboutHero } from '../components/about/AboutHero';
 import { ProfileBlock } from '../components/about/ProfileBlock';
 import { SkillsGrid } from '../components/about/SkillsGrid';
+import { sortWorkExperienceEntries } from '../data/portfolioContent';
 import { fetchSiteContent } from '../features/siteContent/siteContentSlice';
 
 export const AboutPage = () => {
@@ -12,7 +13,9 @@ export const AboutPage = () => {
   const status = useAppSelector((state) => state.siteContent.status);
   const about = useAppSelector((state) => state.siteContent.content.about);
   const skillGroups = useAppSelector((state) => state.siteContent.content.skillGroups);
-  const workExperience = useAppSelector((state) => state.siteContent.content.workExperience);
+  const workExperience = useAppSelector((state) =>
+    sortWorkExperienceEntries(state.siteContent.content.workExperience),
+  );
 
   useEffect(() => {
     if (status === 'idle') {
