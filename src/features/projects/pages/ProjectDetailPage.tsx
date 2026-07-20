@@ -73,53 +73,55 @@ const ProjectDetailPage = () => {
           <li aria-current="page">{project.title}</li>
         </ol>
       </nav>
-      <Link className="text-link" to="/projects">
-        Back to projects
-      </Link>
-      <div className="detail-banner">
-        <img
-          src={project.imageUrl}
-          alt={`${project.title} banner`}
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-      <div className="detail-header">
-        <h1>{project.title}</h1>
-        <div className="detail-chips">
-          {getProjectCategories(project).map((category) => (
-            <span className="chip" key={category}>
-              {category}
-            </span>
-          ))}
-          <span className="chip">{project.year}</span>
+      <div className="detail-shell">
+        <Link className="text-link" to="/projects">
+          Back to projects
+        </Link>
+        <div className="detail-banner">
+          <img
+            src={project.imageUrl}
+            alt={`${project.title} banner`}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
-      </div>
-      <p className="detail-description">{project.longDescription}</p>
-      <div className="detail-section">
-        <h2>Tech stack</h2>
-        <ul className="detail-tags">
-          {project.techStack.map((tech) => (
-            <li key={tech}>{tech}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="detail-actions">
-        {project.liveUrl ? (
-          <a
-            className="button-link primary"
-            href={project.liveUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live
-          </a>
-        ) : null}
-        {project.repoUrl ? (
-          <a className="button-link ghost" href={project.repoUrl} target="_blank" rel="noreferrer">
-            Code
-          </a>
-        ) : null}
+        <div className="detail-header">
+          <h1>{project.title}</h1>
+          <div className="detail-chips">
+            {getProjectCategories(project).map((category) => (
+              <span className="chip" key={category}>
+                {category}
+              </span>
+            ))}
+            <span className="chip">{project.year}</span>
+          </div>
+        </div>
+        <p className="detail-description">{project.longDescription}</p>
+        <div className="detail-section">
+          <h2>Tech stack</h2>
+          <ul className="detail-tags">
+            {project.techStack.map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="detail-actions">
+          {project.liveUrl ? (
+            <a
+              className="button-link primary"
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Live
+            </a>
+          ) : null}
+          {project.repoUrl ? (
+            <a className="button-link ghost" href={project.repoUrl} target="_blank" rel="noreferrer">
+              Code
+            </a>
+          ) : null}
+        </div>
       </div>
     </section>
   );

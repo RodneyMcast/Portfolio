@@ -69,6 +69,8 @@ const createEmptySkillGroup = (): SkillGroup => ({
   skills: [createEmptySkill()],
 });
 
+const createAccordionState = (length: number, open = false) => Array.from({ length }, () => open);
+
 export const AdminPage = () => {
   const dispatch = useAppDispatch();
   const [isUnlocked, setIsUnlocked] = useState(
@@ -76,9 +78,18 @@ export const AdminPage = () => {
   );
   const [keycode, setKeycode] = useState('');
   const [projects, setProjects] = useState<Project[]>(() => clonePortfolioContent().projects);
+  const [projectOpenState, setProjectOpenState] = useState<boolean[]>(() =>
+    createAccordionState(clonePortfolioContent().projects.length),
+  );
   const [aboutJson, setAboutJson] = useState(() => stringify(defaultPortfolioContent.about));
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(() =>
     clonePortfolioContent().skillGroups,
+  );
+  const [skillGroupOpenState, setSkillGroupOpenState] = useState<boolean[]>(() =>
+    createAccordionState(clonePortfolioContent().skillGroups.length),
+  );
+  const [skillOpenState, setSkillOpenState] = useState<boolean[][]>(() =>
+    clonePortfolioContent().skillGroups.map((group) => createAccordionState(group.skills.length)),
   );
   const [adminKey, setAdminKey] = useState(defaultPortfolioContent.adminKey);
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
@@ -93,8 +104,11 @@ export const AdminPage = () => {
 
   const loadContentIntoEditors = useCallback((content: PortfolioContent) => {
     setProjects(content.projects);
+    setProjectOpenState(createAccordionState(content.projects.length));
     setAboutJson(stringify(content.about));
     setSkillGroups(content.skillGroups);
+    setSkillGroupOpenState(createAccordionState(content.skillGroups.length));
+    setSkillOpenState(content.skillGroups.map((group) => createAccordionState(group.skills.length)));
     setAdminKey(content.adminKey || defaultPortfolioContent.adminKey);
   }, []);
 
@@ -145,10 +159,16 @@ export const AdminPage = () => {
 
   const addProject = useCallback(() => {
     setProjects((current) => [...current, createEmptyProject()]);
+    setProjectOpenState((current) => [...current, true]);
   }, []);
 
   const removeProject = useCallback((index: number) => {
     setProjects((current) => current.filter((_, i) => i !== index));
+    setProjectOpenState((current) => current.filter((_, i) => i !== index));
+  }, []);
+
+  const toggleProject = useCallback((index: number) => {
+    setProjectOpenState((current) => current.map((isOpen, i) => (i === index ? !isOpen : isOpen)));
   }, []);
 
   const updateSkillGroup = useCallback(
@@ -162,10 +182,20 @@ export const AdminPage = () => {
 
   const addSkillGroup = useCallback(() => {
     setSkillGroups((current) => [...current, createEmptySkillGroup()]);
+    setSkillGroupOpenState((current) => [...current, true]);
+    setSkillOpenState((current) => [...current, [true]]);
   }, []);
 
   const removeSkillGroup = useCallback((groupIndex: number) => {
     setSkillGroups((current) => current.filter((_, i) => i !== groupIndex));
+    setSkillGroupOpenState((current) => current.filter((_, i) => i !== groupIndex));
+    setSkillOpenState((current) => current.filter((_, i) => i !== groupIndex));
+  }, []);
+
+  const toggleSkillGroup = useCallback((groupIndex: number) => {
+    setSkillGroupOpenState((current) =>
+      current.map((isOpen, i) => (i === groupIndex ? !isOpen : isOpen)),
+    );
   }, []);
 
   const updateSkill = useCallback(
@@ -199,6 +229,11 @@ export const AdminPage = () => {
         i === groupIndex ? { ...group, skills: [...group.skills, createEmptySkill()] } : group,
       ),
     );
+    setSkillOpenState((current) =>
+      current.map((groupState, i) =>
+        i === groupIndex ? [...groupState, true] : groupState,
+      ),
+    );
   }, []);
 
   const removeSkill = useCallback((groupIndex: number, skillIndex: number) => {
@@ -213,6 +248,21 @@ export const AdminPage = () => {
           skills: group.skills.filter((_, j) => j !== skillIndex),
         };
       }),
+    );
+    setSkillOpenState((current) =>
+      current.map((groupState, i) =>
+        i === groupIndex ? groupState.filter((_, j) => j !== skillIndex) : groupState,
+      ),
+    );
+  }, []);
+
+  const toggleSkill = useCallback((groupIndex: number, skillIndex: number) => {
+    setSkillOpenState((current) =>
+      current.map((groupState, i) =>
+        i === groupIndex
+          ? groupState.map((isOpen, j) => (j === skillIndex ? !isOpen : isOpen))
+          : groupState,
+      ),
     );
   }, []);
 
@@ -418,122 +468,140 @@ export const AdminPage = () => {
             </div>
             <div className="admin-list">
               {projects.map((project, projectIndex) => (
-                <details className="admin-item" key={project.id || `project-${projectIndex}`}>
-                  <summary className="admin-item-summary">
+                <article className="admin-item" key={project.id || `project-${projectIndex}`}>
+                  <button
+                    type="button"
+                    className="admin-item-summary"
+                    aria-expanded={projectOpenState[projectIndex] ?? false}
+                    onClick={() => toggleProject(projectIndex)}
+                  >
                     <strong>{project.title || `Project ${projectIndex + 1}`}</strong>
                     <span>{project.category} · {project.year}</span>
-                  </summary>
-                  <div className="admin-item-body">
-                    <div className="admin-item-actions">
-                      <span className="admin-muted">Edit project details</span>
-                      <button
-                        className="button-link ghost"
-                        type="button"
-                        onClick={() => removeProject(projectIndex)}
-                        disabled={isBusy}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div className="admin-form-grid two">
-                      <label>
-                        <span>ID</span>
-                        <input
-                          value={project.id}
-                          onChange={(event) => updateProject(projectIndex, 'id', event.target.value)}
-                        />
-                      </label>
-                      <label>
-                        <span>Category</span>
-                        <select
-                          value={project.category}
-                          onChange={(event) =>
-                            updateProject(projectIndex, 'category', event.target.value as ProjectCategory)
-                          }
+                  </button>
+                  {projectOpenState[projectIndex] ? (
+                    <div className="admin-item-body">
+                      <div className="admin-item-actions">
+                        <span className="admin-muted">Edit project details</span>
+                        <button
+                          className="button-link ghost"
+                          type="button"
+                          onClick={() => removeProject(projectIndex)}
+                          disabled={isBusy}
                         >
-                          {projectCategoryOptions.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label>
-                        <span>Title</span>
-                        <input
-                          value={project.title}
-                          onChange={(event) => updateProject(projectIndex, 'title', event.target.value)}
+                          Remove
+                        </button>
+                      </div>
+                      <div className="admin-preview-row">
+                        <img
+                          className="admin-preview-image"
+                          src={project.imageUrl || '/images/Park.png'}
+                          alt={project.title}
                         />
-                      </label>
-                      <label>
-                        <span>Year</span>
-                        <input
-                          type="number"
-                          value={project.year}
-                          onChange={(event) =>
-                            updateProject(projectIndex, 'year', Number(event.target.value) || project.year)
-                          }
-                        />
-                      </label>
-                      <label className="full">
-                        <span>Description</span>
-                        <input
-                          value={project.description}
-                          onChange={(event) =>
-                            updateProject(projectIndex, 'description', event.target.value)
-                          }
-                        />
-                      </label>
-                      <label className="full">
-                        <span>Long Description</span>
-                        <textarea
-                          value={project.longDescription}
-                          onChange={(event) =>
-                            updateProject(projectIndex, 'longDescription', event.target.value)
-                          }
-                        />
-                      </label>
-                      <label className="full">
-                        <span>Tech Stack (comma-separated)</span>
-                        <input
-                          value={project.techStack.join(', ')}
-                          onChange={(event) => updateProjectStack(projectIndex, event.target.value)}
-                        />
-                      </label>
-                      <label className="full">
-                        <span>Image URL</span>
-                        <input
-                          value={project.imageUrl}
-                          onChange={(event) => updateProject(projectIndex, 'imageUrl', event.target.value)}
-                        />
-                      </label>
-                      <label className="full">
-                        <span>Upload Project Image</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            void handleProjectImageUpload(projectIndex, event.target.files?.[0])
-                          }
-                        />
-                      </label>
-                      <label>
-                        <span>Live URL</span>
-                        <input
-                          value={project.liveUrl}
-                          onChange={(event) => updateProject(projectIndex, 'liveUrl', event.target.value)}
-                        />
-                      </label>
-                      <label>
-                        <span>Repo URL</span>
-                        <input
-                          value={project.repoUrl}
-                          onChange={(event) => updateProject(projectIndex, 'repoUrl', event.target.value)}
-                        />
-                      </label>
+                        <p className="admin-muted">
+                          Upload a wide image for the best card and detail result. The preview updates from the
+                          URL field or upload button.
+                        </p>
+                      </div>
+                      <div className="admin-form-grid two">
+                        <label>
+                          <span>ID</span>
+                          <input
+                            value={project.id}
+                            onChange={(event) => updateProject(projectIndex, 'id', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Category</span>
+                          <select
+                            value={project.category}
+                            onChange={(event) =>
+                              updateProject(projectIndex, 'category', event.target.value as ProjectCategory)
+                            }
+                          >
+                            {projectCategoryOptions.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Title</span>
+                          <input
+                            value={project.title}
+                            onChange={(event) => updateProject(projectIndex, 'title', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Year</span>
+                          <input
+                            type="number"
+                            value={project.year}
+                            onChange={(event) =>
+                              updateProject(projectIndex, 'year', Number(event.target.value) || project.year)
+                            }
+                          />
+                        </label>
+                        <label className="full">
+                          <span>Description</span>
+                          <input
+                            value={project.description}
+                            onChange={(event) =>
+                              updateProject(projectIndex, 'description', event.target.value)
+                            }
+                          />
+                        </label>
+                        <label className="full">
+                          <span>Long Description</span>
+                          <textarea
+                            value={project.longDescription}
+                            onChange={(event) =>
+                              updateProject(projectIndex, 'longDescription', event.target.value)
+                            }
+                          />
+                        </label>
+                        <label className="full">
+                          <span>Tech Stack (comma-separated)</span>
+                          <input
+                            value={project.techStack.join(', ')}
+                            onChange={(event) => updateProjectStack(projectIndex, event.target.value)}
+                          />
+                        </label>
+                        <label className="full">
+                          <span>Image URL</span>
+                          <input
+                            value={project.imageUrl}
+                            onChange={(event) => updateProject(projectIndex, 'imageUrl', event.target.value)}
+                          />
+                        </label>
+                        <label className="full">
+                          <span>Upload Project Image</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) =>
+                              void handleProjectImageUpload(projectIndex, event.target.files?.[0])
+                            }
+                          />
+                        </label>
+                        <label>
+                          <span>Live URL</span>
+                          <input
+                            value={project.liveUrl}
+                            onChange={(event) => updateProject(projectIndex, 'liveUrl', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Repo URL</span>
+                          <input
+                            value={project.repoUrl}
+                            onChange={(event) => updateProject(projectIndex, 'repoUrl', event.target.value)}
+                          />
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                </details>
+                  ) : null}
+                </article>
               ))}
             </div>
           </div>
@@ -560,126 +628,150 @@ export const AdminPage = () => {
             </div>
             <div className="admin-list">
               {skillGroups.map((group, groupIndex) => (
-                <details className="admin-item" key={`${group.title}-${groupIndex}`}>
-                  <summary className="admin-item-summary">
+                <article className="admin-item" key={`${group.title}-${groupIndex}`}>
+                  <button
+                    type="button"
+                    className="admin-item-summary"
+                    aria-expanded={skillGroupOpenState[groupIndex] ?? false}
+                    onClick={() => toggleSkillGroup(groupIndex)}
+                  >
                     <strong>{group.title || `Group ${groupIndex + 1}`}</strong>
                     <span>{group.skills.length} skills</span>
-                  </summary>
-                  <div className="admin-item-body">
-                    <div className="admin-item-actions">
-                      <span className="admin-muted">Edit group and skills</span>
-                      <button
-                        className="button-link ghost"
-                        type="button"
-                        onClick={() => removeSkillGroup(groupIndex)}
-                        disabled={isBusy}
-                      >
-                        Remove Group
-                      </button>
-                    </div>
-                    <div className="admin-form-grid two">
-                      <label>
-                        <span>Group Title</span>
-                        <input
-                          value={group.title}
-                          onChange={(event) => updateSkillGroup(groupIndex, 'title', event.target.value)}
-                        />
-                      </label>
-                      <label>
-                        <span>Summary</span>
-                        <input
-                          value={group.summary}
-                          onChange={(event) => updateSkillGroup(groupIndex, 'summary', event.target.value)}
-                        />
-                      </label>
-                    </div>
+                  </button>
+                  {skillGroupOpenState[groupIndex] ? (
+                    <div className="admin-item-body">
+                      <div className="admin-item-actions">
+                        <span className="admin-muted">Edit group and skills</span>
+                        <button
+                          className="button-link ghost"
+                          type="button"
+                          onClick={() => removeSkillGroup(groupIndex)}
+                          disabled={isBusy}
+                        >
+                          Remove Group
+                        </button>
+                      </div>
+                      <div className="admin-form-grid two">
+                        <label>
+                          <span>Group Title</span>
+                          <input
+                            value={group.title}
+                            onChange={(event) => updateSkillGroup(groupIndex, 'title', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Summary</span>
+                          <input
+                            value={group.summary}
+                            onChange={(event) => updateSkillGroup(groupIndex, 'summary', event.target.value)}
+                          />
+                        </label>
+                      </div>
 
-                    <div className="admin-sub-actions">
-                      <button
-                        className="button-link ghost"
-                        type="button"
-                        onClick={() => addSkill(groupIndex)}
-                        disabled={isBusy}
-                      >
-                        Add Skill
-                      </button>
-                    </div>
+                      <div className="admin-sub-actions">
+                        <button
+                          className="button-link ghost"
+                          type="button"
+                          onClick={() => addSkill(groupIndex)}
+                          disabled={isBusy}
+                        >
+                          Add Skill
+                        </button>
+                      </div>
 
-                    {group.skills.map((skill, skillIndex) => (
-                      <details className="admin-sub-item" key={`${skill.name}-${skillIndex}`}>
-                        <summary className="admin-item-summary admin-sub-summary">
-                          <strong>{skill.name || `Skill ${skillIndex + 1}`}</strong>
-                          <span>{skill.iconText}</span>
-                        </summary>
-                        <div className="admin-item-body">
-                          <div className="admin-item-actions">
-                            <span className="admin-muted">Edit skill</span>
-                            <button
-                              className="button-link ghost"
-                              type="button"
-                              onClick={() => removeSkill(groupIndex, skillIndex)}
-                              disabled={isBusy}
-                            >
-                              Remove Skill
-                            </button>
-                          </div>
-                          <div className="admin-form-grid two">
-                            <label>
-                              <span>Name</span>
-                              <input
-                                value={skill.name}
-                                onChange={(event) =>
-                                  updateSkill(groupIndex, skillIndex, 'name', event.target.value)
-                                }
-                              />
-                            </label>
-                            <label>
-                              <span>Icon Text</span>
-                              <input
-                                value={skill.iconText}
-                                onChange={(event) =>
-                                  updateSkill(groupIndex, skillIndex, 'iconText', event.target.value)
-                                }
-                              />
-                            </label>
-                            <label className="full">
-                              <span>Icon Image URL (optional)</span>
-                              <input
-                                value={skill.iconUrl ?? ''}
-                                onChange={(event) =>
-                                  updateSkill(groupIndex, skillIndex, 'iconUrl', event.target.value)
-                                }
-                              />
-                            </label>
-                            <label className="full">
-                              <span>Upload Skill Icon</span>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(event) =>
-                                  void handleSkillImageUpload(
-                                    groupIndex,
-                                    skillIndex,
-                                    event.target.files?.[0],
-                                  )
-                                }
-                              />
-                            </label>
-                            <label className="full">
-                              <span>Description</span>
-                              <textarea
-                                value={skill.description}
-                                onChange={(event) =>
-                                  updateSkill(groupIndex, skillIndex, 'description', event.target.value)
-                                }
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </details>
-                    ))}
-                  </div>
-                </details>
+                      {group.skills.map((skill, skillIndex) => (
+                        <article className="admin-sub-item" key={`${skill.name}-${skillIndex}`}>
+                          <button
+                            type="button"
+                            className="admin-item-summary admin-sub-summary"
+                            aria-expanded={skillOpenState[groupIndex]?.[skillIndex] ?? false}
+                            onClick={() => toggleSkill(groupIndex, skillIndex)}
+                          >
+                            <strong>{skill.name || `Skill ${skillIndex + 1}`}</strong>
+                            <span>{skill.iconText}</span>
+                          </button>
+                          {skillOpenState[groupIndex]?.[skillIndex] ? (
+                            <div className="admin-item-body">
+                              <div className="admin-item-actions">
+                                <span className="admin-muted">Edit skill</span>
+                                <button
+                                  className="button-link ghost"
+                                  type="button"
+                                  onClick={() => removeSkill(groupIndex, skillIndex)}
+                                  disabled={isBusy}
+                                >
+                                  Remove Skill
+                                </button>
+                              </div>
+                              <div className="admin-preview-row">
+                                <div className="skill-icon admin-skill-preview" aria-hidden="true">
+                                  {skill.iconUrl ? (
+                                    <img className="skill-icon-image" src={skill.iconUrl} alt="" />
+                                  ) : (
+                                    skill.iconText
+                                  )}
+                                </div>
+                                <p className="admin-muted">Use a square icon if possible. Text still works as fallback.</p>
+                              </div>
+                              <div className="admin-form-grid two">
+                                <label>
+                                  <span>Name</span>
+                                  <input
+                                    value={skill.name}
+                                    onChange={(event) =>
+                                      updateSkill(groupIndex, skillIndex, 'name', event.target.value)
+                                    }
+                                  />
+                                </label>
+                                <label>
+                                  <span>Icon Text</span>
+                                  <input
+                                    value={skill.iconText}
+                                    onChange={(event) =>
+                                      updateSkill(groupIndex, skillIndex, 'iconText', event.target.value)
+                                    }
+                                  />
+                                </label>
+                                <label className="full">
+                                  <span>Icon Image URL (optional)</span>
+                                  <input
+                                    value={skill.iconUrl ?? ''}
+                                    onChange={(event) =>
+                                      updateSkill(groupIndex, skillIndex, 'iconUrl', event.target.value)
+                                    }
+                                  />
+                                </label>
+                                <label className="full">
+                                  <span>Upload Skill Icon</span>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(event) =>
+                                      void handleSkillImageUpload(
+                                        groupIndex,
+                                        skillIndex,
+                                        event.target.files?.[0],
+                                      )
+                                    }
+                                  />
+                                </label>
+                                <label className="full">
+                                  <span>Description</span>
+                                  <textarea
+                                    value={skill.description}
+                                    onChange={(event) =>
+                                      updateSkill(groupIndex, skillIndex, 'description', event.target.value)
+                                    }
+                                  />
+                                </label>
+                              </div>
+                            </div>
+                          ) : null}
+                        </article>
+                      ))}
+                    </div>
+                  ) : null}
+                </article>
               ))}
             </div>
           </div>

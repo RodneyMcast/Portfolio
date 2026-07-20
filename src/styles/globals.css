@@ -1818,6 +1818,35 @@ html[data-theme='light'] .theme-toggle-thumb {
   gap: 0.8rem;
 }
 
+.detail-shell {
+  display: grid;
+  gap: var(--space-md);
+  padding: 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-soft);
+  background: var(--color-card);
+  box-shadow: 0 18px 30px var(--color-shadow);
+}
+
+.detail-shell .text-link {
+  width: fit-content;
+}
+
+.detail-banner img {
+  max-height: 640px;
+}
+
+.detail-header h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  letter-spacing: -0.02em;
+}
+
+.detail-description {
+  line-height: 1.65;
+  font-size: 1rem;
+}
+
 .admin-page {
   width: min(1120px, 100%);
   margin: 0 auto;
@@ -1966,6 +1995,26 @@ html[data-theme='light'] .theme-toggle-thumb {
 .admin-item-body {
   border-top: 1px solid var(--color-border-soft);
   padding: 1rem;
+}
+
+.admin-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.admin-preview-image {
+  width: min(220px, 100%);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 10px 22px var(--color-shadow);
+}
+
+.admin-skill-preview {
+  flex: 0 0 auto;
 }
 
 .admin-sub-summary {
@@ -2420,6 +2469,19 @@ html[data-theme='light'] .theme-toggle-thumb {
   .admin-item-actions {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .admin-preview-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-preview-image {
+    width: 100%;
+  }
+
+  .detail-shell {
+    padding: 1rem;
   }
 
   .project-grid {
