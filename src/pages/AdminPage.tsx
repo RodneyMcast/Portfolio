@@ -145,7 +145,7 @@ export const AdminPage = () => {
   );
   const [keycode, setKeycode] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   const [projects, setProjects] = useState<Project[]>(() => clonePortfolioContent().projects);
   const [projectUiIds, setProjectUiIds] = useState<string[]>(() =>
     clonePortfolioContent().projects.map((_, index) => createStableId(`project-${index}`)),
@@ -921,7 +921,6 @@ export const AdminPage = () => {
         <div>
           <span className="eyebrow">Dev Admin</span>
           <h1>Portfolio Admin</h1>
-          <p>Edit Firestore content while keeping the current local site as the fallback.</p>
         </div>
         <div className="admin-status-stack">
           <span className={`admin-source${isDirty ? ' is-dirty' : ''}`}>

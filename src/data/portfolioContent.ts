@@ -88,7 +88,7 @@ export const sortWorkExperienceEntries = (entries: WorkExperienceEntry[]) =>
 export const defaultAboutContent: AboutContent = {
   quickIntro: {
     paragraphs: [
-      'I enjoy turning ideas into practical projects, usually through web apps, APIs, and small game experiments.',
+      'I graduated with First Honours, and my thesis is complete with an A.',
     ],
     bullets: [
       'Clean UI layouts with solid spacing',
@@ -99,8 +99,7 @@ export const defaultAboutContent: AboutContent = {
   },
   currentFocus: {
     paragraphs: [
-      'My current focus is my dissertation project, an Agentic Browser Simulator built as a Unity WebGL sandbox game. It lets users learn how AI-powered browsers work through guided levels, practical tasks, and rewards for learning.',
-      'The project explores how people can build trust and confidence with AI tools while understanding responsible use, limitations, and the risks that come with relying on emerging technology.',
+      'My current focus is making projects, doing my work well, and staying open to commissions.',
     ],
   },
   outsideCoding: {
