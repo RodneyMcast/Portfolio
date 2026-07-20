@@ -12,6 +12,7 @@ export const AboutPage = () => {
   const status = useAppSelector((state) => state.siteContent.status);
   const about = useAppSelector((state) => state.siteContent.content.about);
   const skillGroups = useAppSelector((state) => state.siteContent.content.skillGroups);
+  const workExperience = useAppSelector((state) => state.siteContent.content.workExperience);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -46,7 +47,7 @@ export const AboutPage = () => {
               ))}
             </AboutCard>
           </div>
-          <ProfileBlock facts={about.profileFacts} />
+          <ProfileBlock facts={about.profileFacts} workExperience={workExperience} />
         </div>
       </div>
       <SkillsGrid groups={skillGroups} />

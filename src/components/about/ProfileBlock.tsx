@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import type { ProfileFact } from '../../data/portfolioContent';
+import type { ProfileFact, WorkExperienceEntry } from '../../data/portfolioContent';
 import { WorkExperienceTimeline } from './WorkExperienceTimeline';
 
 type ProfileBlockProps = {
   facts: ProfileFact[];
+  workExperience: WorkExperienceEntry[];
 };
 
-export const ProfileBlock = ({ facts }: ProfileBlockProps) => {
+export const ProfileBlock = ({ facts, workExperience }: ProfileBlockProps) => {
   const [isExperienceOpen, setIsExperienceOpen] = useState(false);
 
   return (
@@ -21,7 +22,8 @@ export const ProfileBlock = ({ facts }: ProfileBlockProps) => {
       ) : null}
       <WorkExperienceTimeline
         isOpen={isExperienceOpen}
-        onToggle={() => setIsExperienceOpen((isOpen) => !isOpen)}
+        onToggle={() => setIsExperienceOpen((isOpen: boolean) => !isOpen)}
+        entries={workExperience}
       />
       <div className="profile-card">
         <h3>Quick Facts</h3>

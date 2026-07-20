@@ -5,6 +5,7 @@ import { defaultPortfolioContent, type PortfolioContent } from '../data/portfoli
 import type { SkillGroup } from '../components/about/SkillsGrid';
 import { replaceProjects } from '../features/projects/projectsSlice';
 import type { Project, ProjectCategory } from '../features/projects/types';
+import type { WorkExperienceEntry } from '../data/portfolioContent';
 import { setSiteContent } from '../features/siteContent/siteContentSlice';
 import {
   clonePortfolioContent,
@@ -21,12 +22,13 @@ type AdminMessage = {
   text: string;
 };
 
-type AdminTab = 'projects' | 'about' | 'skills' | 'settings';
+type AdminTab = 'projects' | 'about' | 'skills' | 'jobs' | 'settings';
 
 const adminTabs: Array<{ id: AdminTab; label: string }> = [
   { id: 'projects', label: 'Projects' },
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
+  { id: 'jobs', label: 'Jobs' },
   { id: 'settings', label: 'Admin' },
 ];
 
@@ -69,6 +71,33 @@ const createEmptySkillGroup = (): SkillGroup => ({
   skills: [createEmptySkill()],
 });
 
+const createEmptyWorkExperience = (): WorkExperienceEntry => ({
+  start: 'Jan 2026',
+  end: '',
+  current: true,
+  title: 'New Role',
+  organisation: 'Organisation',
+  location: '',
+  summary: '',
+  highlights: [''],
+});
+
+const parseListText = (value: string) =>
+  value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const listToText = (items: string[]) => items.join(', ');
+
+const linesToList = (value: string) =>
+  value
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const listToLines = (items: string[]) => items.join('\n');
+
 const createAccordionState = (length: number, open = false) => Array.from({ length }, () => open);
 
 export const AdminPage = () => {
@@ -78,6 +107,9 @@ export const AdminPage = () => {
   );
   const [keycode, setKeycode] = useState('');
   const [projects, setProjects] = useState<Project[]>(() => clonePortfolioContent().projects);
+  const [projectTechStackDrafts, setProjectTechStackDrafts] = useState<string[]>(() =>
+    clonePortfolioContent().projects.map((project) => listToText(project.techStack)),
+  );
   const [projectOpenState, setProjectOpenState] = useState<boolean[]>(() =>
     createAccordionState(clonePortfolioContent().projects.length),
   );
@@ -90,6 +122,12 @@ export const AdminPage = () => {
   );
   const [skillOpenState, setSkillOpenState] = useState<boolean[][]>(() =>
     clonePortfolioContent().skillGroups.map((group) => createAccordionState(group.skills.length)),
+  );
+  const [workExperience, setWorkExperience] = useState<WorkExperienceEntry[]>(() =>
+    clonePortfolioContent().workExperience,
+  );
+  const [workExperienceOpenState, setWorkExperienceOpenState] = useState<boolean[]>(() =>
+    createAccordionState(clonePortfolioContent().workExperience.length),
   );
   const [adminKey, setAdminKey] = useState(defaultPortfolioContent.adminKey);
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
@@ -104,11 +142,14 @@ export const AdminPage = () => {
 
   const loadContentIntoEditors = useCallback((content: PortfolioContent) => {
     setProjects(content.projects);
+    setProjectTechStackDrafts(content.projects.map((project) => listToText(project.techStack)));
     setProjectOpenState(createAccordionState(content.projects.length));
     setAboutJson(stringify(content.about));
     setSkillGroups(content.skillGroups);
     setSkillGroupOpenState(createAccordionState(content.skillGroups.length));
     setSkillOpenState(content.skillGroups.map((group) => createAccordionState(group.skills.length)));
+    setWorkExperience(content.workExperience);
+    setWorkExperienceOpenState(createAccordionState(content.workExperience.length));
     setAdminKey(content.adminKey || defaultPortfolioContent.adminKey);
   }, []);
 
@@ -132,12 +173,16 @@ export const AdminPage = () => {
 
   const buildContentFromEditors = useCallback(
     (): PortfolioContent => ({
-      projects,
+      projects: projects.map((project, index) => ({
+        ...project,
+        techStack: parseListText(projectTechStackDrafts[index] ?? listToText(project.techStack)),
+      })),
       about: parseEditorJson<PortfolioContent['about']>('About content', aboutJson),
       skillGroups,
+      workExperience,
       adminKey: adminKey.trim() || defaultPortfolioContent.adminKey,
     }),
-    [aboutJson, adminKey, projects, skillGroups],
+    [aboutJson, adminKey, projectTechStackDrafts, projects, skillGroups, workExperience],
   );
 
   const updateProject = useCallback(
@@ -150,20 +195,20 @@ export const AdminPage = () => {
   );
 
   const updateProjectStack = useCallback((index: number, value: string) => {
-    const techStack = value
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean);
-    updateProject(index, 'techStack', techStack);
+    setProjectTechStackDrafts((current) =>
+      current.map((draft, i) => (i === index ? value : draft)),
+    );
   }, [updateProject]);
 
   const addProject = useCallback(() => {
     setProjects((current) => [...current, createEmptyProject()]);
+    setProjectTechStackDrafts((current) => [...current, '']);
     setProjectOpenState((current) => [...current, true]);
   }, []);
 
   const removeProject = useCallback((index: number) => {
     setProjects((current) => current.filter((_, i) => i !== index));
+    setProjectTechStackDrafts((current) => current.filter((_, i) => i !== index));
     setProjectOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
 
@@ -255,6 +300,35 @@ export const AdminPage = () => {
       ),
     );
   }, []);
+
+  const addWorkExperience = useCallback(() => {
+    setWorkExperience((current) => [...current, createEmptyWorkExperience()]);
+    setWorkExperienceOpenState((current) => [...current, true]);
+  }, []);
+
+  const removeWorkExperience = useCallback((index: number) => {
+    setWorkExperience((current) => current.filter((_, i) => i !== index));
+    setWorkExperienceOpenState((current) => current.filter((_, i) => i !== index));
+  }, []);
+
+  const toggleWorkExperience = useCallback((index: number) => {
+    setWorkExperienceOpenState((current) =>
+      current.map((isOpen, i) => (i === index ? !isOpen : isOpen)),
+    );
+  }, []);
+
+  const updateWorkExperience = useCallback(
+    <K extends keyof WorkExperienceEntry>(index: number, key: K, value: WorkExperienceEntry[K]) => {
+      setWorkExperience((current) =>
+        current.map((entry, i) => (i === index ? { ...entry, [key]: value } : entry)),
+      );
+    },
+    [],
+  );
+
+  const updateWorkHighlights = useCallback((index: number, value: string) => {
+    updateWorkExperience(index, 'highlights', linesToList(value));
+  }, [updateWorkExperience]);
 
   const toggleSkill = useCallback((groupIndex: number, skillIndex: number) => {
     setSkillOpenState((current) =>
@@ -563,7 +637,7 @@ export const AdminPage = () => {
                         <label className="full">
                           <span>Tech Stack (comma-separated)</span>
                           <input
-                            value={project.techStack.join(', ')}
+                            value={projectTechStackDrafts[projectIndex] ?? project.techStack.join(', ')}
                             onChange={(event) => updateProjectStack(projectIndex, event.target.value)}
                           />
                         </label>
@@ -769,6 +843,113 @@ export const AdminPage = () => {
                           ) : null}
                         </article>
                       ))}
+                    </div>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {activeTab === 'jobs' ? (
+        <section className="admin-panel">
+          <div className="admin-editor">
+            <div className="admin-editor-title-row">
+              <span>Work History</span>
+              <button className="button-link ghost" type="button" onClick={addWorkExperience} disabled={isBusy}>
+                Add Role
+              </button>
+            </div>
+            <div className="admin-list">
+              {workExperience.map((entry, entryIndex) => (
+                <article className="admin-item" key={`${entry.start}-${entry.title}-${entryIndex}`}>
+                  <button
+                    type="button"
+                    className="admin-item-summary"
+                    aria-expanded={workExperienceOpenState[entryIndex] ?? false}
+                    onClick={() => toggleWorkExperience(entryIndex)}
+                  >
+                    <strong>{entry.title || `Role ${entryIndex + 1}`}</strong>
+                    <span>{entry.start}{entry.current ? ' - Current' : entry.end ? ` - ${entry.end}` : ''}</span>
+                  </button>
+                  {workExperienceOpenState[entryIndex] ? (
+                    <div className="admin-item-body">
+                      <div className="admin-item-actions">
+                        <span className="admin-muted">Edit role details</span>
+                        <button
+                          className="button-link ghost"
+                          type="button"
+                          onClick={() => removeWorkExperience(entryIndex)}
+                          disabled={isBusy}
+                        >
+                          Remove Role
+                        </button>
+                      </div>
+                      <div className="admin-form-grid two">
+                        <label>
+                          <span>Started</span>
+                          <input
+                            value={entry.start}
+                            onChange={(event) => updateWorkExperience(entryIndex, 'start', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Ended</span>
+                          <input
+                            value={entry.end}
+                            onChange={(event) => updateWorkExperience(entryIndex, 'end', event.target.value)}
+                            disabled={entry.current}
+                          />
+                        </label>
+                        <label>
+                          <span>Role</span>
+                          <input
+                            value={entry.title}
+                            onChange={(event) => updateWorkExperience(entryIndex, 'title', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Organisation</span>
+                          <input
+                            value={entry.organisation}
+                            onChange={(event) => updateWorkExperience(entryIndex, 'organisation', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Location</span>
+                          <input
+                            value={entry.location ?? ''}
+                            onChange={(event) => updateWorkExperience(entryIndex, 'location', event.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Still working there</span>
+                          <select
+                            value={entry.current ? 'yes' : 'no'}
+                            onChange={(event) =>
+                              updateWorkExperience(entryIndex, 'current', event.target.value === 'yes')
+                            }
+                          >
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                          </select>
+                        </label>
+                        <label className="full">
+                          <span>Description</span>
+                          <textarea
+                            value={entry.summary}
+                            onChange={(event) => updateWorkExperience(entryIndex, 'summary', event.target.value)}
+                          />
+                        </label>
+                        <label className="full">
+                          <span>Highlights, one per line</span>
+                          <textarea
+                            value={listToLines(entry.highlights)}
+                            onChange={(event) => updateWorkHighlights(entryIndex, event.target.value)}
+                          />
+                        </label>
+                      </div>
                     </div>
                   ) : null}
                 </article>

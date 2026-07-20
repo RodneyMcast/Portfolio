@@ -8,6 +8,17 @@ export type ProfileFact = {
   value: string;
 };
 
+export type WorkExperienceEntry = {
+  start: string;
+  end: string;
+  current: boolean;
+  title: string;
+  organisation: string;
+  location?: string;
+  summary: string;
+  highlights: string[];
+};
+
 export type AboutContent = {
   quickIntro: {
     paragraphs: string[];
@@ -26,6 +37,7 @@ export type PortfolioContent = {
   projects: Project[];
   about: AboutContent;
   skillGroups: SkillGroup[];
+  workExperience: WorkExperienceEntry[];
   adminKey: string;
 };
 
@@ -59,6 +71,80 @@ export const defaultAboutContent: AboutContent = {
     { label: 'Location', value: 'Malta' },
   ],
 };
+
+export const defaultWorkExperience: WorkExperienceEntry[] = [
+  {
+    start: 'Aug 2025',
+    end: '',
+    current: true,
+    title: 'Information Management Unit (IMU)',
+    organisation: 'Ministry for Health and Active Ageing',
+    location: "Saint Luke's",
+    summary: 'Student role supporting healthcare websites, system testing, and small database tasks.',
+    highlights: [
+      'Built and updated websites using Microsoft Power Pages.',
+      'Prepared test cases for a clinical data-entry web system.',
+      'Helped improve websites used by medical professionals.',
+      'Assisted with database tasks in a virtual machine environment.',
+      'Followed professional standards while working with sensitive systems.',
+    ],
+  },
+  {
+    start: 'Apr 2024',
+    end: 'Aug 2025',
+    current: false,
+    title: 'IT Software Support',
+    organisation: 'Express Trailers (BI & MI)',
+    summary: 'Student apprenticeship focused on internal software support, reporting, and business data.',
+    highlights: [
+      'Resolved internal software support tickets from multiple departments.',
+      'Prepared analytical and monthly business reports using Excel and internal systems.',
+      'Managed database and interface data used for retrieval and reporting.',
+      'Observed third-party website planning, scope, contract, and timeline meetings.',
+      'Collaborated with the team to meet project deadlines and organisational objectives.',
+    ],
+  },
+  {
+    start: 'Apr 2024',
+    end: '',
+    current: true,
+    title: 'Live Streaming Technician',
+    organisation: 'Horse Racing Events',
+    location: 'Gozo',
+    summary: 'Operate live broadcast equipment and keep Facebook streams running smoothly during race events.',
+    highlights: [
+      'Run stable Facebook live streams for horse racing events.',
+      'Operate cameras, microphones, and video-streaming hardware.',
+      'Update PowerPoint slides with event schedules and live race results.',
+      'Troubleshoot audio-visual issues during live broadcasts.',
+    ],
+  },
+  {
+    start: 'Jun 2023',
+    end: 'Sep 2023',
+    current: false,
+    title: 'Information Management Unit Intern',
+    organisation: 'Gozo Ministry / MITA',
+    summary: 'Student internship providing practical hardware, Windows, printer, and server support.',
+    highlights: [
+      'Assisted during a server relocation and learned how server resources are managed.',
+      'Troubleshot printers, laptops, and Windows 11 issues.',
+      'Worked with peers to resolve hardware and software problems.',
+    ],
+  },
+  {
+    start: 'Jul 2021',
+    end: '',
+    current: true,
+    title: 'Crew Member / Student Summer Job',
+    organisation: "Gozo McDonald's / Premier Restaurants Malta Ltd",
+    summary: 'Customer-facing summer work built around teamwork, reliability, and company procedures.',
+    highlights: [
+      'Work effectively in a fast-paced team environment.',
+      'Follow company procedures and customer service standards.',
+    ],
+  },
+];
 
 export const defaultSkillGroups: SkillGroup[] = [
   {
@@ -287,5 +373,6 @@ export const defaultPortfolioContent: PortfolioContent = {
   projects: projectsData as Project[],
   about: defaultAboutContent,
   skillGroups: defaultSkillGroups,
+  workExperience: defaultWorkExperience,
   adminKey: '2005',
 };

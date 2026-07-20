@@ -38,6 +38,9 @@ const mergePortfolioContent = (value: unknown): PortfolioContent => {
     skillGroups: Array.isArray(value.skillGroups)
       ? (value.skillGroups as PortfolioContent['skillGroups'])
       : clonePortfolioContent().skillGroups,
+    workExperience: Array.isArray(value.workExperience)
+      ? (value.workExperience as PortfolioContent['workExperience'])
+      : clonePortfolioContent().workExperience,
     adminKey: typeof value.adminKey === 'string' ? value.adminKey : defaultPortfolioContent.adminKey,
   };
 };
