@@ -127,9 +127,19 @@ const includesQuery = (values: Array<string | number | boolean | undefined>, que
 const formatTime = (date: Date) =>
   date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+type FocusTarget =
+  | { kind: 'project'; index: number }
+  | { kind: 'skillGroup'; index: number }
+  | { kind: 'work'; index: number }
+  | null;
+
 export const AdminPage = () => {
   const dispatch = useAppDispatch();
   const autosaveTimerRef = useRef<number | null>(null);
+  const projectIdInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
+  const skillGroupTitleRefs = useRef<Record<number, HTMLInputElement | null>>({});
+  const workTitleRefs = useRef<Record<number, HTMLInputElement | null>>({});
+  const pendingFocusRef = useRef<FocusTarget>(null);
   const [isUnlocked, setIsUnlocked] = useState(
     () => window.sessionStorage.getItem(sessionKey) === 'true',
   );
@@ -185,6 +195,7 @@ export const AdminPage = () => {
   const [lastSavedSignature, setLastSavedSignature] = useState('');
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [savedSnapshot, setSavedSnapshot] = useState<PortfolioContent | null>(null);
+  const [pendingFocus, setPendingFocus] = useState<FocusTarget>(null);
   const [message, setMessage] = useState<AdminMessage>({
     tone: 'info',
     text: 'Unlock the admin panel to edit portfolio content.',
@@ -390,7 +401,11 @@ export const AdminPage = () => {
   }, [updateProject]);
 
   const addProject = useCallback(() => {
-    setProjects((current) => [...current, createEmptyProject()]);
+    setProjects((current) => {
+      const nextIndex = current.length;
+      setPendingFocus({ kind: 'project', index: nextIndex });
+      return [...current, createEmptyProject()];
+    });
     setProjectUiIds((current) => [...current, createStableId('project')]);
     setProjectTechStackDrafts((current) => [...current, '']);
     setProjectOpenState((current) => [...current, true]);
@@ -402,6 +417,20 @@ export const AdminPage = () => {
     setProjectTechStackDrafts((current) => current.filter((_, i) => i !== index));
     setProjectOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
+
+  const confirmRemoveProject = useCallback(
+    (index: number) => {
+      const project = projects[index];
+      const label = project
+        ? `Delete project "${project.title || 'Untitled project'}" (${project.id || 'no id'})?`
+        : 'Delete this project?';
+
+      if (window.confirm(label)) {
+        removeProject(index);
+      }
+    },
+    [projects, removeProject],
+  );
 
   const moveProject = useCallback((index: number, direction: -1 | 1) => {
     const targetIndex = index + direction;
@@ -425,7 +454,11 @@ export const AdminPage = () => {
   );
 
   const addSkillGroup = useCallback(() => {
-    setSkillGroups((current) => [...current, createEmptySkillGroup()]);
+    setSkillGroups((current) => {
+      const nextIndex = current.length;
+      setPendingFocus({ kind: 'skillGroup', index: nextIndex });
+      return [...current, createEmptySkillGroup()];
+    });
     setSkillGroupUiIds((current) => [...current, createStableId('skill-group')]);
     setSkillUiIds((current) => [...current, [createStableId('skill')]]);
     setSkillGroupOpenState((current) => [...current, true]);
@@ -439,6 +472,20 @@ export const AdminPage = () => {
     setSkillGroupOpenState((current) => current.filter((_, i) => i !== groupIndex));
     setSkillOpenState((current) => current.filter((_, i) => i !== groupIndex));
   }, []);
+
+  const confirmRemoveSkillGroup = useCallback(
+    (groupIndex: number) => {
+      const group = skillGroups[groupIndex];
+      const label = group
+        ? `Delete skill group "${group.title || 'Untitled group'}"?`
+        : 'Delete this skill group?';
+
+      if (window.confirm(label)) {
+        removeSkillGroup(groupIndex);
+      }
+    },
+    [removeSkillGroup, skillGroups],
+  );
 
   const moveSkillGroup = useCallback((groupIndex: number, direction: -1 | 1) => {
     const targetIndex = groupIndex + direction;
@@ -551,7 +598,11 @@ export const AdminPage = () => {
   }, []);
 
   const addWorkExperience = useCallback(() => {
-    setWorkExperience((current) => [...current, createEmptyWorkExperience()]);
+    setWorkExperience((current) => {
+      const nextIndex = current.length;
+      setPendingFocus({ kind: 'work', index: nextIndex });
+      return [...current, createEmptyWorkExperience()];
+    });
     setWorkHighlightsDrafts((current) => [...current, '']);
     setWorkExperienceUiIds((current) => [...current, createStableId('work')]);
     setWorkExperienceOpenState((current) => [...current, true]);
@@ -563,6 +614,20 @@ export const AdminPage = () => {
     setWorkExperienceUiIds((current) => current.filter((_, i) => i !== index));
     setWorkExperienceOpenState((current) => current.filter((_, i) => i !== index));
   }, []);
+
+  const confirmRemoveWorkExperience = useCallback(
+    (index: number) => {
+      const entry = workExperience[index];
+      const label = entry
+        ? `Delete role "${entry.title || 'Untitled role'}" (${entry.start || 'no start date'})?`
+        : 'Delete this role?';
+
+      if (window.confirm(label)) {
+        removeWorkExperience(index);
+      }
+    },
+    [removeWorkExperience, workExperience],
+  );
 
   const toggleWorkExperience = useCallback((index: number) => {
     setWorkExperienceOpenState((current) =>
@@ -756,6 +821,39 @@ export const AdminPage = () => {
     setSkillOpenState(skillGroups.map((group) => createAccordionState(group.skills.length)));
     setWorkExperienceOpenState(createAccordionState(workExperience.length));
   }, [projects.length, skillGroups, workExperience.length]);
+
+  useEffect(() => {
+    pendingFocusRef.current = pendingFocus;
+  }, [pendingFocus]);
+
+  useEffect(() => {
+    const target = pendingFocusRef.current;
+    if (!target) {
+      return;
+    }
+
+    const focusTarget = (() => {
+      if (target.kind === 'project') {
+        return projectIdInputRefs.current[target.index];
+      }
+
+      if (target.kind === 'skillGroup') {
+        return skillGroupTitleRefs.current[target.index];
+      }
+
+      return workTitleRefs.current[target.index];
+    })();
+
+    if (!focusTarget) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      focusTarget.focus();
+      focusTarget.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+    setPendingFocus(null);
+  }, [pendingFocus, projectUiIds.length, skillGroupUiIds.length, workExperienceUiIds.length]);
 
   useEffect(() => {
     if (!isUnlocked || !isHydrated || isBusy || isSaving || !currentContent || !isDirty) {
@@ -989,7 +1087,7 @@ export const AdminPage = () => {
                           <button
                             className="button-link ghost"
                             type="button"
-                            onClick={() => removeProject(projectIndex)}
+                            onClick={() => confirmRemoveProject(projectIndex)}
                             disabled={isBusy || isSaving}
                           >
                             Remove
@@ -1011,6 +1109,9 @@ export const AdminPage = () => {
                         <label>
                           <span>ID</span>
                           <input
+                            ref={(element) => {
+                              projectIdInputRefs.current[projectIndex] = element;
+                            }}
                             value={project.id}
                             onChange={(event) => updateProject(projectIndex, 'id', event.target.value)}
                           />
@@ -1175,8 +1276,8 @@ export const AdminPage = () => {
                           <button
                             className="button-link ghost"
                             type="button"
-                            onClick={() => removeSkillGroup(groupIndex)}
-                            disabled={isBusy}
+                            onClick={() => confirmRemoveSkillGroup(groupIndex)}
+                            disabled={isBusy || isSaving}
                           >
                             Remove Group
                           </button>
@@ -1186,6 +1287,9 @@ export const AdminPage = () => {
                         <label>
                           <span>Group Title</span>
                           <input
+                            ref={(element) => {
+                              skillGroupTitleRefs.current[groupIndex] = element;
+                            }}
                             value={group.title}
                             onChange={(event) => updateSkillGroup(groupIndex, 'title', event.target.value)}
                           />
@@ -1245,7 +1349,15 @@ export const AdminPage = () => {
                                   <button
                                     className="button-link ghost"
                                     type="button"
-                                    onClick={() => removeSkill(groupIndex, skillIndex)}
+                                    onClick={() => {
+                                      if (
+                                        window.confirm(
+                                          `Delete skill "${skill.name || 'Untitled skill'}" from "${group.title || 'Untitled group'}"?`,
+                                        )
+                                      ) {
+                                        removeSkill(groupIndex, skillIndex);
+                                      }
+                                    }}
                                     disabled={isBusy || isSaving}
                                   >
                                     Remove Skill
@@ -1367,7 +1479,7 @@ export const AdminPage = () => {
                           <button
                             className="button-link ghost"
                             type="button"
-                            onClick={() => removeWorkExperience(entryIndex)}
+                            onClick={() => confirmRemoveWorkExperience(entryIndex)}
                             disabled={isBusy || isSaving}
                           >
                             Remove Role
@@ -1393,6 +1505,9 @@ export const AdminPage = () => {
                         <label>
                           <span>Role</span>
                           <input
+                            ref={(element) => {
+                              workTitleRefs.current[entryIndex] = element;
+                            }}
                             value={entry.title}
                             onChange={(event) => updateWorkExperience(entryIndex, 'title', event.target.value)}
                           />
@@ -1433,7 +1548,7 @@ export const AdminPage = () => {
                         <label className="full">
                           <span>Highlights, one per line</span>
                           <textarea
-                            value={listToLines(entry.highlights)}
+                            value={workHighlightsDrafts[entryIndex] ?? listToLines(entry.highlights)}
                             onChange={(event) => updateWorkHighlights(entryIndex, event.target.value)}
                           />
                         </label>
