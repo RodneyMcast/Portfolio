@@ -13,6 +13,7 @@ export const AboutPage = () => {
   const status = useAppSelector((state) => state.siteContent.status);
   const about = useAppSelector((state) => state.siteContent.content.about);
   const skillGroups = useAppSelector((state) => state.siteContent.content.skillGroups);
+  const seoSettings = useAppSelector((state) => state.siteContent.content.siteSettings.seo);
   const workExperience = useAppSelector((state) =>
     sortWorkExperienceEntries(state.siteContent.content.workExperience),
   );
@@ -22,6 +23,18 @@ export const AboutPage = () => {
       dispatch(fetchSiteContent());
     }
   }, [dispatch, status]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.title = `About | ${seoSettings.title}`;
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (meta) {
+      meta.content = seoSettings.description;
+    }
+  }, [seoSettings.description, seoSettings.title]);
 
   return (
     <section className="about-page">

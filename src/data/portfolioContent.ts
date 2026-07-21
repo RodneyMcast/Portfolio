@@ -33,11 +33,46 @@ export type AboutContent = {
   profileFacts: ProfileFact[];
 };
 
+export type HomeContent = {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  primaryCtaLabel: string;
+  secondaryCtaLabel: string;
+};
+
+export type ContactContent = {
+  heroTitle: string;
+  heroDescription: string;
+  name: string;
+  email: string;
+  phone: string;
+  githubLabel: string;
+  githubUrl: string;
+  linkedinLabel: string;
+  linkedinUrl: string;
+  itchLabel: string;
+  itchUrl: string;
+};
+
+export type SeoContent = {
+  title: string;
+  description: string;
+  keywords: string[];
+};
+
+export type SiteSettings = {
+  home: HomeContent;
+  contact: ContactContent;
+  seo: SeoContent;
+};
+
 export type PortfolioContent = {
   projects: Project[];
   about: AboutContent;
   skillGroups: SkillGroup[];
   workExperience: WorkExperienceEntry[];
+  siteSettings: SiteSettings;
 };
 
 const MONTHS: Record<string, number> = {
@@ -112,6 +147,34 @@ export const defaultAboutContent: AboutContent = {
     { label: 'Focus', value: 'Front-end, APIs, Games' },
     { label: 'Location', value: 'Malta' },
   ],
+};
+
+export const defaultSiteSettings: SiteSettings = {
+  home: {
+    eyebrow: 'Portfolio',
+    title: 'Hello, I am Rodney Hili',
+    intro: 'Creative Computing student, developer, and problem solver building useful things.',
+    primaryCtaLabel: 'View Projects',
+    secondaryCtaLabel: 'Contact Me',
+  },
+  contact: {
+    heroTitle: 'Contact',
+    heroDescription: 'Send me a message about a project, opportunity, or idea. I usually reply within 24-48 hours.',
+    name: 'Rodney Hili',
+    email: 'rodney.hili2005@gmail.com',
+    phone: '+356 99551429',
+    githubLabel: 'RodneyMcast',
+    githubUrl: 'https://github.com/RodneyMcast',
+    linkedinLabel: 'Rodney Hili',
+    linkedinUrl: 'https://www.linkedin.com/in/rodney-hili-7693b42b5/',
+    itchLabel: 'rodneyhili',
+    itchUrl: 'https://rodneyhili.itch.io/',
+  },
+  seo: {
+    title: 'Rodney Hili | Portfolio',
+    description: 'Portfolio of Rodney Hili, Creative Computing student and full-stack developer.',
+    keywords: ['Rodney Hili', 'portfolio', 'full-stack', 'creative computing', 'web developer'],
+  },
 };
 
 export const defaultWorkExperience: WorkExperienceEntry[] = [
@@ -416,4 +479,5 @@ export const defaultPortfolioContent: PortfolioContent = {
   about: defaultAboutContent,
   skillGroups: defaultSkillGroups,
   workExperience: defaultWorkExperience,
+  siteSettings: defaultSiteSettings,
 };

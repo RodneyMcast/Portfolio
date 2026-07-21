@@ -2,13 +2,18 @@ import { Link } from 'react-router-dom';
 
 import styles from './HomeHero.module.css';
 
-export const HeroButtons = () => (
+type HeroButtonsProps = {
+  primaryLabel: string;
+  secondaryLabel: string;
+};
+
+export const HeroButtons = ({ primaryLabel, secondaryLabel }: HeroButtonsProps) => (
   <div className={styles.buttons}>
     <Link to="/projects" className={styles.primaryButton}>
-      View Projects
+      {primaryLabel}
     </Link>
     <Link to="/about" className={styles.ghostButton}>
-      About Me
+      {secondaryLabel}
     </Link>
   </div>
 );

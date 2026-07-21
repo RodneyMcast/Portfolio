@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { defaultSiteSettings, type HomeContent } from '../../data/portfolioContent';
 import { HeroButtons } from './HeroButtons';
 import styles from './HomeHero.module.css';
 import { VideoBubble } from './VideoBubble';
@@ -20,6 +21,10 @@ const pauseMs = 1700;
 const finalAfterCycles = 2;
 
 type TypewriterPhase = 'typing' | 'pausing' | 'deleting' | 'final';
+
+type HomeHeroProps = {
+  content?: HomeContent;
+};
 
 const TypewriterText = () => {
   const [displayedText, setDisplayedText] = useState('');
@@ -118,16 +123,15 @@ const TypewriterText = () => {
   );
 };
 
-export const HomeHero = () => (
-  <>
-    <section className={styles.hero}>
-      <div className={styles.intro}>
-        <span className="eyebrow">Portfolio</span>
-        <h1 className={styles.title}>Hello, I am Rodney Hili</h1>
-        <TypewriterText />
-        <HeroButtons />
-      </div>
-      <VideoBubble />
-    </section>
-  </>
+export const HomeHero = ({ content = defaultSiteSettings.home }: HomeHeroProps) => (
+  <section className={styles.hero}>
+    <div className={styles.intro}>
+      <span className="eyebrow">{content.eyebrow}</span>
+      <h1 className={styles.title}>{content.title}</h1>
+      <p className={styles.subtitle}>{content.intro}</p>
+      <TypewriterText />
+      <HeroButtons primaryLabel={content.primaryCtaLabel} secondaryLabel={content.secondaryCtaLabel} />
+    </div>
+    <VideoBubble />
+  </section>
 );

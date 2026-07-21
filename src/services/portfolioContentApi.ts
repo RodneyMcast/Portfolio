@@ -3,6 +3,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import {
   defaultPortfolioContent,
+  defaultSiteSettings,
   sortWorkExperienceEntries,
   type PortfolioContent,
 } from '../data/portfolioContent';
@@ -89,6 +90,19 @@ const mergePortfolioContent = (value: unknown): PortfolioContent => {
     workExperience: Array.isArray(value.workExperience)
       ? sortWorkExperienceEntries(value.workExperience as PortfolioContent['workExperience'])
       : clonePortfolioContent().workExperience,
+    siteSettings: isObject(value.siteSettings)
+      ? {
+          home: isObject(value.siteSettings.home)
+            ? ({ ...defaultSiteSettings.home, ...(value.siteSettings.home as PortfolioContent['siteSettings']['home']) })
+            : defaultSiteSettings.home,
+          contact: isObject(value.siteSettings.contact)
+            ? ({ ...defaultSiteSettings.contact, ...(value.siteSettings.contact as PortfolioContent['siteSettings']['contact']) })
+            : defaultSiteSettings.contact,
+          seo: isObject(value.siteSettings.seo)
+            ? ({ ...defaultSiteSettings.seo, ...(value.siteSettings.seo as PortfolioContent['siteSettings']['seo']) })
+            : defaultSiteSettings.seo,
+        }
+      : clonePortfolioContent().siteSettings,
   };
 };
 

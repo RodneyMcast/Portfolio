@@ -7,6 +7,7 @@ import {
   defaultPortfolioContent,
   sortWorkExperienceEntries,
   type PortfolioContent,
+  type SiteSettings,
 } from '../data/portfolioContent';
 import type { SkillGroup } from '../components/about/SkillsGrid';
 import { replaceProjects } from '../features/projects/projectsSlice';
@@ -132,6 +133,68 @@ const includesQuery = (values: Array<string | number | boolean | undefined>, que
 const formatTime = (date: Date) =>
   date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+type AdminHistoryEntry = {
+  id: string;
+  savedAt: string;
+  source: PortfolioContentSource;
+  note: string;
+  content: PortfolioContent;
+};
+
+const adminHistoryStorageKey = 'portfolio.content.history';
+
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const readStoredAdminHistory = (): AdminHistoryEntry[] => {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  try {
+    const rawValue = window.localStorage.getItem(adminHistoryStorageKey);
+    if (!rawValue) {
+      return [];
+    }
+
+    const parsed = JSON.parse(rawValue) as unknown;
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.filter((entry): entry is AdminHistoryEntry =>
+      isObject(entry) &&
+      typeof entry.id === 'string' &&
+      typeof entry.savedAt === 'string' &&
+      (entry.source === 'firestore' || entry.source === 'local') &&
+      typeof entry.note === 'string' &&
+      isObject(entry.content),
+    );
+  } catch {
+    return [];
+  }
+};
+
+const persistAdminHistory = (entries: AdminHistoryEntry[]) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(adminHistoryStorageKey, JSON.stringify(entries.slice(0, 10)));
+};
+
+const createHistoryEntry = (
+  content: PortfolioContent,
+  source: PortfolioContentSource,
+  note: string,
+): AdminHistoryEntry => ({
+  id: `history-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  savedAt: new Date().toISOString(),
+  source,
+  note,
+  content: clonePortfolioContent(content),
+});
+
 type FocusTarget =
   | { kind: 'project'; index: number }
   | { kind: 'skillGroup'; index: number }
@@ -193,6 +256,9 @@ export const AdminPage = () => {
   const [workExperienceOpenState, setWorkExperienceOpenState] = useState<boolean[]>(() =>
     createAccordionState(clonePortfolioContent().workExperience.length),
   );
+  const [homeJson, setHomeJson] = useState(() => stringify(defaultPortfolioContent.siteSettings.home));
+  const [contactJson, setContactJson] = useState(() => stringify(defaultPortfolioContent.siteSettings.contact));
+  const [seoJson, setSeoJson] = useState(() => stringify(defaultPortfolioContent.siteSettings.seo));
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
   const [contentSourceMode, setContentSourceMode] = useState<PortfolioContentSource>(
     () => readStoredPortfolioContentSource() ?? 'firestore',
@@ -205,6 +271,7 @@ export const AdminPage = () => {
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [savedSnapshot, setSavedSnapshot] = useState<PortfolioContent | null>(null);
   const [pendingFocus, setPendingFocus] = useState<FocusTarget>(null);
+  const [historyEntries, setHistoryEntries] = useState<AdminHistoryEntry[]>(() => readStoredAdminHistory());
   const [message, setMessage] = useState<AdminMessage>({
     tone: 'info',
     text: 'Admin and dev access only. Sign in with your Firebase email account.',
@@ -231,6 +298,9 @@ export const AdminPage = () => {
     setWorkHighlightsDrafts(content.workExperience.map((entry) => listToLines(entry.highlights)));
     setWorkExperienceUiIds(content.workExperience.map((_, index) => createStableId(`work-${index}`)));
     setWorkExperienceOpenState(createAccordionState(content.workExperience.length));
+    setHomeJson(stringify(content.siteSettings.home));
+    setContactJson(stringify(content.siteSettings.contact));
+    setSeoJson(stringify(content.siteSettings.seo));
     setSavedSnapshot(clonePortfolioContent(content));
     setLastSavedSignature(stringify(content));
     setIsHydrated(true);
@@ -268,6 +338,10 @@ export const AdminPage = () => {
   }, [contentSourceMode]);
 
   useEffect(() => {
+    persistAdminHistory(historyEntries);
+  }, [historyEntries]);
+
+  useEffect(() => {
     if (!authService) {
       setAuthReady(true);
       return undefined;
@@ -295,8 +369,13 @@ export const AdminPage = () => {
           highlights: linesToList(workHighlightsDrafts[index] ?? listToLines(entry.highlights)),
         })),
       ),
+      siteSettings: {
+        home: parseEditorJson<SiteSettings['home']>('Home settings', homeJson),
+        contact: parseEditorJson<SiteSettings['contact']>('Contact settings', contactJson),
+        seo: parseEditorJson<SiteSettings['seo']>('SEO settings', seoJson),
+      },
     }),
-    [aboutJson, projectTechStackDrafts, projects, skillGroups, workExperience, workHighlightsDrafts],
+    [aboutJson, contactJson, homeJson, projectTechStackDrafts, projects, seoJson, skillGroups, workExperience, workHighlightsDrafts],
   );
 
   const currentContent = useMemo(() => {
@@ -413,6 +492,12 @@ export const AdminPage = () => {
         setSavedSnapshot(clonePortfolioContent(normalizedContent));
         setLastSavedSignature(stringify(normalizedContent));
         setLastSavedAt(formatTime(new Date()));
+        const historyEntry = createHistoryEntry(normalizedContent, targetSource, successMessage);
+        setHistoryEntries((current) => {
+          const next = [historyEntry, ...current.filter((entry) => entry.id !== historyEntry.id)].slice(0, 10);
+          persistAdminHistory(next);
+          return next;
+        });
 
         if (!options?.silent) {
           setMessage({ tone: 'success', text: successMessage });
@@ -903,6 +988,24 @@ export const AdminPage = () => {
     loadContentIntoEditors(savedSnapshot);
     setMessage({ tone: 'success', text: 'Reverted to the last saved version.' });
   }, [loadContentIntoEditors, savedSnapshot]);
+
+  const handleRestoreHistoryEntry = useCallback(
+    async (entry: AdminHistoryEntry) => {
+      const confirmed = window.confirm(
+        `Restore the saved snapshot from ${new Date(entry.savedAt).toLocaleString()}?`,
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      loadContentIntoEditors(entry.content);
+      await saveContent(entry.content, 'Restored a previous saved version.', {
+        source: entry.source,
+      });
+    },
+    [loadContentIntoEditors, saveContent],
+  );
 
   const collapseAllPanels = useCallback(() => {
     setProjectOpenState(createAccordionState(projects.length));
@@ -1695,10 +1798,57 @@ export const AdminPage = () => {
               </small>
             </span>
           </label>
+          <div className="admin-form-grid two">
+            <label className="full">
+              <span>Home settings JSON</span>
+              <textarea value={homeJson} onChange={(event) => setHomeJson(event.target.value)} />
+            </label>
+            <label className="full">
+              <span>Contact settings JSON</span>
+              <textarea value={contactJson} onChange={(event) => setContactJson(event.target.value)} />
+            </label>
+            <label className="full">
+              <span>SEO settings JSON</span>
+              <textarea value={seoJson} onChange={(event) => setSeoJson(event.target.value)} />
+            </label>
+          </div>
           <details className="admin-defaults">
             <summary>View local fallback payload</summary>
             <pre>{localDefaultText}</pre>
           </details>
+          <div className="admin-history">
+            <div className="admin-editor-title-row">
+              <span>Change History</span>
+              <span className="admin-muted">Last {historyEntries.length} saved versions</span>
+            </div>
+            {historyEntries.length === 0 ? (
+              <p className="admin-muted">No saved versions yet.</p>
+            ) : (
+              <div className="admin-list">
+                {historyEntries.map((entry) => (
+                  <article className="admin-item" key={entry.id}>
+                    <div className="admin-item-body">
+                      <div className="admin-item-actions">
+                        <span className="admin-muted">
+                          {new Date(entry.savedAt).toLocaleString()} · {entry.source} · {entry.note}
+                        </span>
+                        <div className="admin-inline-actions">
+                          <button
+                            className="button-link ghost"
+                            type="button"
+                            onClick={() => void handleRestoreHistoryEntry(entry)}
+                            disabled={isBusy || isSaving}
+                          >
+                            Restore
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       ) : null}
 
