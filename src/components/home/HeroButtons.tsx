@@ -12,7 +12,7 @@ export const HeroButtons = ({ primaryLabel, secondaryLabel }: HeroButtonsProps) 
     <Link to="/projects" className={styles.primaryButton}>
       {primaryLabel}
     </Link>
-    <Link to="/about" className={styles.ghostButton}>
+    <Link to="/contact" className={styles.ghostButton}>
       {secondaryLabel}
     </Link>
   </div>

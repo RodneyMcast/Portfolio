@@ -6,7 +6,7 @@ import styles from './HomeHero.module.css';
 import { VideoBubble } from './VideoBubble';
 
 const phrases = [
-  'Creative Computing Student.',
+  'Creative Computing Graduate.',
   'Software Developer.',
   'Full-Stack Web Developer.',
   'Game Developer.',
@@ -115,7 +115,7 @@ const TypewriterText = () => {
         <span className={styles.typewriterCursor} aria-hidden="true" />
       ) : null}
       <span className="sr-only">
-        Creative Computing Student. Software Developer. Full-Stack Web
+        Creative Computing Graduate. Software Developer. Full-Stack Web
         Developer. Game Developer. Exploring emerging technologies. Turning
         ideas into reality.
       </span>
@@ -128,7 +128,6 @@ export const HomeHero = ({ content = defaultSiteSettings.home }: HomeHeroProps) 
     <div className={styles.intro}>
       <span className="eyebrow">{content.eyebrow}</span>
       <h1 className={styles.title}>{content.title}</h1>
-      <p className={styles.subtitle}>{content.intro}</p>
       <TypewriterText />
       <HeroButtons primaryLabel={content.primaryCtaLabel} secondaryLabel={content.secondaryCtaLabel} />
     </div>
