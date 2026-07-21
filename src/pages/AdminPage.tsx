@@ -193,7 +193,6 @@ export const AdminPage = () => {
   const [workExperienceOpenState, setWorkExperienceOpenState] = useState<boolean[]>(() =>
     createAccordionState(clonePortfolioContent().workExperience.length),
   );
-  const [adminKey, setAdminKey] = useState(defaultPortfolioContent.adminKey);
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
   const [contentSourceMode, setContentSourceMode] = useState<PortfolioContentSource>(
     () => readStoredPortfolioContentSource() ?? 'firestore',
@@ -232,7 +231,6 @@ export const AdminPage = () => {
     setWorkHighlightsDrafts(content.workExperience.map((entry) => listToLines(entry.highlights)));
     setWorkExperienceUiIds(content.workExperience.map((_, index) => createStableId(`work-${index}`)));
     setWorkExperienceOpenState(createAccordionState(content.workExperience.length));
-    setAdminKey(content.adminKey || defaultPortfolioContent.adminKey);
     setSavedSnapshot(clonePortfolioContent(content));
     setLastSavedSignature(stringify(content));
     setIsHydrated(true);
@@ -275,7 +273,7 @@ export const AdminPage = () => {
       return undefined;
     }
 
-    const unsubscribe = onAuthStateChanged(authService, (user: User) => {
+    const unsubscribe = onAuthStateChanged(authService, (user: User | null) => {
       setAuthUser(user);
       setAuthReady(true);
     });
@@ -297,9 +295,8 @@ export const AdminPage = () => {
           highlights: linesToList(workHighlightsDrafts[index] ?? listToLines(entry.highlights)),
         })),
       ),
-      adminKey: adminKey.trim() || defaultPortfolioContent.adminKey,
     }),
-    [aboutJson, adminKey, projectTechStackDrafts, projects, skillGroups, workExperience, workHighlightsDrafts],
+    [aboutJson, projectTechStackDrafts, projects, skillGroups, workExperience, workHighlightsDrafts],
   );
 
   const currentContent = useMemo(() => {

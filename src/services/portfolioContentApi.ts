@@ -89,7 +89,6 @@ const mergePortfolioContent = (value: unknown): PortfolioContent => {
     workExperience: Array.isArray(value.workExperience)
       ? sortWorkExperienceEntries(value.workExperience as PortfolioContent['workExperience'])
       : clonePortfolioContent().workExperience,
-    adminKey: typeof value.adminKey === 'string' ? value.adminKey : defaultPortfolioContent.adminKey,
   };
 };
 
