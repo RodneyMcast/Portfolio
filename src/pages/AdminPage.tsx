@@ -7,7 +7,6 @@ import {
   defaultPortfolioContent,
   sortWorkExperienceEntries,
   type PortfolioContent,
-  type SiteSettings,
 } from '../data/portfolioContent';
 import type { SkillGroup } from '../components/about/SkillsGrid';
 import { replaceProjects } from '../features/projects/projectsSlice';
@@ -256,9 +255,9 @@ export const AdminPage = () => {
   const [workExperienceOpenState, setWorkExperienceOpenState] = useState<boolean[]>(() =>
     createAccordionState(clonePortfolioContent().workExperience.length),
   );
-  const [homeJson, setHomeJson] = useState(() => stringify(defaultPortfolioContent.siteSettings.home));
-  const [contactJson, setContactJson] = useState(() => stringify(defaultPortfolioContent.siteSettings.contact));
-  const [seoJson, setSeoJson] = useState(() => stringify(defaultPortfolioContent.siteSettings.seo));
+  const [homeSettings, setHomeSettings] = useState(() => clonePortfolioContent().siteSettings.home);
+  const [contactSettings, setContactSettings] = useState(() => clonePortfolioContent().siteSettings.contact);
+  const [seoSettings, setSeoSettings] = useState(() => clonePortfolioContent().siteSettings.seo);
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
   const [contentSourceMode, setContentSourceMode] = useState<PortfolioContentSource>(
     () => readStoredPortfolioContentSource() ?? 'firestore',
@@ -298,9 +297,9 @@ export const AdminPage = () => {
     setWorkHighlightsDrafts(content.workExperience.map((entry) => listToLines(entry.highlights)));
     setWorkExperienceUiIds(content.workExperience.map((_, index) => createStableId(`work-${index}`)));
     setWorkExperienceOpenState(createAccordionState(content.workExperience.length));
-    setHomeJson(stringify(content.siteSettings.home));
-    setContactJson(stringify(content.siteSettings.contact));
-    setSeoJson(stringify(content.siteSettings.seo));
+    setHomeSettings(content.siteSettings.home);
+    setContactSettings(content.siteSettings.contact);
+    setSeoSettings(content.siteSettings.seo);
     setSavedSnapshot(clonePortfolioContent(content));
     setLastSavedSignature(stringify(content));
     setIsHydrated(true);
@@ -370,12 +369,12 @@ export const AdminPage = () => {
         })),
       ),
       siteSettings: {
-        home: parseEditorJson<SiteSettings['home']>('Home settings', homeJson),
-        contact: parseEditorJson<SiteSettings['contact']>('Contact settings', contactJson),
-        seo: parseEditorJson<SiteSettings['seo']>('SEO settings', seoJson),
+        home: homeSettings,
+        contact: contactSettings,
+        seo: seoSettings,
       },
     }),
-    [aboutJson, contactJson, homeJson, projectTechStackDrafts, projects, seoJson, skillGroups, workExperience, workHighlightsDrafts],
+    [aboutJson, contactSettings, homeSettings, projectTechStackDrafts, projects, seoSettings, skillGroups, workExperience, workHighlightsDrafts],
   );
 
   const currentContent = useMemo(() => {
@@ -1798,19 +1797,197 @@ export const AdminPage = () => {
               </small>
             </span>
           </label>
-          <div className="admin-form-grid two">
-            <label className="full">
-              <span>Home settings JSON</span>
-              <textarea value={homeJson} onChange={(event) => setHomeJson(event.target.value)} />
-            </label>
-            <label className="full">
-              <span>Contact settings JSON</span>
-              <textarea value={contactJson} onChange={(event) => setContactJson(event.target.value)} />
-            </label>
-            <label className="full">
-              <span>SEO settings JSON</span>
-              <textarea value={seoJson} onChange={(event) => setSeoJson(event.target.value)} />
-            </label>
+          <div className="admin-settings-grid">
+            <article className="admin-item admin-settings-card">
+              <div className="admin-item-actions">
+                <span>Home</span>
+                <span className="admin-muted">Hero copy and buttons</span>
+              </div>
+              <div className="admin-form-grid two">
+                <label>
+                  <span>Eyebrow</span>
+                  <input
+                    value={homeSettings.eyebrow}
+                    onChange={(event) => setHomeSettings((current) => ({ ...current, eyebrow: event.target.value }))}
+                  />
+                </label>
+                <label>
+                  <span>Title</span>
+                  <input
+                    value={homeSettings.title}
+                    onChange={(event) => setHomeSettings((current) => ({ ...current, title: event.target.value }))}
+                  />
+                </label>
+                <label className="full">
+                  <span>Intro</span>
+                  <textarea
+                    value={homeSettings.intro}
+                    onChange={(event) => setHomeSettings((current) => ({ ...current, intro: event.target.value }))}
+                  />
+                </label>
+                <label>
+                  <span>Primary button</span>
+                  <input
+                    value={homeSettings.primaryCtaLabel}
+                    onChange={(event) =>
+                      setHomeSettings((current) => ({ ...current, primaryCtaLabel: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Secondary button</span>
+                  <input
+                    value={homeSettings.secondaryCtaLabel}
+                    onChange={(event) =>
+                      setHomeSettings((current) => ({ ...current, secondaryCtaLabel: event.target.value }))
+                    }
+                  />
+                </label>
+              </div>
+            </article>
+
+            <article className="admin-item admin-settings-card">
+              <div className="admin-item-actions">
+                <span>Contact</span>
+                <span className="admin-muted">Hero contact block and links</span>
+              </div>
+              <div className="admin-form-grid two">
+                <label>
+                  <span>Hero title</span>
+                  <input
+                    value={contactSettings.heroTitle}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, heroTitle: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Name</span>
+                  <input
+                    value={contactSettings.name}
+                    onChange={(event) => setContactSettings((current) => ({ ...current, name: event.target.value }))}
+                  />
+                </label>
+                <label className="full">
+                  <span>Hero description</span>
+                  <textarea
+                    value={contactSettings.heroDescription}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, heroDescription: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Email</span>
+                  <input
+                    value={contactSettings.email}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, email: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Phone</span>
+                  <input
+                    value={contactSettings.phone}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, phone: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>GitHub label</span>
+                  <input
+                    value={contactSettings.githubLabel}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, githubLabel: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>GitHub URL</span>
+                  <input
+                    value={contactSettings.githubUrl}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, githubUrl: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>LinkedIn label</span>
+                  <input
+                    value={contactSettings.linkedinLabel}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, linkedinLabel: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>LinkedIn URL</span>
+                  <input
+                    value={contactSettings.linkedinUrl}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, linkedinUrl: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Itch.io label</span>
+                  <input
+                    value={contactSettings.itchLabel}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, itchLabel: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Itch.io URL</span>
+                  <input
+                    value={contactSettings.itchUrl}
+                    onChange={(event) =>
+                      setContactSettings((current) => ({ ...current, itchUrl: event.target.value }))
+                    }
+                  />
+                </label>
+              </div>
+            </article>
+
+            <article className="admin-item admin-settings-card">
+              <div className="admin-item-actions">
+                <span>SEO</span>
+                <span className="admin-muted">Browser title and meta description</span>
+              </div>
+              <div className="admin-form-grid two">
+                <label className="full">
+                  <span>Title</span>
+                  <input
+                    value={seoSettings.title}
+                    onChange={(event) => setSeoSettings((current) => ({ ...current, title: event.target.value }))}
+                  />
+                </label>
+                <label className="full">
+                  <span>Description</span>
+                  <textarea
+                    value={seoSettings.description}
+                    onChange={(event) =>
+                      setSeoSettings((current) => ({ ...current, description: event.target.value }))
+                    }
+                  />
+                </label>
+                <label className="full">
+                  <span>Keywords, comma-separated</span>
+                  <textarea
+                    value={seoSettings.keywords.join(', ')}
+                    onChange={(event) =>
+                      setSeoSettings((current) => ({
+                        ...current,
+                        keywords: parseListText(event.target.value),
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+            </article>
           </div>
           <details className="admin-defaults">
             <summary>View local fallback payload</summary>

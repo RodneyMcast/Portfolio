@@ -2046,7 +2046,48 @@ html[data-theme='light'] .theme-toggle-thumb {
 }
 
 .admin-settings-panel {
-  max-width: 620px;
+  max-width: 1100px;
+}
+
+.admin-settings-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-settings-card {
+  padding: 1rem;
+  background:
+    radial-gradient(circle at top right, var(--color-glow-faint), transparent 42%),
+    color-mix(in srgb, var(--color-card) 76%, transparent);
+}
+
+.admin-settings-card .admin-item-actions {
+  margin-bottom: 0.9rem;
+}
+
+.admin-settings-card .admin-form-grid input,
+.admin-settings-card .admin-form-grid textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card-strong);
+  color: var(--color-text);
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+}
+
+.admin-settings-card .admin-form-grid textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.admin-settings-card .admin-form-grid .full textarea {
+  min-height: 130px;
+}
+
+.admin-history {
+  display: grid;
+  gap: 0.75rem;
 }
 
 .admin-source-toggle {
