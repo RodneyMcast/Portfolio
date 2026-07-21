@@ -1,3 +1,5 @@
+import { defaultSiteSettings } from '../../data/portfolioContent';
+
 import { HeroButtons } from './HeroButtons';
 import styles from './HomeHero.module.css';
 import { VideoBubble } from './VideoBubble';
@@ -14,7 +16,10 @@ export const HomeHeroOriginal = () => (
         <p className={styles.subtitle}>
           I build APIs, web apps for mobile and desktop, and Unity projects.
         </p>
-        <HeroButtons />
+        <HeroButtons
+          primaryLabel={defaultSiteSettings.home.primaryCtaLabel}
+          secondaryLabel={defaultSiteSettings.home.secondaryCtaLabel}
+        />
       </div>
       <VideoBubble />
     </section>
