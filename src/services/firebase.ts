@@ -16,6 +16,15 @@ const firebaseConfig = {
 const isLikelyProjectId = (value: string | undefined) =>
   Boolean(value && /^[a-z0-9-]+$/.test(value));
 
+const normalizeEmail = (value: string | undefined) => value?.trim().toLowerCase() ?? '';
+
+// This hides the editor for anyone except the configured owner. Firestore and
+// Storage rules below remain the actual security boundary for write access.
+export const isConfiguredAdminEmail = (email: string | null | undefined) => {
+  const configuredEmail = normalizeEmail(import.meta.env.VITE_ADMIN_EMAIL as string | undefined);
+  return Boolean(configuredEmail && normalizeEmail(email) === configuredEmail);
+};
+
 export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey &&
     firebaseConfig.authDomain &&

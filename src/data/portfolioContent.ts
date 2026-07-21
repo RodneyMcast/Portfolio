@@ -38,7 +38,6 @@ export type PortfolioContent = {
   about: AboutContent;
   skillGroups: SkillGroup[];
   workExperience: WorkExperienceEntry[];
-  adminKey: string;
 };
 
 const MONTHS: Record<string, number> = {
@@ -417,5 +416,4 @@ export const defaultPortfolioContent: PortfolioContent = {
   about: defaultAboutContent,
   skillGroups: defaultSkillGroups,
   workExperience: defaultWorkExperience,
-  adminKey: '2005',
 };

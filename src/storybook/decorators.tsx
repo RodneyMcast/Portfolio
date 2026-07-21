@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import contactReducer from '../features/contact/contactSlice';
 import projectsReducer from '../features/projects/projectsSlice';
+import siteContentReducer from '../features/siteContent/siteContentSlice';
 import uiReducer from '../features/ui/uiSlice';
 
 import type { RootState } from '../app/store';
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   ui: uiReducer,
   projects: projectsReducer,
   contact: contactReducer,
+  siteContent: siteContentReducer,
 });
 
 const createStoryStore = (preloadedState?: Partial<RootState>) =>

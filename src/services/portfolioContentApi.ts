@@ -9,6 +9,8 @@ import {
 import { firestoreDb, isFirebaseConfigured, storageDb } from './firebase';
 
 const contentDocPath = ['portfolioContent', 'site'] as const;
+const localContentStorageKey = 'portfolio.content.localDraft';
+const contentSourceStorageKey = 'portfolio.content.sourceMode';
 
 export type PortfolioContentSource = 'firestore' | 'local';
 
@@ -18,8 +20,53 @@ export type PortfolioContentResult = {
   message?: string;
 };
 
+export type PortfolioContentFetchOptions = {
+  source?: PortfolioContentSource;
+};
+
 export const clonePortfolioContent = (content: PortfolioContent = defaultPortfolioContent) =>
   JSON.parse(JSON.stringify(content)) as PortfolioContent;
+
+const getStorage = (): Storage | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+};
+
+const readStoredJson = (key: string): unknown | null => {
+  const storage = getStorage();
+
+  if (!storage) {
+    return null;
+  }
+
+  const rawValue = storage.getItem(key);
+  if (!rawValue) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawValue) as unknown;
+  } catch {
+    return null;
+  }
+};
+
+const writeStoredJson = (key: string, value: unknown) => {
+  const storage = getStorage();
+
+  if (!storage) {
+    throw new Error('Browser storage is not available in this environment.');
+  }
+
+  storage.setItem(key, JSON.stringify(value));
+};
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
@@ -46,6 +93,33 @@ const mergePortfolioContent = (value: unknown): PortfolioContent => {
   };
 };
 
+const readLocalDraftContent = () => mergePortfolioContent(readStoredJson(localContentStorageKey));
+
+export const readStoredPortfolioContentSource = (): PortfolioContentSource | null => {
+  const stored = readStoredJson(contentSourceStorageKey);
+
+  if (stored === 'firestore' || stored === 'local') {
+    return stored;
+  }
+
+  return null;
+};
+
+export const persistPortfolioContentSource = (source: PortfolioContentSource) => {
+  writeStoredJson(contentSourceStorageKey, source);
+};
+
+export const saveLocalPortfolioContent = (content: PortfolioContent) => {
+  writeStoredJson(localContentStorageKey, {
+    ...content,
+    workExperience: sortWorkExperienceEntries(content.workExperience),
+  });
+};
+
+export const resetLocalPortfolioContentToDefaults = () => {
+  saveLocalPortfolioContent(clonePortfolioContent());
+};
+
 const getContentDocRef = () => {
   if (!firestoreDb) {
     return null;
@@ -54,12 +128,23 @@ const getContentDocRef = () => {
   return doc(firestoreDb, ...contentDocPath);
 };
 
-export const fetchPortfolioContent = async (): Promise<PortfolioContentResult> => {
+export const fetchPortfolioContent = async (
+  options: PortfolioContentFetchOptions = {},
+): Promise<PortfolioContentResult> => {
+  const preferredSource = options.source ?? 'firestore';
   const docRef = getContentDocRef();
+
+  if (preferredSource === 'local') {
+    return {
+      content: readLocalDraftContent(),
+      source: 'local',
+      message: 'Local portfolio draft loaded from browser storage.',
+    };
+  }
 
   if (!isFirebaseConfigured || !docRef) {
     return {
-      content: clonePortfolioContent(),
+      content: readLocalDraftContent(),
       source: 'local',
       message: 'Firebase is not configured, using local portfolio content.',
     };
@@ -69,7 +154,7 @@ export const fetchPortfolioContent = async (): Promise<PortfolioContentResult> =
     const snapshot = await getDoc(docRef);
     if (!snapshot.exists()) {
       return {
-        content: clonePortfolioContent(),
+        content: readLocalDraftContent(),
         source: 'local',
         message: 'No Firestore content found yet, using local portfolio content.',
       };
@@ -81,7 +166,7 @@ export const fetchPortfolioContent = async (): Promise<PortfolioContentResult> =
     };
   } catch {
     return {
-      content: clonePortfolioContent(),
+      content: readLocalDraftContent(),
       source: 'local',
       message: 'Firestore could not be reached, using local portfolio content.',
     };

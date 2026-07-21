@@ -16,8 +16,12 @@ import { setSiteContent } from '../features/siteContent/siteContentSlice';
 import {
   clonePortfolioContent,
   fetchPortfolioContent,
+  persistPortfolioContentSource,
+  readStoredPortfolioContentSource,
   savePortfolioContent,
+  saveLocalPortfolioContent,
   uploadPortfolioImage,
+  type PortfolioContentSource,
 } from '../services/portfolioContentApi';
 import { authService } from '../services/firebase';
 
@@ -191,7 +195,10 @@ export const AdminPage = () => {
   );
   const [adminKey, setAdminKey] = useState(defaultPortfolioContent.adminKey);
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
-  const [source, setSource] = useState<'firestore' | 'local'>('local');
+  const [contentSourceMode, setContentSourceMode] = useState<PortfolioContentSource>(
+    () => readStoredPortfolioContentSource() ?? 'firestore',
+  );
+  const [source, setSource] = useState<PortfolioContentSource>('local');
   const [isBusy, setIsBusy] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -231,23 +238,36 @@ export const AdminPage = () => {
     setIsHydrated(true);
   }, []);
 
-  const loadRemoteContent = useCallback(async () => {
-    setIsBusy(true);
-    const result = await fetchPortfolioContent();
-    loadContentIntoEditors(result.content);
-    setSource(result.source);
-    setMessage({
-      tone: result.source === 'firestore' ? 'success' : 'info',
-      text: result.message ?? 'Firestore content loaded.',
-    });
-    setIsBusy(false);
-  }, [loadContentIntoEditors]);
+  const loadContentForMode = useCallback(
+    async (mode: PortfolioContentSource) => {
+      setIsBusy(true);
+
+      try {
+        const result = await fetchPortfolioContent({ source: mode });
+        loadContentIntoEditors(result.content);
+        setSource(result.source);
+        setMessage({
+          tone: result.source === 'firestore' ? 'success' : 'info',
+          text:
+            result.message ??
+            (mode === 'local' ? 'Local content loaded.' : 'Firestore content loaded.'),
+        });
+      } finally {
+        setIsBusy(false);
+      }
+    },
+    [loadContentIntoEditors],
+  );
 
   useEffect(() => {
     if (authUser) {
-      void loadRemoteContent();
+      void loadContentForMode(contentSourceMode);
     }
-  }, [authUser, loadRemoteContent]);
+  }, [authUser, contentSourceMode, loadContentForMode]);
+
+  useEffect(() => {
+    persistPortfolioContentSource(contentSourceMode);
+  }, [contentSourceMode]);
 
   useEffect(() => {
     if (!authService) {
@@ -255,7 +275,7 @@ export const AdminPage = () => {
       return undefined;
     }
 
-    const unsubscribe = onAuthStateChanged(authService, (user) => {
+    const unsubscribe = onAuthStateChanged(authService, (user: User) => {
       setAuthUser(user);
       setAuthReady(true);
     });
@@ -265,14 +285,14 @@ export const AdminPage = () => {
 
   const buildContentFromEditors = useCallback(
     (): PortfolioContent => ({
-      projects: projects.map((project, index) => ({
+      projects: projects.map((project: Project, index: number) => ({
         ...project,
         techStack: parseListText(projectTechStackDrafts[index] ?? listToText(project.techStack)),
       })),
       about: parseEditorJson<PortfolioContent['about']>('About content', aboutJson),
       skillGroups,
       workExperience: sortWorkExperienceEntries(
-        workExperience.map((entry, index) => ({
+        workExperience.map((entry: WorkExperienceEntry, index: number) => ({
           ...entry,
           highlights: linesToList(workHighlightsDrafts[index] ?? listToLines(entry.highlights)),
         })),
@@ -370,7 +390,11 @@ export const AdminPage = () => {
   );
 
   const saveContent = useCallback(
-    async (content: PortfolioContent, successMessage: string, options?: { silent?: boolean }) => {
+    async (
+      content: PortfolioContent,
+      successMessage: string,
+      options?: { silent?: boolean; source?: PortfolioContentSource },
+    ) => {
       setIsSaving(true);
 
       try {
@@ -378,10 +402,17 @@ export const AdminPage = () => {
           ...content,
           workExperience: sortWorkExperienceEntries(content.workExperience),
         };
-        await savePortfolioContent(normalizedContent);
-        dispatch(setSiteContent(normalizedContent));
+        const targetSource = options?.source ?? contentSourceMode;
+
+        if (targetSource === 'local') {
+          saveLocalPortfolioContent(normalizedContent);
+        } else {
+          await savePortfolioContent(normalizedContent);
+        }
+
+        dispatch(setSiteContent({ content: normalizedContent, source: targetSource }));
         dispatch(replaceProjects(normalizedContent.projects));
-        setSource('firestore');
+        setSource(targetSource);
         setSavedSnapshot(clonePortfolioContent(normalizedContent));
         setLastSavedSignature(stringify(normalizedContent));
         setLastSavedAt(formatTime(new Date()));
@@ -392,14 +423,19 @@ export const AdminPage = () => {
       } catch (error) {
         setMessage({
           tone: 'error',
-          text: error instanceof Error ? error.message : 'Unable to save Firestore content.',
+          text:
+            error instanceof Error
+              ? error.message
+              : contentSourceMode === 'local'
+                ? 'Unable to save local content.'
+                : 'Unable to save Firestore content.',
         });
         throw error;
       } finally {
         setIsSaving(false);
       }
     },
-    [dispatch],
+    [contentSourceMode, dispatch],
   );
 
   const updateProject = useCallback(
@@ -762,18 +798,29 @@ export const AdminPage = () => {
         throw new Error('One of the editor panels contains invalid data. Fix it before saving.');
       }
 
-      await saveContent(currentContent, 'Saved to Firestore.');
+      await saveContent(
+        currentContent,
+        contentSourceMode === 'local' ? 'Saved to local browser draft.' : 'Saved to Firestore.',
+        { source: contentSourceMode },
+      );
     } catch (error) {
       setMessage({
         tone: 'error',
-        text: error instanceof Error ? error.message : 'Unable to save Firestore content.',
+        text:
+          error instanceof Error
+            ? error.message
+            : contentSourceMode === 'local'
+              ? 'Unable to save local content.'
+              : 'Unable to save Firestore content.',
       });
     }
   };
 
   const handleResetDefaults = async () => {
     const confirmed = window.confirm(
-      'Reset Firestore to the current local website content? This overwrites the remote portfolio content.',
+      contentSourceMode === 'local'
+        ? 'Reset the local browser draft to the current website defaults? This only affects this browser.'
+        : 'Reset Firestore to the current local website content? This overwrites the remote portfolio content.',
     );
 
     if (!confirmed) {
@@ -782,12 +829,23 @@ export const AdminPage = () => {
 
     try {
       const defaults = clonePortfolioContent();
-      await saveContent(defaults, 'Firestore reset to local defaults.');
+      await saveContent(
+        defaults,
+        contentSourceMode === 'local'
+          ? 'Local draft reset to local defaults.'
+          : 'Firestore reset to local defaults.',
+        { source: contentSourceMode },
+      );
       loadContentIntoEditors(defaults);
     } catch (error) {
       setMessage({
         tone: 'error',
-        text: error instanceof Error ? error.message : 'Unable to reset Firestore content.',
+        text:
+          error instanceof Error
+            ? error.message
+            : contentSourceMode === 'local'
+              ? 'Unable to reset local content.'
+              : 'Unable to reset Firestore content.',
       });
     }
   };
@@ -895,7 +953,7 @@ export const AdminPage = () => {
     }
 
     autosaveTimerRef.current = window.setTimeout(() => {
-      void saveContent(currentContent, 'Autosaved.', { silent: true });
+      void saveContent(currentContent, 'Autosaved.', { silent: true, source: contentSourceMode });
     }, 1200);
 
     return () => {
@@ -903,7 +961,11 @@ export const AdminPage = () => {
         window.clearTimeout(autosaveTimerRef.current);
       }
     };
-  }, [authUser, currentContent, isBusy, isDirty, isHydrated, isSaving, saveContent]);
+  }, [authUser, contentSourceMode, currentContent, isBusy, isDirty, isHydrated, isSaving, saveContent]);
+
+  const handleContentSourceToggle = useCallback((useLocalContent: boolean) => {
+    setContentSourceMode(useLocalContent ? 'local' : 'firestore');
+  }, []);
 
   useEffect(() => {
     const handleKeyboardShortcut = (event: KeyboardEvent) => {
@@ -984,13 +1046,14 @@ export const AdminPage = () => {
           <span className={`admin-source${isDirty ? ' is-dirty' : ''}`}>
             {isDirty ? 'Unsaved changes' : `Saved ${currentTimeLabel}`}
           </span>
-          <span className="admin-source">Source: {source}</span>
+          <span className="admin-source">Mode: {contentSourceMode}</span>
+          <span className="admin-source">Loaded: {source}</span>
         </div>
       </div>
 
       <div className="admin-actions admin-actions-sticky">
         <button className="button-link primary" type="button" onClick={handleSave} disabled={isBusy || isSaving}>
-          Save to Firestore
+          Save Content
         </button>
         <button
           className="button-link ghost"
@@ -1003,10 +1066,10 @@ export const AdminPage = () => {
         <button
           className="button-link ghost"
           type="button"
-          onClick={loadRemoteContent}
+          onClick={() => void loadContentForMode(contentSourceMode)}
           disabled={isBusy || isSaving}
         >
-          Reload Firestore
+          Reload Current Source
         </button>
         <button
           className="button-link ghost"
@@ -1014,7 +1077,7 @@ export const AdminPage = () => {
           onClick={handleResetDefaults}
           disabled={isBusy || isSaving}
         >
-          Reset Firebase to Local Defaults
+          Reset Current Source
         </button>
         <button
           className="button-link ghost"
@@ -1621,6 +1684,20 @@ export const AdminPage = () => {
 
       {activeTab === 'settings' ? (
         <section className="admin-panel admin-settings-panel">
+          <label className="admin-source-toggle">
+            <input
+              type="checkbox"
+              checked={contentSourceMode === 'local'}
+              onChange={(event) => handleContentSourceToggle(event.target.checked)}
+            />
+            <span>
+              Use local content only
+              <small>
+                When enabled, the dashboard saves to browser storage and skips Firestore. When disabled,
+                it loads and saves Firestore content, but still falls back to local data if Firebase is unavailable.
+              </small>
+            </span>
+          </label>
           <details className="admin-defaults">
             <summary>View local fallback payload</summary>
             <pre>{localDefaultText}</pre>

@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { defaultPortfolioContent, type PortfolioContent } from '../../data/portfolioContent';
-import { fetchPortfolioContent } from '../../services/portfolioContentApi';
+import {
+  fetchPortfolioContent,
+  readStoredPortfolioContentSource,
+} from '../../services/portfolioContentApi';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 
@@ -14,7 +17,7 @@ interface SiteContentState {
 
 export const fetchSiteContent = createAsyncThunk(
   'siteContent/fetchSiteContent',
-  async () => fetchPortfolioContent(),
+  async () => fetchPortfolioContent({ source: readStoredPortfolioContentSource() ?? 'firestore' }),
 );
 
 const initialState: SiteContentState = {
@@ -28,9 +31,12 @@ const siteContentSlice = createSlice({
   name: 'siteContent',
   initialState,
   reducers: {
-    setSiteContent(state, action: PayloadAction<PortfolioContent>) {
-      state.content = action.payload;
-      state.source = 'firestore';
+    setSiteContent(
+      state,
+      action: PayloadAction<{ content: PortfolioContent; source?: 'firestore' | 'local' }>,
+    ) {
+      state.content = action.payload.content;
+      state.source = action.payload.source ?? 'firestore';
       state.status = 'succeeded';
       state.message = null;
     },
